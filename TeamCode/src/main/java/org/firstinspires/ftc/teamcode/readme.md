@@ -2,15 +2,7 @@
 
 Tyler M. (SuperTylerMan)
 
-Oscar Y. (Oscar3334)
-
-Vincent L. (kryptic-val)
-
-Manan C. (duckw333d)
-
-James L. (jamesxgamesyt)
-
-Jason L. (crxyz0)
+Lily L. (ll2025) 
 
 ## TeamCode Module
 
