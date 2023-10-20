@@ -105,5 +105,13 @@ public class MechanismDriving {
         }
     }
 
+    public void updatePlaneSpring() {
+
+    }
+
+    public void updateFuzzyMotor() {
+
+    }
+
 }
 
