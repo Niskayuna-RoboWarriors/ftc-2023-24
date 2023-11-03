@@ -18,9 +18,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  */
 public class RobotManager {
 
-    // Controls dead zone of joystick and triggers so that actions don't accidently fire
-    static final double JOYSTICK_DEAD_ZONE_SIZE = 0.05;
-    static final double TRIGGER_DEAD_ZONE_SIZE = 0.05;
 
     public enum AllianceColor {BLUE, RED};
     public enum StartingSide {LEFT, RIGHT};
