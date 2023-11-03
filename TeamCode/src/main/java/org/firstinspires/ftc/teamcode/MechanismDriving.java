@@ -11,14 +11,11 @@ public class MechanismDriving {
 
     // Slide variables
     public static final int LOWERING_AMOUNT = 100;
-    public static final Map<Robot.SlidesState, Integer> slidePositions = new HashMap<Robot.SlidesState, Integer>() {{
-       put(Robot.SlidesState.RETRACTED, 0);
-       put(Robot.SlidesState.LOW_LOWERED, slidePositions.get(Robot.SlidesState.LOW) - LOWERING_AMOUNT);
-       put(Robot.SlidesState.LOW, 700);
-       put(Robot.SlidesState.MEDIUM_LOWERED, slidePositions.get(Robot.SlidesState.MEDIUM) - LOWERING_AMOUNT);
-       put(Robot.SlidesState.MEDIUM, 1850);
-       put(Robot.SlidesState.HIGH_LOWERED, slidePositions.get(Robot.SlidesState.HIGH) - LOWERING_AMOUNT);
-       put(Robot.SlidesState.HIGH, 3500);
+    public static final Map<Robot.SlideState, Integer> slidePositions = new HashMap<Robot.SlideState, Integer>() {{
+       put(Robot.SlideState.RETRACTED, 0);
+       put(Robot.SlideState.LOW, 700);
+       put(Robot.SlideState.MEDIUM, 1850);
+       put(Robot.SlideState.HIGH, 3500);
     }};
     double slideRampDownDist=1000, maxSpeedCoefficient=0.8;
     public static final int EPSILON = 150;  // slide encoder position tolerance;
@@ -30,7 +27,7 @@ public class MechanismDriving {
     // Plane spring variables
     static final double PLANE_SPRING_UNRELEASED_POS = 0;
     static final double PLANE_SPRING_RELEASED_POS = 0.25;
-    // Fuzzy motor
+    // Intake motor
     static final double FUZZY_MOTOR_SPEED = 1;
 
 
@@ -82,8 +79,8 @@ public class MechanismDriving {
      * @return whether the slides are in the desired position.
      */
     public boolean updateSlides(Robot robot) {
-        if (Robot.desiredSlidesState != Robot.SlidesState.UNREADY) {
-            robot.desiredSlidePosition = slidePositions.get(robot.desiredSlidesState);
+        if (robot.desiredSlideState != Robot.SlideState.UNREADY) {
+            robot.desiredSlidePosition = slidePositions.get(robot.desiredSlideState);
 
             double mainSpeed; // "ramp" the motor speeds down based on how far away from the destination the motors are
             mainSpeed = maxSpeedCoefficient * Range.clip(Math.abs(robot.desiredSlidePosition - robot.slides.getCurrentPosition())/slideRampDownDist, 0.1, 1);
@@ -117,29 +114,33 @@ public class MechanismDriving {
      * @param robot
      */
     public void updatePlaneSpring(Robot robot) {
-        robot.telemetry.addData("UPDATE PLANE SPRING MOTOR STATE");
+        robot.telemetry.addData("UPDATE PLANE SPRING MOTOR STATE", robot.desiredPlaneStringState);
         switch (robot.desiredPlaneStringState) {
             case UNRELEASED:
                 robot.planeSpring.setPosition(PLANE_SPRING_UNRELEASED_POS);
+                break;
             case RELEASED:
                 robot.planeSpring.setPosition(PLANE_SPRING_RELEASED_POS);
+                break;
         }
         robot.telemetry.addData("SET PLANE SPRING MOTOR POSITION", robot.planeSpring.getPosition());
     }
 
     /**
-     * Updates fuzzy motor
+     * Updates intake motor
      * @param robot
      */
-    public void updateFuzzyMotor(Robot robot) {
-        robot.telemtry.addData("UPDATE FUZZY MOTOR STATE");
-        switch (robot.desiredFuzzyMotorState) {
+    public void updateIntakeMotor(Robot robot) {
+        robot.telemetry.addData("UPDATE FUZZY MOTOR STATE", robot.desiredIntakeMotorState);
+        switch (robot.desiredIntakeMotorState) {
             case OFF:
-                robot.fuzzyMotor.setPower(0);
+                robot.intakeMotor.setPower(0);
+                break;
             case ON:
-                robot.fuzzyMotor.setPower(FUZZY_MOTOR_SPEED);
+                robot.intakeMotor.setPower(FUZZY_MOTOR_SPEED);
+                break;
         }
-        robot.telemetry.addData("SET FUZZY MOTOR POWER", robot.fuzzyMotor.getPower());
+        robot.telemetry.addData("SET FUZZY MOTOR POWER", robot.intakeMotor.getPower());
     }
 
 }

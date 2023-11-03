@@ -22,8 +22,7 @@ public class Robot {
         //linear slides motors
         SLIDES         ("slides_motor",         DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE),
 
-        COMPLIANT_MOTOR_LEFT ("compliant_motor_left", DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
-        COMPLIANT_MOTOR_RIGHT ("compliant_motor_right", DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
+        INTAKE_MOTOR ("intake_motor", DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
 
         private final String name;
         private final DcMotor.Direction direction;
@@ -128,15 +127,15 @@ public class Robot {
 
 
     //Enums for states
-    public enum SlidesState            {RETRACTED, LOW, MEDIUM, HIGH, UNREADY, MOVE_UP, MOVE_DOWN, STOPPED};
-    public SlidesState desiredSlidesState = SlidesState.UNREADY;
-    public int desiredSlidesPosition;
+    public enum SlideState            {RETRACTED, LOW, MEDIUM, HIGH, UNREADY, MOVE_UP, MOVE_DOWN, STOPPED};
+    public SlideState desiredSlideState = SlideState.UNREADY;
+    public int desiredSlidePosition;
     public enum ParkingPosition        {INSIDE, MIDDLE, OUTSIDE};
     public enum CompartmentState       {OPEN, CLOSED};
     public CompartmentState desiredCompartmentLeftState = CompartmentState.CLOSED;
     public CompartmentState desiredCompartmentRightState = CompartmentState.CLOSED;
-    public enum CompliantWheelsState   {ON, OFF};
-    public CompliantWheelsState desiredCompliantWheelsState = CompliantWheelsState.OFF;
+    public enum IntakeMotorState   {ON, OFF};
+    public IntakeMotorState desiredIntakeMotorState = IntakeMotorState.OFF;
     public enum PlaneSpringState       {UNRELEASED, RELEASED};
     public PlaneSpringState desiredPlaneStringState = PlaneSpringState.UNRELEASED;
     enum MovementMode                  {NORMAL, FINE, ULTRA_FINE}
@@ -145,7 +144,7 @@ public class Robot {
     boolean wheelSpeedAdjustment = false;
     
     // Hardware
-    public DcMotor slides, compliantWheelLeft, compliantWheelRight;
+    public DcMotor slides, intakeMotor;
     public DcMotor frontLeft, frontRight, rearLeft, rearRight;
     public Servo planeSpring, compartmentLeft, compartmentRight;
 
@@ -178,18 +177,17 @@ public class Robot {
         resetEncoder(rearRight);
 
         slides            = Robot.MotorConfigs.initialize(Robot.MotorConfigs.SLIDES, hardwareMap);
-        compliantWheelLeft            = Robot.MotorConfigs.initialize(Robot.MotorConfigs.COMPLIANT_MOTOR_LEFT, hardwareMap);
-        compliantWheelRight            = Robot.MotorConfigs.initialize(Robot.MotorConfigs.COMPLIANT_MOTOR_RIGHT, hardwareMap);
+        intakeMotor            = Robot.MotorConfigs.initialize(Robot.MotorConfigs.INTAKE_MOTOR, hardwareMap);
         planeSpring     = Robot.ServoConfigs.initialize(Robot.ServoConfigs.PLANE_SPRING, hardwareMap);
         compartmentLeft     = Robot.ServoConfigs.initialize(Robot.ServoConfigs.COMPARTMENT_LEFT, hardwareMap);
         compartmentRight     = Robot.ServoConfigs.initialize(Robot.ServoConfigs.COMPARTMENT_RIGHT, hardwareMap);
 //        slidesLimitSwitch= Robot.SwitchConfigs.initialize(Robot.SwitchConfigs.SLIDES_LIMIT, hardwareMap);
 
         // Set slides state to Retracted
-        if (desiredSlidesState == SlidesState.UNREADY) { //if the slides have yet to be initialised then reset the encoders for the slides and set the slide state to retracted
-            this.telemetry.addData("desired string state", desiredSlidesState.toString());
+        if (desiredSlideState == SlideState.UNREADY) { //if the slides have yet to be initialised then reset the encoders for the slides and set the slide state to retracted
+            this.telemetry.addData("desired string state", desiredSlideState.toString());
             resetEncoder(slides);
-            desiredSlidesState = SlidesState.RETRACTED;
+            desiredSlideState = SlideState.RETRACTED;
         }
     }
 
