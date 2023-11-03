@@ -21,7 +21,6 @@ public class Robot {
         
         //linear slides motors
         SLIDES         ("slides_motor",         DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE),
-
         INTAKE_MOTOR ("intake_motor", DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
 
         private final String name;
