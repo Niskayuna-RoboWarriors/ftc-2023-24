@@ -1,18 +1,37 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.Gamepad;
+
+import java.util.HashMap;
 
 /** Wraps a gamepad so that button mappings are stored in one place.
  */
 public class GamepadWrapper {
-    public enum DriverAction {SET_SLIDES_RETRACTED, SET_SLIDES_LOW, SET_SLIDES_MEDIUM, SET_SLIDES_HIGH,
-        TOGGLE_WHEEL_SPEED_ADJUSTMENT, MOVE_STRAIGHT_FORWARD, MOVE_STRAIGHT_BACKWARD, MOVE_STRAIGHT_LEFT,
-        MOVE_STRAIGHT_RIGHT, REDUCED_CLOCKWISE, REDUCED_COUNTER_CLOCKWISE,
-
+    public enum DriverAction {
+        SET_SLIDES_RETRACTED, SET_SLIDES_LOW, SET_SLIDES_MEDIUM, SET_SLIDES_HIGH,
+        TOGGLE_WHEEL_SPEED_ADJUSTMENT,
+        MOVE_STRAIGHT_FORWARD, MOVE_STRAIGHT_BACKWARD, MOVE_STRAIGHT_LEFT, MOVE_STRAIGHT_RIGHT,
+        REDUCED_CLOCKWISE, REDUCED_COUNTER_CLOCKWISE,
     }
 
+    //gamepad1 is for movement
+    //gamepad2 is for operation
     Gamepad gamepad1, gamepad2;
+
+    public final HashMap<DriverAction,Boolean> getButtonStateFromAction = new HashMap<DriverAction,Boolean>() {{
+        put(DriverAction.TOGGLE_WHEEL_SPEED_ADJUSTMENT, gamepad1.left_bumper); // not entirely sure if we need that
+        put(DriverAction.MOVE_STRAIGHT_FORWARD,         gamepad1.dpad_up);
+        put(DriverAction.MOVE_STRAIGHT_BACKWARD,        gamepad1.dpad_down);
+        put(DriverAction.MOVE_STRAIGHT_LEFT,            gamepad1.dpad_right);
+        put(DriverAction.MOVE_STRAIGHT_RIGHT,           gamepad1.dpad_right);
+        put(DriverAction.REDUCED_CLOCKWISE,             gamepad1.x);
+        put(DriverAction.REDUCED_COUNTER_CLOCKWISE,     gamepad1.b);
+
+        put(DriverAction.SET_SLIDES_RETRACTED,          gamepad2.dpad_down);
+        put(DriverAction.SET_SLIDES_LOW,                gamepad2.dpad_left);
+        put(DriverAction.SET_SLIDES_MEDIUM,             gamepad2.dpad_right);
+        put(DriverAction.SET_SLIDES_HIGH,               gamepad2.dpad_up);
+    }};
 
     public GamepadWrapper() {
         this.gamepad1 = new Gamepad();
@@ -29,43 +48,6 @@ public class GamepadWrapper {
         this.gamepad1.copy(gamepadWrapper.gamepad1);
         this.gamepad2.copy(gamepadWrapper.gamepad2);
 //        } catch (RobotCoreException e) {}
-    }
-
-    /**
-     * Gets the button state of the desired action
-     * @param driverAction the desired actions
-     * @return the button state of the desired actoin
-     */
-    public boolean getButtonState(DriverAction driverAction) {
-        switch (driverAction) {
-            // Gamepad 1 Controls
-            case TOGGLE_WHEEL_SPEED_ADJUSTMENT:
-                return gamepad1.left_bumper;
-            case MOVE_STRAIGHT_FORWARD:
-                return gamepad1.dpad_up;
-            case MOVE_STRAIGHT_BACKWARD:
-                return gamepad1.dpad_down;
-            case MOVE_STRAIGHT_LEFT:
-                return gamepad1.dpad_left;
-            case MOVE_STRAIGHT_RIGHT:
-                return gamepad1.dpad_right;
-            case REDUCED_CLOCKWISE:
-                return gamepad1.x;
-            case REDUCED_COUNTER_CLOCKWISE:
-                return gamepad1.b;
-
-            // Gamepad 2 Controls
-            case SET_SLIDES_RETRACTED:
-                return gamepad2.dpad_down;
-            case SET_SLIDES_LOW:
-                return gamepad2.dpad_left;
-            case SET_SLIDES_MEDIUM:
-                return gamepad2.dpad_right;
-            case SET_SLIDES_HIGH:
-                return gamepad2.dpad_up;
-            default:
-                throw new IllegalArgumentException("Action " + driverAction.name() + " does not exist");
-        }
     }
 
     /**
