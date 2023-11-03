@@ -33,7 +33,7 @@ public class RobotManager {
     public Navigation navigation;
     public ComputerVision computerVision;
 
-    protected GamepadWrapper gamepads, previousStateGamepads;
+    protected GamepadWrapper gamepads;
     public ElapsedTime elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
 
     /**
@@ -65,8 +65,7 @@ public class RobotManager {
         computerVision = new ComputerVision(hardwareMap, robot.telemetry, elapsedTime);
 
         gamepads = new GamepadWrapper(gamepad1, gamepad2);
-        previousStateGamepads = new GamepadWrapper();
-        previousStateGamepads.copyGamepads(gamepads);
+        gamepads.updatePrevious();
 
 
     }
@@ -74,7 +73,28 @@ public class RobotManager {
     /** Determine new robot desired states based on controller input (checks for button releases)
      */
     public void readControllerInputs() {
-    }
+        if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.SET_SLIDES_RETRACTED)) {
+                Robot.desiredSlideState = Robot.SlidesState.RETRACTED;
+        }
+        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.SET_SLIDES_LOW)) {
+            Robot.desiredSlidesState = Robot.SlidesState.LOW;
+        }
+        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.SET_SLIDES_MEDIUM)) {
+            Robot.desiredSlidesState = Robot.SlidesState.MEDIUM;
+        }
+        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.SET_SLIDES_HIGH)) {
+            Robot.desiredSlidesState = Robot.SlidesState.HIGH;
+        }
+        else if (gamepads.gamepad2.left_stick_y > RobotManager.JOYSTICK_DEAD_ZONE_SIZE) {
+            Robot.desiredSlidesState = Robot.SlidesState.MOVE_DOWN;
+        }
+        else if (gamepads.gamepad2.left_stick_y < -RobotManager.JOYSTICK_DEAD_ZONE_SIZE) {
+            Robot.desiredSlidesState = Robot.SlidesState.MOVE_UP;
+        } else if (Robot.desiredSlidesState == Robot.SlidesState.MOVE_DOWN || Robot.desiredSlidesState == Robot.SlidesState.MOVE_UP) {
+            Robot.desiredSlidesState = Robot.SlidesState.STOPPED;
+        }
+        gamepads.updatePrevious();
+    };
 
     public void driveMechanisms(RobotManager robotManager) {
         mechanismDriving.updateCompartments(robot);
@@ -83,33 +103,10 @@ public class RobotManager {
         mechanismDriving.updateFuzzyMotor(robot);
 
     }
-    public void maneuver() {
-        navigation.updateStrafePower(hasMovementDirection(), gamepads, robot);
-
-        // Only move if one of the D-Pad buttons are pressed or the joystick is not centered.
-        boolean movedStraight = navigation.moveStraight(
-                gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_FORWARD),
-                gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_BACKWARD),
-                gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_LEFT),
-                gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_RIGHT),
-                robot
-        );
-        if (!movedStraight) {
-            navigation.maneuver(gamepads,
-                    gamepads.getAnalogValues(),
-                    robot);
-        }
+    public void moveRobot() {
+        navigation.updateStrafePower(gamepads, robot);
+        navigation.moveStraight(gamepads, robot);
+        navigation.moveJoystick(gamepads, robot);
     }
 
-    public boolean hasMovementDirection() {
-        boolean dpadPressed = (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_FORWARD)
-                || gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_BACKWARD)
-                || gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_LEFT)
-                || gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_RIGHT));
-        double stickDist = Math.sqrt(
-                Math.pow(gamepads.getAnalogValues().gamepad1LeftStickY,2)
-                        + Math.pow(gamepads.getAnalogValues().gamepad1LeftStickX,2));
-        boolean joystickMoved = stickDist >= RobotManager.JOYSTICK_DEAD_ZONE_SIZE;
-        return dpadPressed || joystickMoved;
-    }
 }
