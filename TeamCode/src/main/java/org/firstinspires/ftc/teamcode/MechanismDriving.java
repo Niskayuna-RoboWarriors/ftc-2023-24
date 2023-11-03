@@ -27,6 +27,13 @@ public class MechanismDriving {
     static final double COMPARTMENT_CLOSED_POS = 0;
     static final double COMPARTMENT_OPEN_POS = 0.25;
 
+    // Plane spring variables
+    static final double PLANE_SPRING_UNRELEASED_POS = 0;
+    static final double PLANE_SPRING_RELEASED_POS = 0.25;
+    // Fuzzy motor
+    static final double FUZZY_MOTOR_SPEED = 1;
+
+
     /**
      * Update left compartment
      * @param robot
@@ -35,13 +42,13 @@ public class MechanismDriving {
         robot.telemetry.addData("UPDATE COMPARTMENT LEFT SERVO STATE", robot.desiredCompartmentLeftState);
         switch (robot.desiredCompartmentLeftState) {
             case CLOSED:
-                robot.compartment_left.setPosition(COMPARTMENT_CLOSED_POS);
+                robot.compartmentLeft.setPosition(COMPARTMENT_CLOSED_POS);
                 break;
             case OPEN:
-                robot.compartment_left.setPosition(COMPARTMENT_OPEN_POS);
+                robot.compartmentLeft.setPosition(COMPARTMENT_OPEN_POS);
                 break;
         }
-        robot.telemetry.addData("SET COMPARTMENT LEFT SERVO POSITION", robot.compartment_left.getPosition());
+        robot.telemetry.addData("SET COMPARTMENT LEFT SERVO POSITION", robot.compartmentLeft.getPosition());
     }
 
     /**
@@ -52,13 +59,13 @@ public class MechanismDriving {
         robot.telemetry.addData("UPDATE COMPARTMENT RIGHT SERVO STATE", robot.desiredCompartmentRightState);
         switch (robot.desiredCompartmentRightState) {
             case CLOSED:
-                robot.compartment_right.setPosition(COMPARTMENT_CLOSED_POS);
+                robot.compartmentRight.setPosition(COMPARTMENT_CLOSED_POS);
                 break;
             case OPEN:
-                robot.compartment_right.setPosition(COMPARTMENT_OPEN_POS);
+                robot.compartmentRight.setPosition(COMPARTMENT_OPEN_POS);
                 break;
         }
-        robot.telemetry.addData("SET COMPARTMENT RIGHT SERVO POSITION", robot.compartment_right.getPosition());
+        robot.telemetry.addData("SET COMPARTMENT RIGHT SERVO POSITION", robot.compartmentRight.getPosition());
     }
 
     /**
@@ -78,7 +85,7 @@ public class MechanismDriving {
         if (Robot.desiredSlidesState != Robot.SlidesState.UNREADY) {
             robot.desiredSlidePosition = slidePositions.get(robot.desiredSlidesState);
 
-            double mainSpeed, reducedSpeed;//"ramp" the motor speeds down based on how far away from the destination the motors are
+            double mainSpeed; // "ramp" the motor speeds down based on how far away from the destination the motors are
             mainSpeed = maxSpeedCoefficient * Range.clip(Math.abs(robot.desiredSlidePosition - robot.slides.getCurrentPosition())/slideRampDownDist, 0.1, 1);
             mainSpeed = Range.clip(mainSpeed, 0.4, 1);//limit the max speed to 1 and the min speed to 0.05
 
@@ -105,12 +112,34 @@ public class MechanismDriving {
         }
     }
 
-    public void updatePlaneSpring() {
-
+    /**
+     * Updates plane spring
+     * @param robot
+     */
+    public void updatePlaneSpring(Robot robot) {
+        robot.telemetry.addData("UPDATE PLANE SPRING MOTOR STATE");
+        switch (robot.desiredPlaneStringState) {
+            case UNRELEASED:
+                robot.planeSpring.setPosition(PLANE_SPRING_UNRELEASED_POS);
+            case RELEASED:
+                robot.planeSpring.setPosition(PLANE_SPRING_RELEASED_POS);
+        }
+        robot.telemetry.addData("SET PLANE SPRING MOTOR POSITION", robot.planeSpring.getPosition());
     }
 
-    public void updateFuzzyMotor() {
-
+    /**
+     * Updates fuzzy motor
+     * @param robot
+     */
+    public void updateFuzzyMotor(Robot robot) {
+        robot.telemtry.addData("UPDATE FUZZY MOTOR STATE");
+        switch (robot.desiredFuzzyMotorState) {
+            case OFF:
+                robot.fuzzyMotor.setPower(0);
+            case ON:
+                robot.fuzzyMotor.setPower(FUZZY_MOTOR_SPEED);
+        }
+        robot.telemetry.addData("SET FUZZY MOTOR POWER", robot.fuzzyMotor.getPower());
     }
 
 }
