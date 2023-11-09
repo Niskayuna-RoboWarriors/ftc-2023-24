@@ -136,7 +136,7 @@ public class Robot {
     public enum IntakeMotorState   {ON, OFF};
     public IntakeMotorState desiredIntakeMotorState = IntakeMotorState.OFF;
     public enum PlaneSpringState       {UNRELEASED, RELEASED};
-    public PlaneSpringState desiredPlaneStringState = PlaneSpringState.UNRELEASED;
+    public PlaneSpringState desiredPlaneSpringState = PlaneSpringState.UNRELEASED;
     enum MovementMode                  {NORMAL, FINE, ULTRA_FINE}
 
     MovementMode movementMode = MovementMode.NORMAL;
