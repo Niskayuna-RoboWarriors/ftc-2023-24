@@ -23,12 +23,15 @@ public class MechanismDriving {
     // Compartment variables
     static final double COMPARTMENT_CLOSED_POS = 0;
     static final double COMPARTMENT_OPEN_POS = 0.25;
+    static final double COMPARTMENT_SERVO_TIME = 500;
 
     // Plane spring variables
     static final double PLANE_SPRING_UNRELEASED_POS = 0;
     static final double PLANE_SPRING_RELEASED_POS = 0.25;
+    static final double PLANE_SPRING_SERVO_TIME = 500;
+
     // Intake motor
-    static final double FUZZY_MOTOR_SPEED = 1;
+    static final double INTAKE_MOTOR_SPEED = 1;
 
 
     /**
@@ -74,6 +77,27 @@ public class MechanismDriving {
         updateCompartmentLeft(robot);
     }
 
+    /**
+     * Block execution until left comparmtment is opened
+     * @param robot
+     */
+    public void openLeftCompartment(Robot robot) {
+        robot.desiredCompartmentLeftState = Robot.CompartmentState.Open;
+        double startingTime = robot.elapsedTime.milliseconds();
+        updateCompartmentLeft(robot);
+        while (robot.elapsedTime.milliseconds() - startingTime < COMPARTMENT_SERVO_TIME) {}
+    }
+    /**
+     * Block execution until right comparmtment is opened
+     * @param robot
+     */
+    public void closeLeftCompartments(Robot robot) {
+        robot.desiredCompartmentLeftState = Robot.CompartmentState.Closed;
+        double startingTime = robot.elapsedTime.milliseconds();
+        updateCompartmentLeft(robot);
+        while (robot.elapsedTime.milliseconds() - startingTime < COMPARTMENT_SERVO_TIME) {}
+    }
+
     /** Sets slide motor powers to move in direction of desired position, if necessary.
      *
      * @return whether the slides are in the desired position.
@@ -110,12 +134,23 @@ public class MechanismDriving {
     }
 
     /**
+     * Block execution until slides reach target state
+     * @param robot
+     * @param targetSlideState
+     */
+    public void moveSlides(Robot robot, Robot.SlideState targetSlideState) {
+        if (targetSlideState == Robot.SlideState.UNREADY) { return; }
+        Robot.desiredSlideState = targetSlideState;
+        while (updateSlides(robot) != true) {};
+    }
+
+    /**
      * Updates plane spring
      * @param robot
      */
     public void updatePlaneSpring(Robot robot) {
         robot.telemetry.addData("UPDATE PLANE SPRING MOTOR STATE", robot.desiredPlaneStringState);
-        switch (robot.desiredPlaneStringState) {
+        switch (robot.desiredPlaneSpringState) {
             case UNRELEASED:
                 robot.planeSpring.setPosition(PLANE_SPRING_UNRELEASED_POS);
                 break;
@@ -127,20 +162,42 @@ public class MechanismDriving {
     }
 
     /**
-     * Updates intake motor
+     * Block execution until right comparmtment is opened
+     * @param robot
+     */
+    public void releasePlaneSpring(Robot robot) {
+        robot.desiredPlaneSpringState = robot.PlaneSpringState.RELEASED;
+        double startingTime = robot.elapsedTime.milliseconds();
+        updatePlaneSpring(robot);
+        while (robot.elapsedTime.milliseconds() - startingTime < PLANE_SPRING_SERVO_TIME) {}
+    }
+
+    /**
+     * Block execution until plane spring is unreleased. NOTE: *NO GUARANTEE THAT THIS WILL WORK PROPERLY*
+     * @param robot
+     */
+    public void unreleasePlaneSpring(Robot robot) {
+        robot.desiredPlaneSpringState = robot.PlaneSpringState.UNRELEASED;
+        double startingTime = robot.elapsedTime.milliseconds();
+        updatePlaneSpring(robot);
+        while (robot.elapsedTime.milliseconds() - startingTime < PLANE_SPRING_SERVO_TIME) {}
+    }
+
+    /**
+     * Updates intake motor.
      * @param robot
      */
     public void updateIntakeMotor(Robot robot) {
-        robot.telemetry.addData("UPDATE FUZZY MOTOR STATE", robot.desiredIntakeMotorState);
+        robot.telemetry.addData("UPDATE INTAKE MOTOR STATE", robot.desiredIntakeMotorState);
         switch (robot.desiredIntakeMotorState) {
             case OFF:
                 robot.intakeMotor.setPower(0);
                 break;
             case ON:
-                robot.intakeMotor.setPower(FUZZY_MOTOR_SPEED);
+                robot.intakeMotor.setPower(INTAKE_MOTOR_SPEED);
                 break;
         }
-        robot.telemetry.addData("SET FUZZY MOTOR POWER", robot.intakeMotor.getPower());
+        robot.telemetry.addData("SET INTAKE MOTOR POWER", robot.intakeMotor.getPower());
     }
 
 }
