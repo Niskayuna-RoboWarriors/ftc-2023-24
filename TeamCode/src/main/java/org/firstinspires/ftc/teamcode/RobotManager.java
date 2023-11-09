@@ -22,13 +22,16 @@ public class RobotManager {
     public enum AllianceColor {BLUE, RED};
     public enum StartingSide {LEFT, RIGHT};
     public enum ParkingPosition {LEFT, RIGHT, MIDDLE};
+    public enum MovementMode {FORWARD_ONLY, STRAFE};
     public Robot robot;
     public AllianceColor allianceColor;
     public StartingSide startingSide;
 
+    public MovementMode movementMode;
+
     public MechanismDriving mechanismDriving;
     public Navigation navigation;
-    public ComputerVision computerVision;
+//    public ComputerVision computerVision;
 
     protected GamepadWrapper gamepads;
     public ElapsedTime elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -47,7 +50,7 @@ public class RobotManager {
      */
     public RobotManager(HardwareMap hardwareMap, Gamepad gamepad1, Gamepad gamepad2,
                         ArrayList<Position> path, AllianceColor allianceColor, StartingSide startingSide,
-                        Navigation.MovementMode movementMode, Telemetry telemetry, ElapsedTime elapsedTime) {
+                        MovementMode movementMode, Telemetry telemetry, ElapsedTime elapsedTime) {
 
         this.elapsedTime = elapsedTime;
         this.allianceColor = allianceColor;
@@ -56,10 +59,10 @@ public class RobotManager {
         elapsedTime.reset();
         robot = new Robot(hardwareMap, telemetry, elapsedTime);
         robot.telemetry.addData("auton path", path.size());
-        navigation = new Navigation(path, allianceColor, startingSide, movementMode);
+        navigation = new Navigation();
         mechanismDriving = new MechanismDriving();
 
-        computerVision = new ComputerVision(hardwareMap, robot.telemetry, elapsedTime);
+        // computerVision = new ComputerVision(hardwareMap, robot.telemetry, elapsedTime);
 
         gamepads = new GamepadWrapper(gamepad1, gamepad2);
         gamepads.updatePrevious();
@@ -71,33 +74,68 @@ public class RobotManager {
      */
     public void readControllerInputs() {
         if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.SET_SLIDES_RETRACTED)) {
-                Robot.desiredSlideState = Robot.SlidesState.RETRACTED;
+            robot.desiredSlideState = Robot.SlideState.RETRACTED;
         }
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.SET_SLIDES_LOW)) {
-            Robot.desiredSlidesState = Robot.SlidesState.LOW;
+            robot.desiredSlideState = Robot.SlideState.LOW;
         }
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.SET_SLIDES_MEDIUM)) {
-            Robot.desiredSlidesState = Robot.SlidesState.MEDIUM;
+            robot.desiredSlideState = Robot.SlideState.MEDIUM;
         }
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.SET_SLIDES_HIGH)) {
-            Robot.desiredSlidesState = Robot.SlidesState.HIGH;
+            robot.desiredSlideState = Robot.SlideState.HIGH;
         }
-        else if (gamepads.gamepad2.left_stick_y > RobotManager.JOYSTICK_DEAD_ZONE_SIZE) {
-            Robot.desiredSlidesState = Robot.SlidesState.MOVE_DOWN;
+        else if (gamepads.gamepad2.left_stick_y > Navigation.JOYSTICK_DEAD_ZONE_SIZE) {
+            robot.desiredSlideState = Robot.SlideState.MOVE_DOWN;
         }
-        else if (gamepads.gamepad2.left_stick_y < -RobotManager.JOYSTICK_DEAD_ZONE_SIZE) {
-            Robot.desiredSlidesState = Robot.SlidesState.MOVE_UP;
-        } else if (Robot.desiredSlidesState == Robot.SlidesState.MOVE_DOWN || Robot.desiredSlidesState == Robot.SlidesState.MOVE_UP) {
-            Robot.desiredSlidesState = Robot.SlidesState.STOPPED;
+        else if (gamepads.gamepad2.left_stick_y < -Navigation.JOYSTICK_DEAD_ZONE_SIZE) {
+            robot.desiredSlideState = Robot.SlideState.MOVE_UP;
+        }
+        // Automatically set it to stopped if not actively being moved up or down
+        else if (robot.desiredSlideState == Robot.SlideState.MOVE_DOWN || robot.desiredSlideState == Robot.SlideState.MOVE_UP) {
+            robot.desiredSlideState = Robot.SlideState.STOPPED;
+        }
+        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_RIGHT_BUCKET)) {
+            if (robot.desiredCompartmentRightState == Robot.CompartmentState.CLOSED) {
+                robot.desiredCompartmentRightState = Robot.CompartmentState.OPEN;
+            }
+            else {
+                robot.desiredCompartmentRightState = Robot.CompartmentState.CLOSED;
+            }
+        }
+        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_LEFT_BUCKET)) {
+            if (robot.desiredCompartmentLeftState == Robot.CompartmentState.CLOSED) {
+                robot.desiredCompartmentLeftState = Robot.CompartmentState.OPEN;
+            }
+            else {
+                robot.desiredCompartmentLeftState = Robot.CompartmentState.CLOSED;
+            }
+        }
+        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_INTAKE_MOTOR_ROTATION)) {
+            if (robot.desiredIntakeMotorState == Robot.IntakeMotorState.ON) {
+                robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
+            }
+            else {
+                robot.desiredIntakeMotorState = Robot.IntakeMotorState.ON;
+            }
+        }
+        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.PLANE_RELEASE)) {
+            if (robot.desiredPlaneSpringState == Robot.PlaneSpringState.UNRELEASED) {
+                robot.desiredPlaneSpringState = Robot.PlaneSpringState.RELEASED;
+            }
+            else {
+                robot.desiredPlaneSpringState = Robot.PlaneSpringState.UNRELEASED;
+            }
         }
         gamepads.updatePrevious();
     };
-
-    public void driveMechanisms(RobotManager robotManager) {
+    /** Wraps mechanism driving update functions
+     */
+    public void driveMechanisms() {
         mechanismDriving.updateCompartments(robot);
         mechanismDriving.updateSlides(robot);
         mechanismDriving.updatePlaneSpring(robot);
-        mechanismDriving.updateFuzzyMotor(robot);
+        mechanismDriving.updateIntakeMotor(robot);
 
     }
     public void moveRobot() {

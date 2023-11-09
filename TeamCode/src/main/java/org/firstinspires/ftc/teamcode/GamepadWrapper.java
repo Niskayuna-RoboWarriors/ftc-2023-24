@@ -88,11 +88,6 @@ public class GamepadWrapper {
         return !getButtonState.get(action) && getPreviousButtonState.get(action);
     }
 
-    public GamepadWrapper() {
-        this.gamepad1 = new Gamepad();
-        this.gamepad2 = new Gamepad();
-        updatePrevious();
-    }
 
     public GamepadWrapper(Gamepad gamepad1, Gamepad gamepad2) {
         this.gamepad1 = gamepad1;
