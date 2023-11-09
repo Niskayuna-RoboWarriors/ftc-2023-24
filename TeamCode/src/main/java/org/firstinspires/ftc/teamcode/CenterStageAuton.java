@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
 import java.util.Random;
-
+/*
 @Autonomous(name="CenterStageAuton", group="Linear OpMode")
 public class CenterStageAuton extends LinearOpMode {
 
@@ -32,4 +32,6 @@ public class CenterStageAuton extends LinearOpMode {
             parkingPosition = robotManager.computerVision.getParkingPosition();
             waitMilliseconds(20);
         }
+    }
 }
+*/

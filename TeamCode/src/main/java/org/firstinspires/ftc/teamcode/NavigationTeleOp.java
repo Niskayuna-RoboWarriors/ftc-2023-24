@@ -4,12 +4,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 
 /** Keeps track of the robot's desired path and makes it follow it accurately.
  */
-public class NavigationTeleOP {
+public class NavigationTeleOp {
     public enum rotationDirection {CLOCKWISE, COUNTERCLOCKWISE};
 
     public static enum Action {NONE, SLIDES_LOW, SLIDES_HIGH,};
@@ -72,7 +71,7 @@ public class NavigationTeleOP {
      * @param startingSide  the starting side on where our robot is starting from (on the field)
      * @param movementMode  the movement within the robot
      */
-    public NavigationTeleOP(ArrayList<Position> path, RobotManager.AllianceColor allianceColor, RobotManager.StartingSide startingSide, MovementMode movementMode) {
+    public void NavigationTeleOp(ArrayList<Position> path, RobotManager.AllianceColor allianceColor, RobotManager.StartingSide startingSide, MovementMode movementMode) {
         this.path = path;
         pathIndex = 0;
     }
@@ -84,9 +83,8 @@ public class NavigationTeleOP {
      */
     public void updateStrafePower(GamepadWrapper gamepads, Robot robot) {
 
-        AnalogValues analogValues = gamepads.getAnalogValues();
         //Limits the output values between 0 - 1. 0 = no power, 1 = full power
-        double distance = Range.clip(Math.sqrt(Math.pow(analogValues.gamepad1LeftStickX, 2) + Math.pow(analogValues.gamepad1LeftStickY, 2)), 0, 1);
+        double distance = Range.clip(Math.sqrt(Math.pow(gamepads.gamepad1.left_stick_x, 2) + Math.pow(gamepads.gamepad1.left_stick_y, 2)), 0, 1);
 
 
         if (distance <= JOYSTICK_DEAD_ZONE_SIZE) {
@@ -95,11 +93,11 @@ public class NavigationTeleOP {
             strafePower = distance + MOVEMENT_MAX_POWER; //Set as 1 (full power)
         }
         //Pre-sets robot slide states at what speed.
-        if (robot.desiredSlidesState == Robot.SlidesState.HIGH && robot.slides.getPower() == 0) {
+        if (robot.desiredSlideState == Robot.SlideState.HIGH && robot.slides.getPower() == 0) {
             strafePower *= SLOW_MOVEMENT_SCALE_FACTOR; //Set as o.3
-        } else if (robot.desiredSlidesState == Robot.SlidesState.MEDIUM && robot.slides.getPower() == 0) {
+        } else if (robot.desiredSlideState == Robot.SlideState.MEDIUM && robot.slides.getPower() == 0) {
             strafePower *= SLOW_MOVEMENT_SCALE_FACTOR; //Set as o.3
-        } else if (robot.desiredSlidesState == Robot.SlidesState.LOW && robot.slides.getPower() == 0) {
+        } else if (robot.desiredSlideState == Robot.SlideState.LOW && robot.slides.getPower() == 0) {
             strafePower *= SLOW_MOVEMENT_SCALE_FACTOR; //Set as o.3
         }
     }
@@ -156,11 +154,11 @@ public class NavigationTeleOP {
         if (Math.abs(turn) < JOYSTICK_DEAD_ZONE_SIZE) {
             turn = 0;
         }
-        if (gamepads.getButtonState(GamepadWrapper.DriverAction.REDUCED_CLOCKWISE)) {
+        if (gamepads.getButtonState.get(GamepadWrapper.DriverAction.REDUCED_CLOCKWISE)) {
             rotationPower = REDUCED_ROTATION_POWER;
             turn = -1;
         }
-        if (gamepads.getButtonState(GamepadWrapper.DriverAction.REDUCED_COUNTER_CLOCKWISE)) {
+        if (gamepads.getButtonState.get(GamepadWrapper.DriverAction.REDUCED_COUNTER_CLOCKWISE)) {
             rotationPower = REDUCED_ROTATION_POWER;
             turn = -1;
         }

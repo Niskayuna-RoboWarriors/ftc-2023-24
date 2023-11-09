@@ -15,11 +15,12 @@ import java.util.Collections;
 
 /** Autonomous OpMode for Center Stage.
  */
+/*
 @TeleOp(name="CenterStage Tele-Op", group="TeleOp OpMode")
 public class PowerPlayTeleOp extends OpMode {
     @Override
     public void init() {
-  
+
     }
 
     @Override
@@ -33,5 +34,6 @@ public class PowerPlayTeleOp extends OpMode {
     @Override
     public void stop() {}
 
-  
+
 }
+*/
