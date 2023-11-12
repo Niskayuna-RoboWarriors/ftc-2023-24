@@ -18,6 +18,7 @@ public class NavigationAuton {
     public final double SPEED_FACTOR = 0.7; //Speed of the robot when all motors are set to full power
     static final double STRAFE_RAMP_DISTANCE = 4; //Number indicated Inches
     //static final double ROTATION_RAMP_DISTANCE = Math.PI / 2; //NOT BEING USED
+    static final double ROTATION_RADIUS = 1.0; //Radius of the robot's rotation
     static final double MIN_STRAFE_POWER = 0.3; //Sets the strafe power to 3/10th power
     static final double MAX_STRAFE_POWER = 0.5; //Sets the strafe power to 5/10th power
     static final double STRAFE_CORRECITON_POWER = 0.3; //idk what this means
@@ -73,6 +74,8 @@ public class NavigationAuton {
         //Set parking location
         setParkingLocation(startingSide, parkingPosition);
     }
+
+
 
     /**Makes the robot travel along the pth until it reaches a POI (Position of Interest)
      * |Auton| |Blocking|
@@ -134,7 +137,7 @@ public class NavigationAuton {
         double currentOrientation = startOrientation;
         double startingTime = robot.elapsedTime.milliseconds();
         double rotationSize = getRotationSize(startOrientation, target);
-        double halfRotationTime = getHalfRotationTime(rotationSize);
+        double halfRotationTime = getHalfRotateTime(rotationSize);
 
         double power;
         boolean ramping = false;
@@ -170,10 +173,10 @@ public class NavigationAuton {
 
         switch (getRotationDirection(currentOrientation, target)) {
             case CLOCKWISE:
-                setDriveMotorPowers(0.0, 0.0, power, robot, false);
+                NavigationTeleOP.setDriveMotorPowers(0.0, 0.0, power, robot, false);
                 break;
             case COUNTERCLOCKWISE:
-                setDriveMotorPowers(0.0, 0.0, -power, robot, false);
+                NavigationTeleOP.setDriveMotorPowers(0.0, 0.0, -power, robot, false);
         }
 
         robot.positionManager.updatePosition(robot);
@@ -181,7 +184,7 @@ public class NavigationAuton {
         rotationProgress = getRotationSize(startOrientation, currentOrientation);
         rotationRemaining = getRotationSize(currentOrientation, target);
         timeElapsed = robot.elapsedTime.milliseconds() - startingTime;
-        timeRemaining = 2 * halfRotationTime = timeElapsed;
+        timeRemaining = 2 * halfRotationTime - timeElapsed;
 
         if (rotationRemaining > EPSILON_ANGLE) {
             numFramesSinceLastFailure = 0;
@@ -273,7 +276,7 @@ public class NavigationAuton {
             double strafeAngle = getStrafeAngle(robot.getPosition(), target);
             robot.telemetry.addData("Starting Rotation", robot.getPosition().getRotation());
             robot.telemetry.addData("Used Strafe Angle", strafeAngle);
-            setDriveMotorPowers(strafeAngle, power, 0.0, robot, false);
+            NavigationTeleOP.setDriveMotorPowers(strafeAngle, power, 0.0, robot, false);
             robot.positionManager.updatePosition(robot);
             currentPosition = robot.getPosition();
             distanceTraveled = getEuclideanDistance(startPosition, currentPosition);
@@ -299,7 +302,7 @@ public class NavigationAuton {
                 }
             }
         }
-        stopMovement(robot); //Stops the robot
+        NavigationTeleOP.stopMovement(robot); //Stops the robot (CALLS FROM NavagationTeleOP.java)
     }
 
     /** Calculates the anlge at which the robot must strafe in order to get to a target location
@@ -391,7 +394,44 @@ public class NavigationAuton {
         //  max=Math.abs(b);
         //}
         //return new double[]{a/max,b/max};
-    } //TODO LINE 670
+    }
+
+    /** Calculates half the amount of time it is estimated for a rotation to take.
+     *
+     *  @param angle The angle of the rotation
+     */
+    private double getHalfRotateTime(double angle) {
+        // Radians per second
+        double min_rotate_speed = (SPEED_FACTOR * MIN_ROTATION_POWER) / ROTATION_RADIUS;
+        double max_rotate_speed = (SPEED_FACTOR * MAX_ROTATION_POWER) / ROTATION_RADIUS;
+
+
+        double ramp_angle = (max_rotate_speed + min_rotate_speed) / 2
+                * (max_rotate_speed - min_rotate_speed) / ROTATE_ACCELERATION;
+        if (angle / 2 >= ramp_angle) {
+            return (angle / 2 - ramp_angle) / max_rotate_speed
+                    + (max_rotate_speed - min_rotate_speed) / ROTATE_ACCELERATION;
+        }
+        else {  // We never get to max_rotate_speed
+            return (-min_rotate_speed + Math.sqrt(Math.pow(min_rotate_speed, 2) + angle * ROTATE_ACCELERATION))
+                    / 0.5 * ROTATE_ACCELERATION;
+        }
+    }
+
+    /**
+     * @param startingSide the starting side of the robot, and what color it is on
+     * @param parkingPosition the parking position of the robot, and where the robot is parking
+     */
+    private void setParkingLocation(RobotManager.StartingSide startingSide, RobotManager.ParkingPosition parkingPosition) {
+        //TODO IMPLEMENT
+    }
+
+    /**
+     * @param startingSide the starting side of the robot, and what color it is on
+     */
+    private void transformPath(RobotManager.StartingSide startingSide) {
+        //TODO IMPLEMENT
+    }
 
     /** Hardcoded paths through the playing field during the Autonomous period.*/
     public static class AutonomousPaths{
@@ -401,7 +441,7 @@ public class NavigationAuton {
         public static final double X_OFFSET = -0.15;
 
         //Junctions
-        //Leaving this up to the Autonomous team. Not gonna do anything else beyond this point
+        //Leaving this up to the Autonomous team. Not gonna do anything else beyond this point, since the code from 2022-2023 was all about Auton movement.
 
 
     }

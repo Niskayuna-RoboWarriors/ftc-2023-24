@@ -54,7 +54,7 @@ public class NavigationTeleOP {
 
 
     //**INSTANCE ATTRIBUTES**//
-    public double[] wheel_speeds = {0.95, 1, -1, -0.97}; //Back left, Back right, Front left, Front right. Temporary Note: currently FR from -0.90 to -0.92
+    static public double[] wheel_speeds = {0.95, 1, -1, -0.97}; //Back left, Back right, Front left, Front right. Temporary Note: currently FR from -0.90 to -0.92
     public double strafePower; //This is for Tele-Op ONLY.
 
     /*
@@ -95,11 +95,11 @@ public class NavigationTeleOP {
             strafePower = distance + MOVEMENT_MAX_POWER; //Set as 1 (full power)
         }
         //Pre-sets robot slide states at what speed.
-        if (robot.desiredSlidesState == Robot.SlidesState.HIGH && robot.slides.getPower() == 0) {
+        if (robot.desiredSlideState == Robot.SlideState.HIGH && robot.slides.getPower() == 0) {
             strafePower *= SLOW_MOVEMENT_SCALE_FACTOR; //Set as o.3
-        } else if (robot.desiredSlidesState == Robot.SlidesState.MEDIUM && robot.slides.getPower() == 0) {
+        } else if (robot.desiredSlideState == Robot.SlideState.MEDIUM && robot.slides.getPower() == 0) {
             strafePower *= SLOW_MOVEMENT_SCALE_FACTOR; //Set as o.3
-        } else if (robot.desiredSlidesState == Robot.SlidesState.LOW && robot.slides.getPower() == 0) {
+        } else if (robot.desiredSlideState == Robot.SlideState.LOW && robot.slides.getPower() == 0) {
             strafePower *= SLOW_MOVEMENT_SCALE_FACTOR; //Set as o.3
         }
     }
@@ -188,7 +188,7 @@ public class NavigationTeleOP {
      *  @param turn the speed at which the robot should rotate (clockwise). Must be in the interval [-1, 1]. Set this to
      *              zero if you only want the robot to strafe.
      */
-    public void setDriveMotorPowers(double strafeDirection, double power, double turn, Robot robot, boolean debug) {
+    static public void setDriveMotorPowers(double strafeDirection, double power, double turn, Robot robot, boolean debug) {
         robot.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         robot.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         robot.rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -208,12 +208,30 @@ public class NavigationTeleOP {
         double powerSet1 = sinMoveDirection + cosMoveDirection;
         double powerSet2 = sinMoveDirection - cosMoveDirection;
         double[] rawPowers = scaleRange(powerSet1, powerSet2);
+
+        //robot.telemetry.addData("Front Motors", "left (%.2f), right (%.2f)",
+        //        (rawPowers[0] * power + turn) * wheel_speeds[2], (rawPowers[1] * power - turn) * wheel_speeds[3]);
+        //robot.telemetry.addData("Rear Motors", "left (%.2f), right (%.2f)",
+        //        (rawPowers[1] * power + turn) * wheel_speeds[0], (rawPowers[0] * power - turn) * wheel_speeds[1]);
+
+
+        /*This sets the drive motor powers. This gives power to the wheels.
+         * due to the fact that the operation of mechinum wheels requires is a bit different from normal wheels this is required for normal operation
+         * first opposite wheels are given a specific base power calculated based on the direction the robot wants to move in
+         * then the total power [0,1] is applied to the power value to set the over all robot speed.
+         * then the turn factor is combined with the speed for robot turing
+         * finally the motor power is adjusted by a ration that individual to each wheel in case of one wheel having outsized influence on the movement of the robot for some hardware reason.
+         */
+        robot.frontRight.setPower((rawPowers[1] * power - turn) * wheel_speeds[0]); //Turns the front right wheel
+        robot.rearRight.setPower((rawPowers[0] * power + turn) * wheel_speeds[1]); //Turns the back right wheel
+        robot.frontLeft.setPower((rawPowers[0] * power - turn) * wheel_speeds[2]); //Turns the left front wheel
+        robot.rearLeft.setPower((rawPowers[1] * power + turn) * wheel_speeds[3]); //Turns the left back wheel
     }
 
     /**
-     * @param robot
+     * @param robot stopping the robot movement.
      */
-    public void stopMovement(Robot robot) {
+    static public void stopMovement(Robot robot) {
         robot.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         robot.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         robot.rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -230,12 +248,20 @@ public class NavigationTeleOP {
      * @return an array containing the scaled versions of a and b
      */
 
-    public double[] scaleRange(double a, double b) {
+    public static double[] scaleRange(double a, double b) {
         double max = Math.max(Math.abs(a), Math.abs(b));
         return new double[] {a / max, b / max};
     }
 
+    /** This function here references the NavagationAuton.java files and configs them both together for it to work properly.
+     *
+     * @param robot
+     */
+    public void NavAutonRef(Robot robot){
+
+    }
+
 
 }
-//Coders: Tyler M.
+//Coders: Tyler, Oscar
 //Alumni Help: Stephen D.

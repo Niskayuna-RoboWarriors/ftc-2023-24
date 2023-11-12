@@ -19,7 +19,7 @@ public class GamepadWrapper {
 
         PLANE_RELEASE,
 
-        //dunno bro
+        //dunno bro | it was for debug and calibration stuff
         TOGGLE_WHEEL_SPEED_ADJUSTMENT,
         REDUCED_CLOCKWISE, REDUCED_COUNTER_CLOCKWISE,
     }
@@ -100,5 +100,73 @@ public class GamepadWrapper {
         previous_gamepad1.copy(gamepad1);
         previous_gamepad2.copy(gamepad2);
 //        } catch (RobotCoreException e) {}
+    }
+
+    public AnalogValues getAnalogValues() {
+        return new AnalogValues(gamepad1, gamepad2);
+    }
+
+    public boolean getButtonState(DriverAction driverAction) {
+        switch (driverAction) {
+            // Gamepad 1 Controls
+            case TOGGLE_WHEEL_SPEED_ADJUSTMENT:
+                return gamepad1.left_bumper;
+            case MOVE_STRAIGHT_FORWARD:
+                return gamepad1.dpad_up;
+            case MOVE_STRAIGHT_BACKWARD:
+                return gamepad1.dpad_down;
+            case MOVE_STRAIGHT_LEFT:
+                return gamepad1.dpad_left;
+            case MOVE_STRAIGHT_RIGHT:
+                return gamepad1.dpad_right;
+            case REDUCED_CLOCKWISE:
+                return gamepad1.x;
+            case REDUCED_COUNTER_CLOCKWISE:
+                return gamepad1.b;
+
+            // Gamepad 2 Controls
+            case SET_SLIDES_RETRACTED:
+                return gamepad2.dpad_down;
+            case SET_SLIDES_LOW:
+                return gamepad2.dpad_left;
+            case SET_SLIDES_MEDIUM:
+                return gamepad2.dpad_right;
+            case SET_SLIDES_HIGH:
+                return gamepad2.dpad_up;
+            case TOGGLE_INTAKE_MOTOR_ROTATION:
+                return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
+            case TOGGLE_RIGHT_BUCKET:
+                return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
+            case TOGGLE_LEFT_BUCKET:
+                return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
+            case PLANE_RELEASE:
+                return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
+        }
+        assert false; //if you really want the robot to crash, then i guess you can use this function. if this manages to reach this, your a frekin genius, (or a duck hole)
+        return false;
+    }
+
+}
+
+class AnalogValues {
+    public double gamepad1RightStickX, gamepad1RightStickY, gamepad1LeftStickX, gamepad1LeftStickY,
+            gamepad2RightStickX, gamepad2RightStickY, gamepad2LeftStickX, gamepad2LeftStickY,
+            gamepad1LeftTrigger, gamepad1RightTrigger, gamepad2LeftTrigger, gamepad2RightTrigger;
+
+    public AnalogValues(Gamepad gamepad1, Gamepad gamepad2) {
+        this.gamepad1RightStickX = gamepad1.right_stick_x;
+        this.gamepad1RightStickY = gamepad1.right_stick_y;
+        this.gamepad1LeftStickX = -gamepad1.left_stick_x;
+        this.gamepad1LeftStickY = gamepad1.left_stick_y;
+
+        this.gamepad2RightStickX = gamepad2.right_stick_x;
+        this.gamepad2RightStickY = gamepad2.right_stick_y;
+        this.gamepad2LeftStickX = gamepad2.left_stick_x;
+        this.gamepad2LeftStickY = gamepad2.left_stick_y;
+
+        this.gamepad1LeftTrigger = gamepad1.left_trigger;
+        this.gamepad1RightTrigger = gamepad1.right_trigger;
+        this.gamepad2LeftTrigger = gamepad2.left_trigger;
+        this.gamepad2RightTrigger = gamepad2.left_trigger;
     }
 }
