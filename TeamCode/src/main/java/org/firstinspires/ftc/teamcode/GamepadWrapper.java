@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import java.sql.Driver;
-import java.util.HashMap;
 
 /** Wraps a gamepad so that button mappings are stored in one place.
  */
@@ -28,67 +27,6 @@ public class GamepadWrapper {
     //gamepad2 is for operation
     Gamepad gamepad1, gamepad2, previous_gamepad1, previous_gamepad2;
 
-    public final HashMap<DriverAction, Boolean> getButtonState = new HashMap<DriverAction,Boolean>() {{
-        //put(DriverAction.TOGGLE_WHEEL_SPEED_ADJUSTMENT, gamepad1.left_bumper);
-        put(DriverAction.MOVE_STRAIGHT_FORWARD,         gamepad1.dpad_up);
-        put(DriverAction.MOVE_STRAIGHT_BACKWARD,        gamepad1.dpad_down);
-        put(DriverAction.MOVE_STRAIGHT_LEFT,            gamepad1.dpad_left);
-        put(DriverAction.MOVE_STRAIGHT_RIGHT,           gamepad1.dpad_right);
-
-        put(DriverAction.SET_SLIDES_RETRACTED,          gamepad2.dpad_down);
-        put(DriverAction.SET_SLIDES_LOW,                gamepad2.dpad_left);
-        put(DriverAction.SET_SLIDES_MEDIUM,             gamepad2.dpad_up);
-        put(DriverAction.SET_SLIDES_HIGH,               gamepad2.dpad_right);
-        put(DriverAction.TOGGLE_RIGHT_BUCKET,           gamepad2.right_bumper);
-        put(DriverAction.TOGGLE_LEFT_BUCKET,            gamepad2.left_bumper);
-        put(DriverAction.PLANE_RELEASE,                 gamepad2.x);
-        put(DriverAction.TOGGLE_INTAKE_MOTOR_ROTATION,  gamepad2.circle);
-
-        /*
-        put(DriverAction.REDUCED_CLOCKWISE,             gamepad1.x);
-        put(DriverAction.REDUCED_COUNTER_CLOCKWISE,     gamepad1.b);
-        put(DriverAction.SET_SLIDES_RETRACTED,          gamepad2.dpad_down);
-        put(DriverAction.SET_SLIDES_LOW,                gamepad2.dpad_left);
-        put(DriverAction.SET_SLIDES_MEDIUM,             gamepad2.dpad_right);
-        put(DriverAction.SET_SLIDES_HIGH,               gamepad2.dpad_up);
-         */
-    }};
-
-    public final HashMap<DriverAction, Boolean> getPreviousButtonState = new HashMap<DriverAction, Boolean>() {{
-        //put(DriverAction.TOGGLE_WHEEL_SPEED_ADJUSTMENT, previous_gamepad1.left_bumper); // not entirely sure if we need that
-        put(DriverAction.MOVE_STRAIGHT_FORWARD,         previous_gamepad1.dpad_up);
-        put(DriverAction.MOVE_STRAIGHT_BACKWARD,        previous_gamepad1.dpad_down);
-        put(DriverAction.MOVE_STRAIGHT_LEFT,            previous_gamepad1.dpad_left);
-        put(DriverAction.MOVE_STRAIGHT_RIGHT,           previous_gamepad1.dpad_right);
-
-        put(DriverAction.SET_SLIDES_RETRACTED,          previous_gamepad2.dpad_down);
-        put(DriverAction.SET_SLIDES_LOW,                previous_gamepad2.dpad_left);
-        put(DriverAction.SET_SLIDES_MEDIUM,             previous_gamepad2.dpad_up);
-        put(DriverAction.SET_SLIDES_HIGH,               previous_gamepad2.dpad_right);
-        put(DriverAction.TOGGLE_RIGHT_BUCKET,           previous_gamepad2.right_bumper);
-        put(DriverAction.TOGGLE_LEFT_BUCKET,            previous_gamepad2.left_bumper);
-        put(DriverAction.PLANE_RELEASE,                 previous_gamepad2.x);
-
-        /*
-        put(DriverAction.REDUCED_CLOCKWISE,             previous_gamepad1.x);
-        put(DriverAction.REDUCED_COUNTER_CLOCKWISE,     previous_gamepad1.b);
-        put(DriverAction.SET_SLIDES_RETRACTED,          previous_gamepad2.dpad_down);
-        put(DriverAction.SET_SLIDES_LOW,                previous_gamepad2.dpad_left);
-        put(DriverAction.SET_SLIDES_MEDIUM,             previous_gamepad2.dpad_right);
-        put(DriverAction.SET_SLIDES_HIGH,               previous_gamepad2.dpad_up);
-        */
-    }};
-
-    /**
-     * if button was on in previous state but not anymore
-     * @param action the action passed in
-     * @return if the button was released
-     */
-    public boolean getButtonRelease(DriverAction action) {
-        return !getButtonState.get(action) && getPreviousButtonState.get(action);
-    }
-
-
     public GamepadWrapper(Gamepad gamepad1, Gamepad gamepad2) {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
@@ -105,9 +43,10 @@ public class GamepadWrapper {
     public AnalogValues getAnalogValues() {
         return new AnalogValues(gamepad1, gamepad2);
     }
-
-    public boolean getButtonState(DriverAction driverAction) {
-        switch (driverAction) {
+    
+    
+    private boolean getButtonStateFromGamepads(Gamepad gamepad1, Gamepad gamepad2, DriverAction action) {
+        switch (action){
             // Gamepad 1 Controls
             case TOGGLE_WHEEL_SPEED_ADJUSTMENT:
                 return gamepad1.left_bumper;
@@ -144,6 +83,20 @@ public class GamepadWrapper {
         }
         assert false; //if you really want the robot to crash, then i guess you can use this function. if this manages to reach this, your a frekin genius, (or a duck hole)
         return false;
+    }
+    
+    public boolean getButtonState(DriverAction driverAction) {
+        return getButtonStateFromGamepads(gamepad1, gamepad2, driverAction);
+    }
+    
+    /**
+     * if button was on in previous state but not anymore
+     * @param action the action passed in
+     * @return if the button was released
+     */
+    public boolean getButtonRelease(DriverAction action) {
+        return !getButtonState(action)
+             && getButtonStateFromGamepads(previous_gamepad1, previous_gamepad2, action);
     }
 
 }
