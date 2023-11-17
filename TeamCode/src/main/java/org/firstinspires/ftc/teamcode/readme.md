@@ -9,6 +9,9 @@ Vincent L. (kryptic-val)
 Manan C. (duckw333d)
 
 James L. (jamesxgamesyt)
+
+Jason L. (crxyz0)
+
 ## TeamCode Module
 
 Welcome!
