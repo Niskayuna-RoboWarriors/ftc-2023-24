@@ -56,7 +56,17 @@ public class PositionManager {
         imuPositioning = new IMUPositioning(hardwareMap);
     }
 
+    public void updatePosition(Robot robot) {
+        imuPositioning.updateRobotOrientation(robot);
+        telemetry.addData("theta", robot.positionManager.position.getRotation());
+        updateEncoderPosition(encoderPositioning.getDeltaEstimate(robot));
+    }
 
+
+    private void updateEncoderPosition(Position subDelta) {
+        position.setX(position.getX() + subDelta.getX());
+        position.setY(position.getY() + subDelta.getY());
+    }
 
 }
 class EncoderPositioning{
