@@ -65,18 +65,6 @@ public class NavigationAuton {
         
     };
 
-    /**
-     * @param startingSide    where the robot starts in auton mode on the field
-     * @param parkingPosition the parking position of the robot during auton mode.
-     */
-    public void configurePath(RobotManager.StartingSide startingSide, RobotManager.ParkingPosition parkingPosition) {
-        transformPath(startingSide);
-        //Set parking location
-        setParkingLocation(startingSide, parkingPosition);
-    }
-
-
-
     /**Makes the robot travel along the pth until it reaches a POI (Position of Interest)
      * |Auton| |Blocking|
      * @param robotManager the robot manager of the robot
@@ -92,14 +80,14 @@ public class NavigationAuton {
         robot.telemetry.addData("Going to", target.getX() + ", " + target.getY()); //Updating the X and Y value to the driver station (AKA: the phone)
         robot.telemetry.addData("name", target.getName()); //Gets the name.
 
-        switch (robotManager.movementMode) {
+        switch (CenterStageAuton.movementMode) {
             case FORWARD_ONLY: //Robot moving forward ONLY (if equal with movementMode)
                 rotate(getAngleBetween(robot.getPosition(), target) - Math.PI / 2, target.rotatePower, robot);
                 travelLinear(target, target.getStrafePower(), robot);
                 rotate(target.getRotation(), target.getRotatePower(), robot);
                 break; //case statement ends.
 
-            case STRAFE://go directirly to the target. do not care about the direction the robot is facing during travle
+            case STRAFE://go directly to the target. do not care about the direction the robot is facing during travle
                 travelLinear(target, target.strafePower, robot);
                 double difference;
                 if (pathIndex > 0) { //
@@ -110,7 +98,7 @@ public class NavigationAuton {
                 robot.telemetry.addData("Difference", difference);
                 robot.telemetry.addData("Target", target);
                 robot.telemetry.update();
-                //deadReckoningRotation(robotManager, robot, difference, target.rotatePower);
+                deadReckoningRotation(robotManager, robot, difference, target.rotatePower);
                 break;
 
 //            case BACKWARD_ONLY: //Robot moving backward ONLY (if equal with movementMode)
@@ -376,7 +364,11 @@ public class NavigationAuton {
         //return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
     }
 
-
+    public void deadReckoningRotation(RobotManager robotManager, Robot robot, double time, double power) {
+        NavigationTeleOp.setDriveMotorPowers(0.0, 0.0, power, robot, false);
+        CenterStageAuton.waitMilliseconds((long) (time*ROTATION_TIME));
+        NavigationTeleOp.stopMovement(robot);
+    }
 
     /**preserves the ratio between a and b while restricting them to the range [-1, 1]
      *Method By: Stephen Duffy 2022
@@ -418,31 +410,4 @@ public class NavigationAuton {
         }
     }
 
-    /**
-     * @param startingSide the starting side of the robot, and what color it is on
-     * @param parkingPosition the parking position of the robot, and where the robot is parking
-     */
-    private void setParkingLocation(RobotManager.StartingSide startingSide, RobotManager.ParkingPosition parkingPosition) {
-        //TODO IMPLEMENT
-    }
-
-    /**
-     * @param startingSide the starting side of the robot, and what color it is on
-     */
-    private void transformPath(RobotManager.StartingSide startingSide) {
-        //TODO IMPLEMENT
-    }
-
-    /** Hardcoded paths through the playing field during the Autonomous period.*/
-    public static class AutonomousPaths{
-        public static final double TILE_SIZE = 24;
-        // These two constants aren't used but store the offsets from the center of the tile to the real starting position
-        public static final double Y_OFFSET = -0.25;
-        public static final double X_OFFSET = -0.15;
-
-        //Junctions
-        //Leaving this up to the Autonomous team. Not gonna do anything else beyond this point, since the code from 2022-2023 was all about Auton movement.
-
-
-    }
 }

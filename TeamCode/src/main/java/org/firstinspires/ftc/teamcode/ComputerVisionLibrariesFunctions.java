@@ -37,7 +37,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
 
-public class computerVisionLibrariesFunctions extends OpenCvPipeline
+public class ComputerVisionLibrariesFunctions extends OpenCvPipeline
 {
     private long nativeApriltagPtr;
     private Mat grey = new Mat();
