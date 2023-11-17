@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Servo Test", group="Linear Opmode")
+@TeleOp(name="Servo Test", group="Linear OpMode")
 public class MotorTestOpMode extends LinearOpMode {
 
     // Declare OpMode members.
