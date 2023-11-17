@@ -173,10 +173,10 @@ public class NavigationAuton {
 
         switch (getRotationDirection(currentOrientation, target)) {
             case CLOCKWISE:
-                NavigationTeleOP.setDriveMotorPowers(0.0, 0.0, power, robot, false);
+                NavigationTeleOp.setDriveMotorPowers(0.0, 0.0, power, robot, false);
                 break;
             case COUNTERCLOCKWISE:
-                NavigationTeleOP.setDriveMotorPowers(0.0, 0.0, -power, robot, false);
+                NavigationTeleOp.setDriveMotorPowers(0.0, 0.0, -power, robot, false);
         }
 
         robot.positionManager.updatePosition(robot);
@@ -204,12 +204,12 @@ public class NavigationAuton {
      * @param target The desired oreintation
      * @return ducks
      */
-    private NavigationTeleOP.rotationDirection getRotationDirection(double theta, double target) {
+    private NavigationTeleOp.rotationDirection getRotationDirection(double theta, double target) {
         double angleDiff = target - theta; //Counterclockwise distance to target
         if ((angleDiff >= -Math.PI && angleDiff < 0) || (angleDiff > Math.PI)) {
-            return NavigationTeleOP.rotationDirection.CLOCKWISE;
+            return NavigationTeleOp.rotationDirection.CLOCKWISE;
         }
-        return NavigationTeleOP.rotationDirection.COUNTERCLOCKWISE;
+        return NavigationTeleOp.rotationDirection.COUNTERCLOCKWISE;
     }
 
     /**
@@ -276,7 +276,7 @@ public class NavigationAuton {
             double strafeAngle = getStrafeAngle(robot.getPosition(), target);
             robot.telemetry.addData("Starting Rotation", robot.getPosition().getRotation());
             robot.telemetry.addData("Used Strafe Angle", strafeAngle);
-            NavigationTeleOP.setDriveMotorPowers(strafeAngle, power, 0.0, robot, false);
+            NavigationTeleOp.setDriveMotorPowers(strafeAngle, power, 0.0, robot, false);
             robot.positionManager.updatePosition(robot);
             currentPosition = robot.getPosition();
             distanceTraveled = getEuclideanDistance(startPosition, currentPosition);
@@ -302,7 +302,7 @@ public class NavigationAuton {
                 }
             }
         }
-        NavigationTeleOP.stopMovement(robot); //Stops the robot (CALLS FROM NavagationTeleOP.java)
+        NavigationTeleOp.stopMovement(robot); //Stops the robot (CALLS FROM NavagationTeleOP.java)
     }
 
     /** Calculates the anlge at which the robot must strafe in order to get to a target location

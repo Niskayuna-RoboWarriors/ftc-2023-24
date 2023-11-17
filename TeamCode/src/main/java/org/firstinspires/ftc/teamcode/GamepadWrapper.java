@@ -43,8 +43,8 @@ public class GamepadWrapper {
     public AnalogValues getAnalogValues() {
         return new AnalogValues(gamepad1, gamepad2);
     }
-    
-    
+
+
     private boolean getButtonStateFromGamepads(Gamepad gamepad1, Gamepad gamepad2, DriverAction action) {
         switch (action){
             // Gamepad 1 Controls
@@ -55,9 +55,9 @@ public class GamepadWrapper {
             case MOVE_STRAIGHT_BACKWARD:
                 return gamepad1.dpad_down;
             case MOVE_STRAIGHT_LEFT:
-                return gamepad1.dpad_left;
-            case MOVE_STRAIGHT_RIGHT:
                 return gamepad1.dpad_right;
+            case MOVE_STRAIGHT_RIGHT:
+                return gamepad1.dpad_left;
             case REDUCED_CLOCKWISE:
                 return gamepad1.x;
             case REDUCED_COUNTER_CLOCKWISE:
@@ -84,11 +84,11 @@ public class GamepadWrapper {
         assert false; //if you really want the robot to crash, then i guess you can use this function. if this manages to reach this, your a frekin genius, (or a duck hole)
         return false;
     }
-    
+
     public boolean getButtonState(DriverAction driverAction) {
         return getButtonStateFromGamepads(gamepad1, gamepad2, driverAction);
     }
-    
+
     /**
      * if button was on in previous state but not anymore
      * @param action the action passed in
@@ -96,7 +96,7 @@ public class GamepadWrapper {
      */
     public boolean getButtonRelease(DriverAction action) {
         return !getButtonState(action)
-             && getButtonStateFromGamepads(previous_gamepad1, previous_gamepad2, action);
+                && getButtonStateFromGamepads(previous_gamepad1, previous_gamepad2, action);
     }
 
 }

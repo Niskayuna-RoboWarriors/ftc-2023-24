@@ -4,12 +4,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 
 /** Keeps track of the robot's desired path and makes it follow it accurately.
  */
-public class NavigationTeleOP {
+public class NavigationTeleOp {
     public enum rotationDirection {CLOCKWISE, COUNTERCLOCKWISE};
 
     public static enum Action {NONE, SLIDES_LOW, SLIDES_HIGH,};
@@ -67,14 +66,8 @@ public class NavigationTeleOP {
     public int pathIndex; //Index of the path array list.
 
     /**
-     * @param path          positions of where the robot is traveling to in auton
-     * @param allianceColor alliance color on what team we are on (which is either red or blue)
-     * @param startingSide  the starting side on where our robot is starting from (on the field)
-     * @param movementMode  the movement within the robot
      */
-    public NavigationTeleOP(ArrayList<Position> path, RobotManager.AllianceColor allianceColor, RobotManager.StartingSide startingSide, MovementMode movementMode) {
-        this.path = path;
-        pathIndex = 0;
+    public NavigationTeleOp() {
     }
 
     /** Updates the strafe power according to movement mode and gamepad 1 left trigger.
@@ -110,30 +103,27 @@ public class NavigationTeleOP {
      * NOTE: ALL CONTROLLER MOVEMENTS ARE USING A PS5 CONTROLLER.
      * |Teleop| |Non Blocking|
      *
-     * @param forward  moving robot forward. Using the UP arrow on the DPAD
-     * @param backward moving robot backwards. Using the DOWN arrow on the DPAD
-     * @param left     moving robot to the left. Using the LEFT arrow on the DPAD
-     * @param right    moving robot to the right. Using the RIGHT arrow on the DPAD
+
      * @param robot
      * @return whether any of the DPAD buttons were pressed
      */
-    public boolean moveStraight(GamepadWrapper gamepads, boolean forward, boolean backward, boolean left, boolean right, Robot robot) {
+    public boolean moveStraight(GamepadWrapper gamepads, Robot robot) {
         double direction;
-        if (forward || backward) {
-            if (left) {//moves left at 45° (or Northwest)
-                direction = -Math.PI * 0.25;
-            } else if (right) { //moves right at 45° (or Northeast)
+        if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_FORWARD) || gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_BACKWARD)) {
+            if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_LEFT)) {//moves left at 45° (or Northwest)
                 direction = Math.PI * 0.75;
+            } else if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_RIGHT)) { //moves right at 45° (or Northeast)
+                direction = Math.PI * 0.25;
             } else {//moving forward
+                direction = Math.PI * 0.5;
+            }
+            if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_BACKWARD)) { //invert the forward to just backwards
                 direction = -Math.PI * 0.5;
             }
-            if (backward) { //invert the forward to just backwards
-                direction *= -1;
-            }
-        } else if (left) { //default direction. Set as 0
-            direction = 0;
-        } else if (right) {
+        } else if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_LEFT)) { //default direction. Set as 0
             direction = Math.PI;
+        } else if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_RIGHT)) {
+            direction = 0;
         } else {
             return false;
         }
