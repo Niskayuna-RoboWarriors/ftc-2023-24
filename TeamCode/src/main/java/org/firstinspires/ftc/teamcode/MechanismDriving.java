@@ -82,7 +82,7 @@ public class MechanismDriving {
      * @param robot
      */
     public void openLeftCompartment(Robot robot) {
-        robot.desiredCompartmentLeftState = Robot.CompartmentState.Open;
+        robot.desiredCompartmentLeftState = Robot.CompartmentState.OPEN;
         double startingTime = robot.elapsedTime.milliseconds();
         updateCompartmentLeft(robot);
         while (robot.elapsedTime.milliseconds() - startingTime < COMPARTMENT_SERVO_TIME) {}
@@ -92,7 +92,7 @@ public class MechanismDriving {
      * @param robot
      */
     public void closeLeftCompartment(Robot robot) {
-        robot.desiredCompartmentLeftState = Robot.CompartmentState.Closed;
+        robot.desiredCompartmentLeftState = Robot.CompartmentState.CLOSED;
         double startingTime = robot.elapsedTime.milliseconds();
         updateCompartmentLeft(robot);
         while (robot.elapsedTime.milliseconds() - startingTime < COMPARTMENT_SERVO_TIME) {}
@@ -103,7 +103,7 @@ public class MechanismDriving {
      * @param robot
      */
     public void openRightCompartment(Robot robot) {
-        robot.desiredCompartmentRightState = Robot.CompartmentState.Open;
+        robot.desiredCompartmentRightState = Robot.CompartmentState.OPEN;
         double startingTime = robot.elapsedTime.milliseconds();
         updateCompartmentRight(robot);
         while (robot.elapsedTime.milliseconds() - startingTime < COMPARTMENT_SERVO_TIME) {}
@@ -113,7 +113,7 @@ public class MechanismDriving {
      * @param robot
      */
     public void closeRightCompartment(Robot robot) {
-        robot.desiredCompartmentRightState = Robot.CompartmentState.Closed;
+        robot.desiredCompartmentRightState = Robot.CompartmentState.CLOSED;
         double startingTime = robot.elapsedTime.milliseconds();
         updateCompartmentRight(robot);
         while (robot.elapsedTime.milliseconds() - startingTime < COMPARTMENT_SERVO_TIME) {}
@@ -170,7 +170,7 @@ public class MechanismDriving {
      * @param robot
      */
     public void updatePlaneSpring(Robot robot) {
-        robot.telemetry.addData("UPDATE PLANE SPRING MOTOR STATE", robot.desiredPlaneStringState);
+        robot.telemetry.addData("UPDATE PLANE SPRING MOTOR STATE", robot.desiredPlaneSpringState);
         switch (robot.desiredPlaneSpringState) {
             case UNRELEASED:
                 robot.planeSpring.setPosition(PLANE_SPRING_UNRELEASED_POS);
@@ -227,16 +227,16 @@ public class MechanismDriving {
      */
     public void turnOnIntakeMotor(Robot robot) {
         robot.desiredIntakeMotorState = Robot.IntakeMotorState.ON;
-        updateIntakeMotor();
+        updateIntakeMotor(robot);
     }
 
     /**
      * Turns off intake motor.
      * @param robot
      */
-    public void turnOffIntakeMotor(Robt robot) {
+    public void turnOffIntakeMotor(Robot robot) {
         robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
-        updateIntakeMotor();
+        updateIntakeMotor(robot);
     }
 
 }

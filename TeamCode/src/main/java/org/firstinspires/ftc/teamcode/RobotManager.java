@@ -30,7 +30,7 @@ public class RobotManager {
     public MovementMode movementMode;
 
     public MechanismDriving mechanismDriving;
-    public Navigation navigation;
+    public NavigationTeleOp navigation;
 //    public ComputerVision computerVision;
 
     protected GamepadWrapper gamepads;
@@ -59,7 +59,7 @@ public class RobotManager {
         elapsedTime.reset();
         robot = new Robot(hardwareMap, telemetry, elapsedTime);
         robot.telemetry.addData("auton path", path.size());
-        navigation = new Navigation();
+        navigation = new NavigationTeleOp();
         mechanismDriving = new MechanismDriving();
 
         // computerVision = new ComputerVision(hardwareMap, robot.telemetry, elapsedTime);
@@ -85,10 +85,10 @@ public class RobotManager {
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.SET_SLIDES_HIGH)) {
             robot.desiredSlideState = Robot.SlideState.HIGH;
         }
-        else if (gamepads.gamepad2.left_stick_y > Navigation.JOYSTICK_DEAD_ZONE_SIZE) {
+        else if (gamepads.gamepad2.left_stick_y > NavigationTeleOp.JOYSTICK_DEAD_ZONE_SIZE) {
             robot.desiredSlideState = Robot.SlideState.MOVE_DOWN;
         }
-        else if (gamepads.gamepad2.left_stick_y < -Navigation.JOYSTICK_DEAD_ZONE_SIZE) {
+        else if (gamepads.gamepad2.left_stick_y < -NavigationTeleOp.JOYSTICK_DEAD_ZONE_SIZE) {
             robot.desiredSlideState = Robot.SlideState.MOVE_UP;
         }
         // Automatically set it to stopped if not actively being moved up or down

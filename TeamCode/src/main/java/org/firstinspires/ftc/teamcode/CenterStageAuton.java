@@ -18,6 +18,7 @@ public class CenterStageAuton extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        /*
         initSharedPreferences();
         robotManager = new RobotManager(hardwareMap, gamepad1, gamepad2, PowerPlayAuton.navigationPath,
                 PowerPlayAuton.allianceColor, PowerPlayAuton.startingSide,
@@ -32,4 +33,6 @@ public class CenterStageAuton extends LinearOpMode {
             parkingPosition = robotManager.computerVision.getParkingPosition();
             waitMilliseconds(20);
         }
+        */
+    }
 }
