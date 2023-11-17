@@ -18,7 +18,7 @@ public class Position {
     protected String name;
     protected double x; //Stores the Y value in the robot's position on the field
     protected double y; //Stores the Y value in the robot's position on the field
-    protected Navigation.Action action = Navigation.Action.NONE;
+    protected NavigationTeleOP.Action action = NavigationTeleOP.Action.NONE;
     //Add constructors if needed
     protected double strafePower = 1.0; //Strafe is set to FULL POWER. Number can range ONLY from -1 to 1
     protected double rotatePower = 1.0; //Rotation is set to FULL POWER.
@@ -55,7 +55,7 @@ public class Position {
       * @param rotatePower the amount of power on the wheels when the robots spins (speeds ranges from 0 to 1)
       * @param action the action that should be perfomed when the robot reaches this position
       */
-    public Position(double x, double y, String name, Navigation.Action action, double strafePower, double rotatePower, double theta) {
+    public Position(double x, double y, String name, NavigationTeleOP.Action action, double strafePower, double rotatePower, double theta) {
         this.x = x;
         this.y = y;
         this.name = name;
@@ -88,7 +88,7 @@ public class Position {
     public double getRotation(){
         return rotation;
     }
-    public Navigation.Action getAction(){
+    public NavigationTeleOP.Action getAction(){
         return action;
     }
     public String getName(){
