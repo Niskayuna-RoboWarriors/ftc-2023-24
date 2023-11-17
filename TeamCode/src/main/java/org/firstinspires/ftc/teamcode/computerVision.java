@@ -24,7 +24,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.teamcode.computerVisionLibrariesFunctions;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -37,7 +37,7 @@ import java.util.ArrayList;
 public class computerVision extends LinearOpMode
 {
     OpenCvCamera camera;
-    AprilTagDetectionPipeline aprilTagDetectionPipeline;
+    computerVisionLibrariesFunctions aprilTagDetectionPipeline;
 
     static final double FEET_PER_METER = 3.28084;
 

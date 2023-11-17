@@ -1,4 +1,4 @@
-/* Authors: Nisky Robotics 6460 2023-2024 Programming Team
+/* Authors: Nisky Robotics 6460 2021-2022 Programming Team
  */
 
 package org.firstinspires.ftc.teamcode;
@@ -13,13 +13,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 
-/** Autonomous OpMode for Center Stage.
+/** Autonomous OpMode for Freight Frenzy.
  */
 @TeleOp(name="CenterStage Tele-Op", group="TeleOp OpMode")
 public class CenterStageTeleOp extends OpMode {
 
     private RobotManager robotManager;
     private ElapsedTime elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+
     /**method that gets called when the init button is pressed
      */
     @Override
@@ -48,7 +49,7 @@ public class CenterStageTeleOp extends OpMode {
         double start_time = robotManager.elapsedTime.time();
         robotManager.readControllerInputs();
         telemetry.addData("after read controller inputs", robotManager.elapsedTime.time()-start_time);
-    robotManager.driveMechanisms(robotManager);
+        robotManager.driveMechanisms(robotManager);
         telemetry.addData("after drive mechanisms", robotManager.elapsedTime.time()-start_time);
         robotManager.maneuver();
         telemetry.addData("after maneuver", robotManager.elapsedTime.time()-start_time);
