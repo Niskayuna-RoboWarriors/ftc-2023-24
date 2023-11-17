@@ -88,13 +88,34 @@ public class MechanismDriving {
         while (robot.elapsedTime.milliseconds() - startingTime < COMPARTMENT_SERVO_TIME) {}
     }
     /**
-     * Block execution until right comparmtment is opened
+     * Block execution until left comparmtment is closed
      * @param robot
      */
-    public void closeLeftCompartments(Robot robot) {
+    public void closeLeftCompartment(Robot robot) {
         robot.desiredCompartmentLeftState = Robot.CompartmentState.Closed;
         double startingTime = robot.elapsedTime.milliseconds();
         updateCompartmentLeft(robot);
+        while (robot.elapsedTime.milliseconds() - startingTime < COMPARTMENT_SERVO_TIME) {}
+    }
+
+    /**
+     * Block execution until right comparmtment is opened
+     * @param robot
+     */
+    public void openRightCompartment(Robot robot) {
+        robot.desiredCompartmentRightState = Robot.CompartmentState.Open;
+        double startingTime = robot.elapsedTime.milliseconds();
+        updateCompartmentRight(robot);
+        while (robot.elapsedTime.milliseconds() - startingTime < COMPARTMENT_SERVO_TIME) {}
+    }
+    /**
+     * Block execution until right comparmtment is closed
+     * @param robot
+     */
+    public void closeRightCompartment(Robot robot) {
+        robot.desiredCompartmentRightState = Robot.CompartmentState.Closed;
+        double startingTime = robot.elapsedTime.milliseconds();
+        updateCompartmentRight(robot);
         while (robot.elapsedTime.milliseconds() - startingTime < COMPARTMENT_SERVO_TIME) {}
     }
 
@@ -140,7 +161,7 @@ public class MechanismDriving {
      */
     public void moveSlides(Robot robot, Robot.SlideState targetSlideState) {
         if (targetSlideState == Robot.SlideState.UNREADY) { return; }
-        Robot.desiredSlideState = targetSlideState;
+        robot.desiredSlideState = targetSlideState;
         while (updateSlides(robot) != true) {};
     }
 
@@ -166,18 +187,18 @@ public class MechanismDriving {
      * @param robot
      */
     public void releasePlaneSpring(Robot robot) {
-        robot.desiredPlaneSpringState = robot.PlaneSpringState.RELEASED;
+        robot.desiredPlaneSpringState = Robot.PlaneSpringState.RELEASED;
         double startingTime = robot.elapsedTime.milliseconds();
         updatePlaneSpring(robot);
         while (robot.elapsedTime.milliseconds() - startingTime < PLANE_SPRING_SERVO_TIME) {}
     }
 
     /**
-     * Block execution until plane spring is unreleased. NOTE: *NO GUARANTEE THAT THIS WILL WORK PROPERLY*
+     * Block execution until plane spring is unreleased. NOTE: *NO GUARANTEE THAT UNRELEASING A RELEASED SPRING WILL WORK PROPERLY*
      * @param robot
      */
     public void unreleasePlaneSpring(Robot robot) {
-        robot.desiredPlaneSpringState = robot.PlaneSpringState.UNRELEASED;
+        robot.desiredPlaneSpringState = Robot.PlaneSpringState.UNRELEASED;
         double startingTime = robot.elapsedTime.milliseconds();
         updatePlaneSpring(robot);
         while (robot.elapsedTime.milliseconds() - startingTime < PLANE_SPRING_SERVO_TIME) {}
@@ -198,6 +219,24 @@ public class MechanismDriving {
                 break;
         }
         robot.telemetry.addData("SET INTAKE MOTOR POWER", robot.intakeMotor.getPower());
+    }
+
+    /**
+     * Turns on intake motor.
+     * @param robot
+     */
+    public void turnOnIntakeMotor(Robot robot) {
+        robot.desiredIntakeMotorState = Robot.IntakeMotorState.ON;
+        updateIntakeMotor();
+    }
+
+    /**
+     * Turns off intake motor.
+     * @param robot
+     */
+    public void turnOffIntakeMotor(Robt robot) {
+        robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
+        updateIntakeMotor();
     }
 
 }
