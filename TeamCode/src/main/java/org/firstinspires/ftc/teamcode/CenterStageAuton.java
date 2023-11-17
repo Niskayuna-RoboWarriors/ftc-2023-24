@@ -20,7 +20,7 @@ public class CenterStageAuton extends LinearOpMode {
     public void runOpMode() {
         /*
         initSharedPreferences();
-        robotManager = new RobotManager(hardwareMap, gamepad1, gamepad2, PowerPlayAuton.navigationPath,
+        robotManager = new RobotManager(hardwareMap, gamepad1, gamepad2, CenterStageTeleop.navigationPath,
                 PowerPlayAuton.allianceColor, PowerPlayAuton.startingSide,
                 PowerPlayAuton.movementMode, telemetry, elapsedTime);
         IMUPositioning.Initialize(this);
