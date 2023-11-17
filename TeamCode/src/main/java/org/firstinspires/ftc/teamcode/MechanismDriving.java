@@ -225,7 +225,7 @@ public class MechanismDriving {
      * Turns on intake motor.
      * @param robot
      */
-    public void turnOnIntakeMotor(Robot robot) {
+    public turnOnIntakeMotor(Robot robot) {
         robot.desiredIntakeMotorState = Robot.IntakeMotorState.ON;
         updateIntakeMotor();
     }
@@ -234,7 +234,7 @@ public class MechanismDriving {
      * Turns off intake motor.
      * @param robot
      */
-    public void turnOffIntakeMotor(Robt robot) {
+    public turnOffIntakeMotor(Robt robot) {
         robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
         updateIntakeMotor();
     }
