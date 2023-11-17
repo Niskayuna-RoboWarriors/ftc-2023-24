@@ -21,6 +21,8 @@ public class CenterStageTeleOp extends OpMode {
     private RobotManager robotManager;
     private ElapsedTime elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
 
+    /**method that gets called when the init button is pressed
+     */
     @Override
     public void init() {
         initSharedPreferences();
@@ -31,9 +33,13 @@ public class CenterStageTeleOp extends OpMode {
         IMUPositioning.Initialize(this);
     }
 
+    /**method that gets called when the play button gets pressed
+     */
     @Override
     public void start() {}
 
+    /**method that gets called repeatedly after start is called
+     */
     @Override
     public void loop() {
         robotManager.robot.positionManager.updatePosition(robotManager.robot);
@@ -53,6 +59,8 @@ public class CenterStageTeleOp extends OpMode {
         telemetry.update();
     }
 
+    /**method that is called when the stop button is pressed
+     */
     @Override
     public void stop() {}
 

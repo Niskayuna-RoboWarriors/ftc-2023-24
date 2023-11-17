@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.media.Image;
 import com.qualcomm.robotcore.hardware.*;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -13,14 +14,15 @@ public class Robot {
      */
     public enum MotorConfigs {
         //drive motors
-        FRONT_LEFT  ("front_left", DcMotor.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT),
-        FRONT_RIGHT ("front_right",DcMotor.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT),
-        REAR_LEFT   ("rear_left",  DcMotor.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT),
-        REAR_RIGHT  ("rear_right", DcMotor.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT),
+        FRONT_LEFT  ("front_left", DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
+        FRONT_RIGHT ("front_right",DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
+        REAR_LEFT   ("rear_left",  DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
+        REAR_RIGHT  ("rear_right", DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
         
         //linear slides motors
-        ONE         ("slides_motor_1",         DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE);
-        
+        SLIDES         ("slides_motor",         DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE),
+        INTAKE_MOTOR ("intake_motor", DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
+
         private final String name;
         private final DcMotor.Direction direction;
         private final DcMotor.ZeroPowerBehavior behavior;
@@ -122,22 +124,28 @@ public class Robot {
 //        }
 //    }
 
-    //Enums for state
-    public enum SlidesState            {RETRACTED, LOW, MEDIUM, HIGH, UNREADY, MOVE_UP, MOVE_DOWN, STOPPED, FIRST_STACK_CONE, SECOND_STACK_CONE}
-    public enum ParkingPosition        {INSIDE, MIDDLE, OUTSIDE}
 
-    // State
-    public static SlidesState     desiredSlidesState = SlidesState.UNREADY;
+    //Enums for states
+    public enum SlideState             {RETRACTED, LOW, MEDIUM, HIGH, UNREADY, MOVE_UP, MOVE_DOWN, STOPPED};
+    public SlideState desiredSlideState = SlideState.UNREADY;
+    public int desiredSlidePosition;
+    public enum ParkingPosition        {INSIDE, MIDDLE, OUTSIDE};
+    public enum CompartmentState       {OPEN, CLOSED};
+    public CompartmentState desiredCompartmentLeftState = CompartmentState.CLOSED;
+    public CompartmentState desiredCompartmentRightState = CompartmentState.CLOSED;
+    public enum IntakeMotorState       {ON, OFF};
+    public IntakeMotorState desiredIntakeMotorState = IntakeMotorState.OFF;
+    public enum PlaneSpringState       {UNRELEASED, RELEASED};
+    public PlaneSpringState desiredPlaneSpringState = PlaneSpringState.UNRELEASED;
+    enum MovementMode                  {NORMAL, FINE, ULTRA_FINE}
 
-
-    enum MovementMode {NORMAL, FINE, ULTRA_FINE}
     MovementMode movementMode = MovementMode.NORMAL;
     boolean wheelSpeedAdjustment = false;
     
     // Hardware
-    public DcMotor slide;
+    public DcMotor slides, intakeMotor;
     public DcMotor frontLeft, frontRight, rearLeft, rearRight;
-    public Servo plane_spring, compartment_left, compartment_right;
+    public Servo planeSpring, compartmentLeft, compartmentRight;
 
 //    public TouchSensor slidesLimitSwitch;
     //servos
@@ -167,17 +175,18 @@ public class Robot {
         resetEncoder(rearLeft);
         resetEncoder(rearRight);
 
-        slide            = Robot.MotorConfigs.initialize(Robot.MotorConfigs.ONE, hardwareMap);
-        plane_spring     = Robot.ServoConfigs.initialize(ServoConfigs.PLANE_SPRING, hardwareMap);
-        compartment_left     = Robot.ServoConfigs.initialize(ServoConfigs.COMPARTMENT_LEFT, hardwareMap);
-        compartment_right     = Robot.ServoConfigs.initialize(ServoConfigs.COMPARTMENT_RIGHT, hardwareMap);
+        slides            = Robot.MotorConfigs.initialize(Robot.MotorConfigs.SLIDES, hardwareMap);
+        intakeMotor            = Robot.MotorConfigs.initialize(Robot.MotorConfigs.INTAKE_MOTOR, hardwareMap);
+        planeSpring     = Robot.ServoConfigs.initialize(Robot.ServoConfigs.PLANE_SPRING, hardwareMap);
+        compartmentLeft     = Robot.ServoConfigs.initialize(Robot.ServoConfigs.COMPARTMENT_LEFT, hardwareMap);
+        compartmentRight     = Robot.ServoConfigs.initialize(Robot.ServoConfigs.COMPARTMENT_RIGHT, hardwareMap);
 //        slidesLimitSwitch= Robot.SwitchConfigs.initialize(Robot.SwitchConfigs.SLIDES_LIMIT, hardwareMap);
 
         // Set slides state to Retracted
-        if (desiredSlidesState == SlidesState.UNREADY) { //if the slides have yet to be initialised then reset the encoders for the slides and set the slide state to retracted
-            this.telemetry.addData("desired string state", desiredSlidesState.toString());
-            resetEncoder(slide);
-            desiredSlidesState = SlidesState.RETRACTED;
+        if (desiredSlideState == SlideState.UNREADY) { //if the slides have yet to be initialised then reset the encoders for the slides and set the slide state to retracted
+            this.telemetry.addData("desired string state", desiredSlideState.toString());
+            resetEncoder(slides);
+            desiredSlideState = SlideState.RETRACTED;
         }
     }
 
