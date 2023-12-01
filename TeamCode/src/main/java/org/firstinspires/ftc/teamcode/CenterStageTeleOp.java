@@ -3,14 +3,9 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 
 /** Autonomous OpMode for Freight Frenzy.
@@ -26,7 +21,7 @@ public class CenterStageTeleOp extends OpMode {
     @Override
     public void init() {
         robotManager = new RobotManager(hardwareMap, gamepad1, gamepad2, telemetry, elapsedTime);
-        IMUPositioning.Initialize();
+        IMUPositioning.Initialize(this);
     }
 
     /**method that gets called when the play button gets pressed

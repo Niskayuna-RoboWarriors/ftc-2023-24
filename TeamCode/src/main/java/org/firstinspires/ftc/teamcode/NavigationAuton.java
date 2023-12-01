@@ -7,6 +7,7 @@ public class NavigationAuton {
     public enum rotationDirection {CLOCKWISE, COUNTERCLOCKWISE};
 
     public static enum Action {NONE, SLIDES_LOW, SLIDES_HIGH,};
+    private CenterStageAuton.MovementMode movementMode;
     //Makes actions of the Robot that can be used anywhere within the folder.
 
     //**AUTONOMOUS CONSTANTS**
@@ -61,16 +62,17 @@ public class NavigationAuton {
     public ArrayList<Position> path; //List of positions that the robot will go into WHEN IT IS IN AUTOMOTOUS MODE.
     public int pathIndex; //Index of the path array list.
 
-    public void Navigation() {
-        
+    public void Navigation(AutonomousPathing path, CenterStageAuton.MovementMode movementMode) {
+        this.movementMode = movementMode;
+        this.pathIndex = 0;
     };
 
     /**Makes the robot travel along the pth until it reaches a POI (Position of Interest)
      * |Auton| |Blocking|
-     * @param robotManager the robot manager of the robot
+     * @param centerStageAuton the auton
      * @param robot        the physical robot itself
      */
-    public Position travelToNextPOI(RobotManager robotManager, Robot robot) {
+    public Position travelToNextPOI(CenterStageAuton centerStageAuton, Robot robot) {
         if (path.size() <= pathIndex) {
             robot.telemetry.addData("Path size <= to the path index, end of travel. pathIndex:", pathIndex); //This will show on the console. (Phone)
             return null;
@@ -80,7 +82,7 @@ public class NavigationAuton {
         robot.telemetry.addData("Going to", target.getX() + ", " + target.getY()); //Updating the X and Y value to the driver station (AKA: the phone)
         robot.telemetry.addData("name", target.getName()); //Gets the name.
 
-        switch (CenterStageAuton.movementMode) {
+        switch (movementMode) {
             case FORWARD_ONLY: //Robot moving forward ONLY (if equal with movementMode)
                 rotate(getAngleBetween(robot.getPosition(), target) - Math.PI / 2, target.rotatePower, robot);
                 travelLinear(target, target.getStrafePower(), robot);
@@ -98,7 +100,7 @@ public class NavigationAuton {
                 robot.telemetry.addData("Difference", difference);
                 robot.telemetry.addData("Target", target);
                 robot.telemetry.update();
-                deadReckoningRotation(robotManager, robot, difference, target.rotatePower);
+                deadReckoningRotation(centerStageAuton, robot, difference, target.rotatePower);
                 break;
 
 //            case BACKWARD_ONLY: //Robot moving backward ONLY (if equal with movementMode)
@@ -364,9 +366,9 @@ public class NavigationAuton {
         //return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
     }
 
-    public void deadReckoningRotation(RobotManager robotManager, Robot robot, double time, double power) {
+    public void deadReckoningRotation(CenterStageAuton centerStageAuton, Robot robot, double time, double power) {
         NavigationTeleOp.setDriveMotorPowers(0.0, 0.0, power, robot, false);
-        CenterStageAuton.waitMilliseconds((long) (time*ROTATION_TIME));
+        centerStageAuton.waitMilliseconds((long) (time*ROTATION_TIME));
         NavigationTeleOp.stopMovement(robot);
     }
 
@@ -409,5 +411,6 @@ public class NavigationAuton {
                     / 0.5 * ROTATE_ACCELERATION;
         }
     }
+
 
 }

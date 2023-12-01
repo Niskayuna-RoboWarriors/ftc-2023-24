@@ -29,27 +29,24 @@ public class CenterStageAuton extends LinearOpMode {
     // Movement mode during the autonomous period
     public enum MovementMode {FORWARD_ONLY, STRAFE};
     // Position of the pixel placements
-    public enum PixelPosition {LEFT, CENTER, RIGHT}
+    public enum PixelPosition {LEFT, CENTER, RIGHT};
+    public enum AutonMode {DIRECT};
     private static MovementMode movementMode;
     private static StartingSide startingSide;
     private static AllianceColor allianceColor;
-    private static ArrayList<Position> navigationPath;
+    private static PixelPosition pixelPosition;
+    private static ParkingPosition parkingPosition;
+    private static AutonMode autonMode;
 
     @Override
     public void runOpMode() {
         initSharedPreferences();
         robotManager = new RobotManager(hardwareMap, gamepad1, gamepad2, telemetry, elapsedTime);
         IMUPositioning.Initialize(this);
-        robotManager.computerVision.initialize();
+        CenterStageAuton.ParkingPosition parkingPosition = robotManager.computerVision.getParkingPosition();
 
-        autonomousPathing = new AutonomousPathing(robotManager, allianceColor, startingSide, movementMode);
-
-        // Repeatedly run CV
-        ParkingPosition parkingPosition = ParkingPosition.LEFT;
-        while (!isStarted() && !isStopRequested()) {
-            parkingPosition = robotManager.computerVision.getParkingPosition();
-            waitMilliseconds(20);
-        }
+        autonomousPathing = new AutonomousPathing(robotManager, allianceColor, startingSide, movementMode, pixelPosition, parkingPosition, autonMode);
+        autonomousPathing.runAutonPath();
 
     }
     public void initSharedPreferences() {
@@ -57,12 +54,12 @@ public class CenterStageAuton extends LinearOpMode {
         String movementModePref = sharedPrefs.getString("movement_mode", "ERROR");
         String startingSidePref = sharedPrefs.getString("starting_side", "ERROR");
         String allianceColorPref = sharedPrefs.getString("alliance_color", "ERROR");
-        String pixelPositionPref = sharedPrefs.getString("pixel_position", "ERROR");
+        String autonModePref = sharedPrefs.getString("auton_mode", "ERROR");
         String parkingPositionPref = sharedPrefs.getString("parking_position", "ERROR");
 
         telemetry.addData("Movement mode", movementModePref);
         telemetry.addData("Wait time", waitTime);
-        telemetry.addData("Pixel position", pixelPositionPref);
+        telemetry.addData("Auton Mode", autonModePref);
         telemetry.addData("Parking position", parkingPositionPref);
         telemetry.addData("Starting side", startingSidePref);
         telemetry.addData("Alliance color", allianceColorPref);
@@ -71,7 +68,7 @@ public class CenterStageAuton extends LinearOpMode {
         System.out.println("Wait time "+ waitTime);
         System.out.println("Starting side "+ startingSidePref);
         System.out.println("Alliance color "+ allianceColorPref);
-        System.out.println("Pixel position "+ pixelPositionPref);
+        System.out.println("Auton Mode"+ autonModePref);
         System.out.println("Parking position "+ parkingPositionPref);
 
         if (allianceColor.equals("BLUE")) {

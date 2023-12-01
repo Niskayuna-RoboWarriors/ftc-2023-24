@@ -3,9 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import java.util.ArrayList;
 
 public class AutonomousPathing {
+    public ArrayList<Position> path; //List of positions that the robot will go into WHEN IT IS IN AUTOMOTOUS MODE.
 
     public AutonomousPathing(RobotManager robotManager, CenterStageAuton.AllianceColor allianceColor, CenterStageAuton.StartingSide startingSide,
-                             CenterStageAuton.MovementMode movementMode) {
+                             CenterStageAuton.MovementMode movementMode, CenterStageAuton.PixelPosition pixelPosition,
+                             CenterStageAuton.ParkingPosition parkingPosition, CenterStageAuton.AutonMode autonMode) {
 //        robotManager.robot.telemetry.addData("auton path", path.size());
     }
 
@@ -14,9 +16,9 @@ public class AutonomousPathing {
      * @param parkingPosition the parking position of the robot during auton mode.
      */
     public void configurePath(CenterStageAuton.StartingSide startingSide, CenterStageAuton.ParkingPosition parkingPosition) {
-        transformPath(startingSide);
         //Set parking location
         setParkingLocation(startingSide, parkingPosition);
+        transformPath(startingSide);
     }
 
     /**
@@ -32,6 +34,10 @@ public class AutonomousPathing {
      */
     private void setParkingLocation(CenterStageAuton.StartingSide startingSide, CenterStageAuton.ParkingPosition parkingPosition) {
         //TODO IMPLEMENT
+    }
+    public void runAutonPath() {
+        //TODO IMPLEMENT
+
     }
 
     /** Hardcoded paths through the playing field during the Autonomous period.*/

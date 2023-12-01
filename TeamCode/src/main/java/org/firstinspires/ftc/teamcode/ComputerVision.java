@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opencvapriltag;
+package org.firstinspires.ftc.teamcode;
 /*
  * Copyright (c) 2021 OpenFTC Team
  *
@@ -23,7 +23,6 @@ package org.firstinspires.ftc.teamcode.opencvapriltag;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.computerVisionLibrariesFunctions;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -65,12 +64,15 @@ public class ComputerVision extends LinearOpMode
 
     };
     @Override
-    public void runOpMode()
+    public void runOpMode() {
+
+    }
+    public CenterStageAuton.ParkingPosition getParkingPosition()
     {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 //        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         camera = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+        aprilTagDetectionPipeline = new ComputerVisionLibrariesFunctions(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
@@ -182,17 +184,16 @@ public class ComputerVision extends LinearOpMode
              */
             //left code
             System.out.println("Left");
+            return CenterStageAuton.ParkingPosition.LEFT;
 
         }
         else if(tagOfInterest.id == middle) {
             //middle code
             System.out.println("middle");
+            return CenterStageAuton.ParkingPosition.CENTER;
         }
-        else if(tagOfInterest.id == right) {
-            //right code
-            System.out.println("right");
-
-        }
+        System.out.println("right");
+        return CenterStageAuton.ParkingPosition.RIGHT;
         //       else {
 
 
@@ -217,7 +218,7 @@ public class ComputerVision extends LinearOpMode
 
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        while (opModeIsActive()) {sleep(20);}
+        // while (opModeIsActive()) {sleep(20);}
     }
 
     void tagToTelemetry(AprilTagDetection detection)
@@ -226,8 +227,8 @@ public class ComputerVision extends LinearOpMode
         telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
         telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
         telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
-        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
-        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
-        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+//        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
+//        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
+//        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
 }
