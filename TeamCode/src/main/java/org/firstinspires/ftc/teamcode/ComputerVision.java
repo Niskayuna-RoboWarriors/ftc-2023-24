@@ -67,7 +67,7 @@ public class ComputerVision extends LinearOpMode
     public void runOpMode() {
 
     }
-    public CenterStageAuton.ParkingPosition getParkingPosition()
+    public CenterStageAuton.PixelPosition getPixelPosition()
     {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 //        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -184,16 +184,16 @@ public class ComputerVision extends LinearOpMode
              */
             //left code
             System.out.println("Left");
-            return CenterStageAuton.ParkingPosition.LEFT;
+            return CenterStageAuton.PixelPosition.LEFT;
 
         }
         else if(tagOfInterest.id == middle) {
             //middle code
             System.out.println("middle");
-            return CenterStageAuton.ParkingPosition.CENTER;
+            return CenterStageAuton.PixelPosition.CENTER;
         }
         System.out.println("right");
-        return CenterStageAuton.ParkingPosition.RIGHT;
+        return CenterStageAuton.PixelPosition.RIGHT;
         //       else {
 
 

@@ -30,7 +30,7 @@ public class CenterStageAuton extends LinearOpMode {
     public enum MovementMode {FORWARD_ONLY, STRAFE};
     // Position of the pixel placements
     public enum PixelPosition {LEFT, CENTER, RIGHT};
-    public enum AutonMode {DIRECT};
+    public enum AutonMode {TOP, MIDDLE, BOTTOM};
     private static MovementMode movementMode;
     private static StartingSide startingSide;
     private static AllianceColor allianceColor;
@@ -43,7 +43,7 @@ public class CenterStageAuton extends LinearOpMode {
         initSharedPreferences();
         robotManager = new RobotManager(hardwareMap, gamepad1, gamepad2, telemetry, elapsedTime);
         IMUPositioning.Initialize(this);
-        CenterStageAuton.ParkingPosition parkingPosition = robotManager.computerVision.getParkingPosition();
+        CenterStageAuton.PixelPosition pixelPosition = robotManager.computerVision.getPixelPosition();
 
         autonomousPathing = new AutonomousPathing(robotManager, allianceColor, startingSide, movementMode, pixelPosition, parkingPosition, autonMode);
         autonomousPathing.runAutonPath();
@@ -71,17 +71,48 @@ public class CenterStageAuton extends LinearOpMode {
         System.out.println("Auton Mode"+ autonModePref);
         System.out.println("Parking position "+ parkingPositionPref);
 
-        if (allianceColor.equals("BLUE")) {
+
+        /* Currently no waitTime functionality */
+
+        if (allianceColorPref.equals("BLUE")) {
             allianceColor = AllianceColor.BLUE;
         }
-        else if (allianceColor.equals("RED")) {
+        else if (allianceColorPref.equals("RED")) {
             allianceColor = AllianceColor.RED;
         }
-        if (startingSide.equals("LEFT")) {
+
+        if (startingSidePref.equals("LEFT")) {
             startingSide = StartingSide.LEFT;
         }
-        else if (startingSide.equals("RIGHT")) {
+        else if (startingSidePref.equals("RIGHT")) {
             startingSide = StartingSide.RIGHT;
+        }
+
+        if (movementModePref.equals("FORWARD_ONLY")) {
+            movementMode = MovementMode.FORWARD_ONLY;
+        }
+        else if (movementModePref.equals("STRAFE")) {
+            movementMode = MovementMode.STRAFE;
+        }
+
+        if (autonModePref.equals("TOP")) {
+            autonMode = AutonMode.TOP;
+        }
+        else if (autonModePref.equals("MIDDLE")) {
+            autonMode = AutonMode.MIDDLE;
+        }
+        else if (autonModePref.equals("BOTTOM")) {
+            autonMode = AutonMode.BOTTOM;
+        }
+
+        if (parkingPositionPref.equals("LEFT")) {
+            parkingPosition = ParkingPosition.LEFT;
+        }
+        else if (parkingPositionPref.equals("CENTER")) {
+            parkingPosition = ParkingPosition.CENTER;
+        }
+        else if (parkingPositionPref.equals("RIGHT")) {
+            parkingPosition = ParkingPosition.RIGHT;
         }
     }
 
