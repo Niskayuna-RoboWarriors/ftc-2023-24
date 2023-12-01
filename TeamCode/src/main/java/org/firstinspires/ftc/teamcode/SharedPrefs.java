@@ -8,10 +8,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name="configure shared prefs", group="TeleOp OpMode")
 public class configureSharedPrefsOpMode extends OpMode {
     final String[][] VALUES = {
-            {"STRAFE", "FORWARD_ONLY"}, {"BLUE", "RED"}, {"LEFT", "RIGHT", "MIDDLE"}, {"LEFT", "RIGHT", "CENTER"}, {"FAR", "CLOSE"}
+            {"STRAFE", "FORWARD_ONLY"}, {"BLUE", "RED"}, {"LEFT", "RIGHT", "MIDDLE"}, {"TOP", "MIDDLE", "BOTTOM"}, {"FAR", "CLOSE"}
     };
     String [] currentValues=new String[VALUES.length];
-    final String[] PREF_NAMES = {"movement mode", "alliance color", "parking position", "pixel position", "starting_side"};
+    final String[] PREF_NAMES = {"movement mode", "alliance color", "parking position", "auton mode", "starting_side"};
     int[] currentIndexes =new int[VALUES.length];
     int currSel=0, dispUntil;
     SharedPreferences sharedPrefs;
@@ -28,7 +28,7 @@ public class configureSharedPrefsOpMode extends OpMode {
         currentValues[0] = sharedPrefs.getString("movement_mode", "ERROR");
         currentValues[1] = sharedPrefs.getString("alliance_color", "ERROR");
         currentValues[2] = sharedPrefs.getString("parking_position", "ERROR");
-        currentValues[3] = sharedPrefs.getString("pixel_position", "ERROR");
+        currentValues[3] = sharedPrefs.getString("auton_mode", "ERROR");
         currentValues[4] = sharedPrefs.getString("starting_side", "ERROR");
         for (int i=0;i<currentValues.length;i++) {
             for (int j = 0; j < VALUES[i].length; j++) {
@@ -96,7 +96,7 @@ public class configureSharedPrefsOpMode extends OpMode {
         editor.putString("movement_mode", currentValues[0]);
         editor.putString("alliance_color", currentValues[1]);
         editor.putString("parking_position", currentValues[2]);
-        editor.putString("pixel_position", currentValues[3]);
+        editor.putString("auton_mode", currentValues[3]);
         editor.putString("starting_side", currentValues[4]);
 
         dispUntil = (int)(System.nanoTime() / 1000000) + 1000;
