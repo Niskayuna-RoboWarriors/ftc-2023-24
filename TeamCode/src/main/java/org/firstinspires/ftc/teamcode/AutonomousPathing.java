@@ -25,7 +25,15 @@ public class AutonomousPathing {
      * @param allianceColor    where the robot starts in auton mode on the field
      * @param parkingPosition the parking position of the robot during auton mode.
      */
-    public void configurePath(CenterStageAuton.AllianceColor allianceColor, CenterStageAuton.StartingSide startingSide, CenterStageAuton.ParkingPosition parkingPosition) {
+    public void configurePath(CenterStageAuton.AllianceColor allianceColor, CenterStageAuton.StartingSide startingSide,
+                              CenterStageAuton.PixelPosition pixelPosition, CenterStageAuton.AutonMode autonMode,
+                              CenterStageAuton.ParkingPosition parkingPosition) {
+        if (startingSide == CenterStageAuton.StartingSide.LEFT) {
+            T
+        }
+        else {
+
+        }
         transformPath(allianceColor, startingSide);
         //Set parking location
         setParkingLocation(allianceColor, parkingPosition);
@@ -39,10 +47,10 @@ public class AutonomousPathing {
         for (int i = 0; i < path.size(); i++) {
             Position pos = path.get(i);
             Position copy = new Position(pos.getX(),pos.getY(), pos.getName(),pos.getAction(),pos.getStrafePower(),pos.getRotatePower(),pos.getRotation());
-            if (allianceColor == CenterStageAuton.AllianceColor.RED) {
-                copy.setY(-copy.getY());
+//            if (allianceColor == CenterStageAuton.AllianceColor.RED) {
+//                copy.setY(-copy.getY());
                 copy.setRotation(-copy.getRotation());
-            }
+//            }
 //            if (allianceColor == CenterStageAuton.AllianceColor.RED) {
 //                copy.setX(-copy.getX());
 //                copy.setRotation(-copy.getRotation());
@@ -72,8 +80,102 @@ public class AutonomousPathing {
             path.add(AutonomousPaths.rightParking);
         }
     }
-    public void runAutonPath() {
+    public void runAutonPath(CenterStageAuton.AllianceColor allianceColor, CenterStageAuton.StartingSide startingSide,
+                             CenterStageAuton.PixelPosition pixelPosition, CenterStageAuton.AutonMode autonMode,
+                             CenterStageAuton.ParkingPosition parkingPosition, Robot robot) {
         //TODO IMPLEMENT
+        if (startingSide == CenterStageAuton.StartingSide.LEFT) {
+            // Dropping the pixel
+            NavigationAuton.travelToPOI(pixelLeftJunction, robot)
+            if (pixelPosition == CenterStageAuton.PixelPosition == CenterStageAuton.PixelPosition.LEFT) {
+                rotate(Math.PI, 1, robot);
+                MechanismDriving.dropPixel(robot);
+                rotate(Math.PI/2, 1, robot);
+            }
+            else if (pixelPosition == CenterStageAuton.PixelPosition == CenterStageAuton.PixelPosition.CENTER) {
+                MechanismDriving.dropPixel(robot);
+            }
+            else {
+                rotate(0, 1, robot);
+                MechanismDriving.dropPixel(robot);
+                rotate(Math.PI/2, 1, robot);
+            }
+            // Moving to backdrop
+            if (autonMode == CenterStageAuton.StartingSide.TOP) {
+                NavigationAuton.traveltoPOI();
+                rotate(Math.PI, 1, robot);
+                NavigationAuton.traveltoPOI();
+                NavigationAuton.traveltoPOI();
+                MechanismDriving.dropPixel(robot);
+            }
+            else if (autonMode == CenterStageAuton.StartingSide.MIDDLE) {
+                NavigationAuton.traveltoPOI();
+                MechanismDriving.dropPixel(robot);
+            }
+            else {
+                NavigationAuton.traveltoPOI();
+                rotate(Math.PI, 1, robot);
+                NavigationAuton.traveltoPOI();
+                NavigationAuton.traveltoPOI();
+                MechanismDriving.dropPixel(robot);
+            }
+            // Parking
+            if (parkingPosition == CenterStageAuton.ParkingPosition.LEFT) {
+                NavigationAuton.traveltoPOI(leftBottomParking);
+            }
+            if (parkingPosition == CenterStageAuton.ParkingPosition.CENTER) {
+                NavigationAuton.traveltoPOI(leftCenterParking);
+            }
+            else {
+                NavigationAuton.traveltoPOI(leftTopParking);
+            }
+        }
+        else {
+            // Dropping the pixel
+            NavigationAuton.travelToPOI(pixelLeftJunction, robot)
+            if (pixelPosition == CenterStageAuton.PixelPosition == CenterStageAuton.PixelPosition.LEFT) {
+                rotate(Math.PI, 1, robot);
+                MechanismDriving.dropPixel(robot);
+                rotate(Math.PI/2, 1, robot);
+            }
+            else if (pixelPosition == CenterStageAuton.PixelPosition == CenterStageAuton.PixelPosition.CENTER) {
+                MechanismDriving.dropPixel(robot);
+            }
+            else {
+                rotate(0, 1, robot);
+                MechanismDriving.dropPixel(robot);
+                rotate(Math.PI/2, 1, robot);
+            }
+            // Moving to backdrop
+            if (autonMode == CenterStageAuton.StartingSide.TOP) {
+                NavigationAuton.traveltoPOI();
+                rotate(Math.PI, 1, robot);
+                NavigationAuton.traveltoPOI();
+                NavigationAuton.traveltoPOI();
+                MechanismDriving.dropPixel(robot);
+            }
+            else if (autonMode == CenterStageAuton.StartingSide.MIDDLE) {
+                NavigationAuton.traveltoPOI();
+                MechanismDriving.dropPixel(robot);
+            }
+            else {
+                NavigationAuton.traveltoPOI();
+                rotate(Math.PI, 1, robot);
+                NavigationAuton.traveltoPOI();
+                NavigationAuton.traveltoPOI();
+                MechanismDriving.dropPixel(robot);
+            }
+            // Parking
+            if (parkingPosition == CenterStageAuton.ParkingPosition.LEFT) {
+                NavigationAuton.traveltoPOI(leftBottomParking);
+            }
+            else if (parkingPosition == CenterStageAuton.ParkingPosition.CENTER) {
+                NavigationAuton.traveltoPOI(leftCenterParking);
+            }
+            else {
+                NavigationAuton.traveltoPOI(leftTopParking);
+            }
+        }
     }
 
     /** Hardcoded paths through the playing field during the Autonomous period.*/
@@ -85,7 +187,7 @@ public class AutonomousPathing {
         public static Position pixelLeftJunction = new Position(0*TILE_SIZE, 1*TILE_SIZE, 0, "pixelLeftJunction");
         public static Position pixelRightJunction = new Position(2*TILE_SIZE, 1*TILE_SIZE, 0, "pixelRightJunction");
 
-        // TODO! Change these so that they reflect the full possible 7*3 intermediate locations
+        // TODO! Change these so that they reflect the full possible 6*3 intermediate locations
         //Intermediate Locations. Since these values could be transformed, inner refers to the middle of the entire field, center
         // to the center of the left or right, and outer refers to the very edges of the field next to either side wall
         // Back refers to the tiles closest to the wall, front refers to the tiles furthest away from the wall/drivers
@@ -100,9 +202,11 @@ public class AutonomousPathing {
         public static Position intermediateOuterFront = new Position(-1.15*TILE_SIZE,-2.25*TILE_SIZE, 0, "intermediateOuterFront");
 
         // Parking
-        public static Position leftParking = new Position(-1.5*TILE_SIZE, 0, 0, "leftParking");
-        public static Position centerParking = new Position(-1.5*TILE_SIZE, 1*TILE_SIZE, 0, "centerParking");
-        public static Position rightParking = new Position(-1.5*TILE_SIZE, 2* TILE_SIZE, 0, "rightParking");
-
+        public static Position leftBottomParking = new Position(-1.5*TILE_SIZE, 0, 0, "leftBottomParking");
+        public static Position leftCenterParking = new Position(-1.5*TILE_SIZE, 1*TILE_SIZE, 0, "leftCenterParking");
+        public static Position leftTopParking = new Position(-1.5*TILE_SIZE, 2* TILE_SIZE, 0, "leftTopParking");
+        public static Position rightBottomParking = new Position(1.5*TILE_SIZE, 0, 0, "rightBottomParking");
+        public static Position rightCenterParking = new Position(1.5*TILE_SIZE, 1*TILE_SIZE, 0, "rightCenterParking");
+        public static Position rightTopParking = new Position(1.5*TILE_SIZE, 2* TILE_SIZE, 0, "rightTopParking");
     }
 }

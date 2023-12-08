@@ -32,7 +32,7 @@ public class MechanismDriving {
 
     // Intake motor
     static final double INTAKE_MOTOR_SPEED = 1;
-
+    static final double OUTTAKE_MOTOR_SPEED = 0.2;
 
     /**
      * Update left compartment
@@ -214,20 +214,13 @@ public class MechanismDriving {
             case OFF:
                 robot.intakeMotor.setPower(0);
                 break;
-            case ON:
+            case INTAKE:
                 robot.intakeMotor.setPower(INTAKE_MOTOR_SPEED);
                 break;
+            case OUTTAKE:
+                robot.intakeMotor.setPower(OUTTAKE_MOTOR_SPEED)
         }
         robot.telemetry.addData("SET INTAKE MOTOR POWER", robot.intakeMotor.getPower());
-    }
-
-    /**
-     * Turns on intake motor.
-     * @param robot
-     */
-    public void turnOnIntakeMotor(Robot robot) {
-        robot.desiredIntakeMotorState = Robot.IntakeMotorState.ON;
-        updateIntakeMotor(robot);
     }
 
     /**
@@ -239,5 +232,23 @@ public class MechanismDriving {
         updateIntakeMotor(robot);
     }
 
+    /**
+     * Turns intake motor to intake mode.
+     * @param robot
+     */
+    public void turnIntakeIntakeMotor(Robot robot) {
+        robot.desiredIntakeMotorState = Robot.IntakeMotorState.INTAKE;
+        updateIntakeMotor(robot);
+    }
+    public void turnOuttakeIntakeMotor(Robot robot) {
+        robot.desiredIntakeMotorState = Robot.IntakeMotorState.OUTTAKE;
+        updateIntakeMotor(robot);
+    }
+
+    public void dropPixel(Robot robot) {
+        turnOuttakeIntakeMotor(robot);
+        CenterStage.waitMilliseconds(500);
+        turnOffIntakeMotor(robot);
+    }
 }
 

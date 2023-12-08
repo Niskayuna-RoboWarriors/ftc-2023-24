@@ -79,9 +79,13 @@ public class NavigationAuton {
         }
         Position target = path.get(pathIndex);
         robot.positionManager.updatePosition(robot); //This constantly updates the position on the robot on the field.
+        travelToPOI(target, robot)
+        pathIndex++; //increments path index to the next value...
+        return path.get(pathIndex - 1); //Return the point where the robot is currently at
+    }
+    public void travelToPOI(Position target, Robot robot) {
         robot.telemetry.addData("Going to", target.getX() + ", " + target.getY()); //Updating the X and Y value to the driver station (AKA: the phone)
         robot.telemetry.addData("name", target.getName()); //Gets the name.
-
         switch (movementMode) {
             case FORWARD_ONLY: //Robot moving forward ONLY (if equal with movementMode)
                 rotate(getAngleBetween(robot.getPosition(), target) - Math.PI / 2, target.rotatePower, robot);
@@ -92,15 +96,16 @@ public class NavigationAuton {
             case STRAFE://go directly to the target. do not care about the direction the robot is facing during travle
                 travelLinear(target, target.strafePower, robot);
                 double difference;
-                if (pathIndex > 0) { //
-                    difference = target.getRotation() - path.get(pathIndex - 1).getRotation();
-                } else { //whatever the current rotation is...
-                    difference = target.getRotation();
-                }
+//                if (pathIndex > 0) { //
+//                    difference = target.getRotation() - path.get(pathIndex - 1).getRotation();
+//                } else { //whatever the current rotation is...
+//                    difference = target.getRotation();
+//                }
                 robot.telemetry.addData("Difference", difference);
                 robot.telemetry.addData("Target", target);
                 robot.telemetry.update();
-                deadReckoningRotation(centerStageAuton, robot, difference, target.rotatePower);
+//                deadReckoningRotation(centerStageAuton, robot, difference, target.rotatePower);
+                deadReckoningRotation(centerStageAuton, robot, target.rotatePower);
                 break;
 
 //            case BACKWARD_ONLY: //Robot moving backward ONLY (if equal with movementMode)
@@ -109,9 +114,7 @@ public class NavigationAuton {
 //                rotate(target.getRotation(), target.getRotatePower(), robot);
 //                break;
         }
-        pathIndex++; //increments path index to the next value...
         robot.telemetry.addData("Got to", target.name); //debug thingy for auton (since there were fun times with it...)
-        return path.get(pathIndex - 1); //Return the point where the robot is currently at
     }
 
     /** Rotates the robot a number of degrees.
