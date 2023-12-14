@@ -19,7 +19,7 @@ public class PaperServoTestOpMode extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        Servo servo = hardwareMap.get(Servo.class, "GOD DAMN PLANE SERVO");
+        Servo servo = hardwareMap.get(Servo.class, "plane_spring");
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
