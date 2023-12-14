@@ -30,6 +30,8 @@ public class GamepadWrapper {
     public GamepadWrapper(Gamepad gamepad1, Gamepad gamepad2) {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
+        this.previous_gamepad1 = new Gamepad();
+        this.previous_gamepad2 = new Gamepad();
         updatePrevious();
     }
 
