@@ -8,7 +8,7 @@ import java.util.Map;
 /** Controls motors and servos that are not involved in moving the robot around the field.
  */
 public class MechanismDriving {
-
+    private ElapsedTime elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     // Slide variables
     public static final int LOWERING_AMOUNT = 100;
     public static final Map<Robot.SlideState, Integer> slidePositions = new HashMap<Robot.SlideState, Integer>() {{
@@ -26,8 +26,8 @@ public class MechanismDriving {
     static final double COMPARTMENT_SERVO_TIME = 500;
 
     // Plane spring variables
-    static final double PLANE_SPRING_UNRELEASED_POS = 0;
-    static final double PLANE_SPRING_RELEASED_POS = 0.25;
+    static final double PLANE_SPRING_UNRELEASED_POS = 0.3;
+    static final double PLANE_SPRING_RELEASED_POS = 0;
     static final double PLANE_SPRING_SERVO_TIME = 500;
 
     // Intake motor
@@ -218,7 +218,7 @@ public class MechanismDriving {
                 robot.intakeMotor.setPower(INTAKE_MOTOR_SPEED);
                 break;
             case OUTTAKE:
-                robot.intakeMotor.setPower(OUTTAKE_MOTOR_SPEED)
+                robot.intakeMotor.setPower(OUTTAKE_MOTOR_SPEED);
         }
         robot.telemetry.addData("SET INTAKE MOTOR POWER", robot.intakeMotor.getPower());
     }
@@ -247,8 +247,13 @@ public class MechanismDriving {
 
     public void dropPixel(Robot robot) {
         turnOuttakeIntakeMotor(robot);
-        CenterStage.waitMilliseconds(500);
+        waitMilliseconds(500);
         turnOffIntakeMotor(robot);
+    }
+
+    public void waitMilliseconds(long ms) {
+        double start_time = elapsedTime.time();
+        while (elapsedTime.time() - start_time < ms) {}
     }
 }
 

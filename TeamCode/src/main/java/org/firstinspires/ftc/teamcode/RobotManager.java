@@ -93,11 +93,14 @@ public class RobotManager {
             }
         }
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_INTAKE_MOTOR_ROTATION)) {
-            if (robot.desiredIntakeMotorState == Robot.IntakeMotorState.ON) {
+            if (robot.desiredIntakeMotorState == Robot.IntakeMotorState.OFF) {
                 robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
             }
+            else if (robot.desiredIntakeMotorState == Robot.IntakeMotorState.OUTTAKE) {
+                robot.desiredIntakeMotorState = Robot.IntakeMotorState.OUTTAKE;
+            }
             else {
-                robot.desiredIntakeMotorState = Robot.IntakeMotorState.ON;
+                robot.desiredIntakeMotorState = Robot.IntakeMotorState.INTAKE;
             }
         }
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.PLANE_RELEASE)) {

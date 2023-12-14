@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.*;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.Objects;
+
 /** Stores the Robot's hardware and position.
  *  Also has a "desired state" for mechanism driving.
  */
@@ -18,7 +20,7 @@ public class Robot {
         FRONT_RIGHT ("front_right",DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
         REAR_LEFT   ("rear_left",  DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
         REAR_RIGHT  ("rear_right", DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
-        
+
         //linear slides motors
         SLIDES         ("slides_motor",         DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE),
         INTAKE_MOTOR ("intake_motor", DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT);
@@ -165,21 +167,21 @@ public class Robot {
         this.telemetry   = telemetry;
         this.elapsedTime = elapsedTime;
         positionManager  = new PositionManager(hardwareMap, telemetry);
-        frontLeft = Robot.MotorConfigs.initialize(Robot.MotorConfigs.FRONT_LEFT, hardwareMap);
-        frontRight= Robot.MotorConfigs.initialize(Robot.MotorConfigs.FRONT_RIGHT, hardwareMap);
-        rearLeft  = Robot.MotorConfigs.initialize(Robot.MotorConfigs.REAR_LEFT, hardwareMap);
-        rearRight = Robot.MotorConfigs.initialize(Robot.MotorConfigs.REAR_RIGHT, hardwareMap);
+        frontLeft = Objects.requireNonNull(Robot.MotorConfigs.initialize(Robot.MotorConfigs.FRONT_LEFT, hardwareMap));
+        frontRight= Objects.requireNonNull(Robot.MotorConfigs.initialize(Robot.MotorConfigs.FRONT_RIGHT, hardwareMap));
+        rearLeft  = Objects.requireNonNull(Robot.MotorConfigs.initialize(Robot.MotorConfigs.REAR_LEFT, hardwareMap));
+        rearRight = Objects.requireNonNull(Robot.MotorConfigs.initialize(Robot.MotorConfigs.REAR_RIGHT, hardwareMap));
 
         resetEncoder(frontLeft);
         resetEncoder(frontRight);
         resetEncoder(rearLeft);
         resetEncoder(rearRight);
 
-        slides            = Robot.MotorConfigs.initialize(Robot.MotorConfigs.SLIDES, hardwareMap);
-        intakeMotor            = Robot.MotorConfigs.initialize(Robot.MotorConfigs.INTAKE_MOTOR, hardwareMap);
-        planeSpring     = Robot.ServoConfigs.initialize(Robot.ServoConfigs.PLANE_SPRING, hardwareMap);
-        compartmentLeft     = Robot.ServoConfigs.initialize(Robot.ServoConfigs.COMPARTMENT_LEFT, hardwareMap);
-        compartmentRight     = Robot.ServoConfigs.initialize(Robot.ServoConfigs.COMPARTMENT_RIGHT, hardwareMap);
+        slides            = Objects.requireNonNull(Robot.MotorConfigs.initialize(Robot.MotorConfigs.SLIDES, hardwareMap));
+        intakeMotor            = Objects.requireNonNull(Robot.MotorConfigs.initialize(Robot.MotorConfigs.INTAKE_MOTOR, hardwareMap));
+        planeSpring     = Objects.requireNonNull(Robot.ServoConfigs.initialize(Robot.ServoConfigs.PLANE_SPRING, hardwareMap));
+        compartmentLeft     = Objects.requireNonNull(Robot.ServoConfigs.initialize(Robot.ServoConfigs.COMPARTMENT_LEFT, hardwareMap));
+        compartmentRight     = Objects.requireNonNull(Robot.ServoConfigs.initialize(Robot.ServoConfigs.COMPARTMENT_RIGHT, hardwareMap));
 //        slidesLimitSwitch= Robot.SwitchConfigs.initialize(Robot.SwitchConfigs.SLIDES_LIMIT, hardwareMap);
 
         // Set slides state to Retracted

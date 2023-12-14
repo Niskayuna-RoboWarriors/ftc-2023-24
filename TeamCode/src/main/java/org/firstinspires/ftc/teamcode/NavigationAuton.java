@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
 
 public class NavigationAuton {
+    private ElapsedTime elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     public enum rotationDirection {CLOCKWISE, COUNTERCLOCKWISE};
 
     public static enum Action {NONE, SLIDES_LOW, SLIDES_HIGH,};
@@ -79,7 +81,7 @@ public class NavigationAuton {
         }
         Position target = path.get(pathIndex);
         robot.positionManager.updatePosition(robot); //This constantly updates the position on the robot on the field.
-        travelToPOI(target, robot)
+        travelToPOI(target, robot);
         pathIndex++; //increments path index to the next value...
         return path.get(pathIndex - 1); //Return the point where the robot is currently at
     }
@@ -101,11 +103,12 @@ public class NavigationAuton {
 //                } else { //whatever the current rotation is...
 //                    difference = target.getRotation();
 //                }
+                difference = target.getRotation();
                 robot.telemetry.addData("Difference", difference);
                 robot.telemetry.addData("Target", target);
                 robot.telemetry.update();
-//                deadReckoningRotation(centerStageAuton, robot, difference, target.rotatePower);
-                deadReckoningRotation(centerStageAuton, robot, target.rotatePower);
+//                deadReckoningRotation(robot, difference, target.rotatePower);
+                deadReckoningRotation(robot, difference, target.rotatePower);
                 break;
 
 //            case BACKWARD_ONLY: //Robot moving backward ONLY (if equal with movementMode)
@@ -369,9 +372,9 @@ public class NavigationAuton {
         //return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
     }
 
-    public void deadReckoningRotation(CenterStageAuton centerStageAuton, Robot robot, double time, double power) {
+    public void deadReckoningRotation(Robot robot, double time, double power) {
         NavigationTeleOp.setDriveMotorPowers(0.0, 0.0, power, robot, false);
-        centerStageAuton.waitMilliseconds((long) (time*ROTATION_TIME));
+        waitMilliseconds((long) (time*ROTATION_TIME));
         NavigationTeleOp.stopMovement(robot);
     }
 
@@ -415,5 +418,8 @@ public class NavigationAuton {
         }
     }
 
-
+    public void waitMilliseconds(long ms) {
+        double start_time = elapsedTime.time();
+        while (elapsedTime.time() - start_time < ms) {}
+    }
 }

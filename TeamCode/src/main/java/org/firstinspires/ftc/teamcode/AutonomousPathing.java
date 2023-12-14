@@ -29,7 +29,7 @@ public class AutonomousPathing {
                               CenterStageAuton.PixelPosition pixelPosition, CenterStageAuton.AutonMode autonMode,
                               CenterStageAuton.ParkingPosition parkingPosition) {
         if (startingSide == CenterStageAuton.StartingSide.LEFT) {
-            T
+
         }
         else {
 
@@ -72,110 +72,110 @@ public class AutonomousPathing {
         // TO DO: Add paths for three different paths
         //Parks in a signal parking spot to have a chance for 20 points
         if (parkingPosition == CenterStageAuton.ParkingPosition.LEFT) {
-            path.add(AutonomousPaths.leftParking); //No transformation occurs on this position so it will be the same
+            path.add(AutonomousPaths.leftBottomParking); //No transformation occurs on this position so it will be the same
         } else if (parkingPosition == CenterStageAuton.ParkingPosition.CENTER) {
-            path.add(AutonomousPaths.centerParking);
+            path.add(AutonomousPaths.leftCenterParking);
         }
         else {
-            path.add(AutonomousPaths.rightParking);
+            path.add(AutonomousPaths.leftTopParking);
         }
     }
-    public void runAutonPath(CenterStageAuton.AllianceColor allianceColor, CenterStageAuton.StartingSide startingSide,
+    public void runAutonPath( RobotManager robotManager, Robot robot, CenterStageAuton.AllianceColor allianceColor, CenterStageAuton.StartingSide startingSide,
                              CenterStageAuton.PixelPosition pixelPosition, CenterStageAuton.AutonMode autonMode,
-                             CenterStageAuton.ParkingPosition parkingPosition, Robot robot) {
+                             CenterStageAuton.ParkingPosition parkingPosition) {
         //TODO IMPLEMENT
-        if (startingSide == CenterStageAuton.StartingSide.LEFT) {
-            // Dropping the pixel
-            NavigationAuton.travelToPOI(pixelLeftJunction, robot)
-            if (pixelPosition == CenterStageAuton.PixelPosition == CenterStageAuton.PixelPosition.LEFT) {
-                rotate(Math.PI, 1, robot);
-                MechanismDriving.dropPixel(robot);
-                rotate(Math.PI/2, 1, robot);
-            }
-            else if (pixelPosition == CenterStageAuton.PixelPosition == CenterStageAuton.PixelPosition.CENTER) {
-                MechanismDriving.dropPixel(robot);
-            }
-            else {
-                rotate(0, 1, robot);
-                MechanismDriving.dropPixel(robot);
-                rotate(Math.PI/2, 1, robot);
-            }
-            // Moving to backdrop
-            if (autonMode == CenterStageAuton.StartingSide.TOP) {
-                NavigationAuton.traveltoPOI();
-                rotate(Math.PI, 1, robot);
-                NavigationAuton.traveltoPOI();
-                NavigationAuton.traveltoPOI();
-                MechanismDriving.dropPixel(robot);
-            }
-            else if (autonMode == CenterStageAuton.StartingSide.MIDDLE) {
-                NavigationAuton.traveltoPOI();
-                MechanismDriving.dropPixel(robot);
-            }
-            else {
-                NavigationAuton.traveltoPOI();
-                rotate(Math.PI, 1, robot);
-                NavigationAuton.traveltoPOI();
-                NavigationAuton.traveltoPOI();
-                MechanismDriving.dropPixel(robot);
-            }
-            // Parking
-            if (parkingPosition == CenterStageAuton.ParkingPosition.LEFT) {
-                NavigationAuton.traveltoPOI(leftBottomParking);
-            }
-            if (parkingPosition == CenterStageAuton.ParkingPosition.CENTER) {
-                NavigationAuton.traveltoPOI(leftCenterParking);
-            }
-            else {
-                NavigationAuton.traveltoPOI(leftTopParking);
-            }
-        }
-        else {
-            // Dropping the pixel
-            NavigationAuton.travelToPOI(pixelLeftJunction, robot)
-            if (pixelPosition == CenterStageAuton.PixelPosition == CenterStageAuton.PixelPosition.LEFT) {
-                rotate(Math.PI, 1, robot);
-                MechanismDriving.dropPixel(robot);
-                rotate(Math.PI/2, 1, robot);
-            }
-            else if (pixelPosition == CenterStageAuton.PixelPosition == CenterStageAuton.PixelPosition.CENTER) {
-                MechanismDriving.dropPixel(robot);
-            }
-            else {
-                rotate(0, 1, robot);
-                MechanismDriving.dropPixel(robot);
-                rotate(Math.PI/2, 1, robot);
-            }
-            // Moving to backdrop
-            if (autonMode == CenterStageAuton.StartingSide.TOP) {
-                NavigationAuton.traveltoPOI();
-                rotate(Math.PI, 1, robot);
-                NavigationAuton.traveltoPOI();
-                NavigationAuton.traveltoPOI();
-                MechanismDriving.dropPixel(robot);
-            }
-            else if (autonMode == CenterStageAuton.StartingSide.MIDDLE) {
-                NavigationAuton.traveltoPOI();
-                MechanismDriving.dropPixel(robot);
-            }
-            else {
-                NavigationAuton.traveltoPOI();
-                rotate(Math.PI, 1, robot);
-                NavigationAuton.traveltoPOI();
-                NavigationAuton.traveltoPOI();
-                MechanismDriving.dropPixel(robot);
-            }
-            // Parking
-            if (parkingPosition == CenterStageAuton.ParkingPosition.LEFT) {
-                NavigationAuton.traveltoPOI(leftBottomParking);
-            }
-            else if (parkingPosition == CenterStageAuton.ParkingPosition.CENTER) {
-                NavigationAuton.traveltoPOI(leftCenterParking);
-            }
-            else {
-                NavigationAuton.traveltoPOI(leftTopParking);
-            }
-        }
+//        if (startingSide == CenterStageAuton.StartingSide.LEFT) {
+//            // Dropping the pixel
+//            NavigationAuton.travelToPOI(pixelLeftJunction, robot);
+//            if (pixelPosition == CenterStageAuton.PixelPosition == CenterStageAuton.PixelPosition.LEFT) {
+//                rotate(Math.PI, 1, robot);
+//                robotManager.mechanismDriving.dropPixel(robot);
+//                rotate(Math.PI/2, 1, robot);
+//            }
+//            else if (pixelPosition == CenterStageAuton.PixelPosition == CenterStageAuton.PixelPosition.CENTER) {
+//                MechanismDriving.dropPixel(robot);
+//            }
+//            else {
+//                rotate(0, 1, robot);
+//                MechanismDriving.dropPixel(robot);
+//                rotate(Math.PI/2, 1, robot);
+//            }
+//            // Moving to backdrop
+//            if (autonMode == CenterStageAuton.StartingSide.TOP) {
+//                NavigationAuton.traveltoPOI();
+//                rotate(Math.PI, 1, robot);
+//                NavigationAuton.traveltoPOI();
+//                NavigationAuton.traveltoPOI();
+//                MechanismDriving.dropPixel(robot);
+//            }
+//            else if (autonMode == CenterStageAuton.StartingSide.MIDDLE) {
+//                NavigationAuton.traveltoPOI();
+//                MechanismDriving.dropPixel(robot);
+//            }
+//            else {
+//                NavigationAuton.traveltoPOI();
+//                rotate(Math.PI, 1, robot);
+//                NavigationAuton.traveltoPOI();
+//                NavigationAuton.traveltoPOI();
+//                MechanismDriving.dropPixel(robot);
+//            }
+//            // Parking
+//            if (parkingPosition == CenterStageAuton.ParkingPosition.LEFT) {
+//                NavigationAuton.traveltoPOI(leftBottomParking);
+//            }
+//            if (parkingPosition == CenterStageAuton.ParkingPosition.CENTER) {
+//                NavigationAuton.traveltoPOI(leftCenterParking);
+//            }
+//            else {
+//                NavigationAuton.traveltoPOI(leftTopParking);
+//            }
+//        }
+//        else {
+//            // Dropping the pixel
+//            NavigationAuton.travelToPOI(pixelLeftJunction, robot);
+//            if (pixelPosition == CenterStageAuton.PixelPosition == CenterStageAuton.PixelPosition.LEFT) {
+//                rotate(Math.PI, 1, robot);
+//                MechanismDriving.dropPixel(robot);
+//                rotate(Math.PI/2, 1, robot);
+//            }
+//            else if (pixelPosition == CenterStageAuton.PixelPosition == CenterStageAuton.PixelPosition.CENTER) {
+//                MechanismDriving.dropPixel(robot);
+//            }
+//            else {
+//                rotate(0, 1, robot);
+//                MechanismDriving.dropPixel(robot);
+//                rotate(Math.PI/2, 1, robot);
+//            }
+//            // Moving to backdrop
+//            if (autonMode == CenterStageAuton.StartingSide.TOP) {
+//                NavigationAuton.traveltoPOI();
+//                rotate(Math.PI, 1, robot);
+//                NavigationAuton.traveltoPOI();
+//                NavigationAuton.traveltoPOI();
+//                MechanismDriving.dropPixel(robot);
+//            }
+//            else if (autonMode == CenterStageAuton.StartingSide.MIDDLE) {
+//                NavigationAuton.traveltoPOI();
+//                MechanismDriving.dropPixel(robot);
+//            }
+//            else {
+//                NavigationAuton.traveltoPOI();
+//                rotate(Math.PI, 1, robot);
+//                NavigationAuton.traveltoPOI();
+//                NavigationAuton.traveltoPOI();
+//                MechanismDriving.dropPixel(robot);
+//            }
+//            // Parking
+//            if (parkingPosition == CenterStageAuton.ParkingPosition.LEFT) {
+//                NavigationAuton.traveltoPOI(leftBottomParking);
+//            }
+//            else if (parkingPosition == CenterStageAuton.ParkingPosition.CENTER) {
+//                NavigationAuton.traveltoPOI(leftCenterParking);
+//            }
+//            else {
+//                NavigationAuton.traveltoPOI(leftTopParking);
+//            }
+//        }
     }
 
     /** Hardcoded paths through the playing field during the Autonomous period.*/

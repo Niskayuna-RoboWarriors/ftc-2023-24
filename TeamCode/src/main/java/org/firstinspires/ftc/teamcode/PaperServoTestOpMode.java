@@ -20,6 +20,7 @@ public class PaperServoTestOpMode extends LinearOpMode {
         telemetry.update();
 
         Servo servo = hardwareMap.get(Servo.class, "plane_spring");
+        telemetry.addData("servo", servo);
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
@@ -30,10 +31,14 @@ public class PaperServoTestOpMode extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            if (runtime.milliseconds() % 2000 < 1000)
-                servo.setPosition(Servo.MIN_POSITION);
-            else
-                servo.setPosition(Servo.MAX_POSITION);
+            if (runtime.milliseconds() % 2000 < 1000) {
+                servo.setPosition(MechanismDriving.PLANE_SPRING_UNRELEASED_POS);
+                telemetry.addData("Going to ", MechanismDriving.PLANE_SPRING_UNRELEASED_POS);
+            }
+            else {
+                servo.setPosition(MechanismDriving.PLANE_SPRING_RELEASED_POS);
+                telemetry.addData("Going to ", MechanismDriving.PLANE_SPRING_RELEASED_POS);
+            }
 
             // Show the elapsed game time.
             telemetry.addData("Status", "Run Time: " + runtime.toString());

@@ -37,8 +37,8 @@ public class MechanismTestOp extends LinearOpMode {
         mechanismDriving.closeRightCompartment(robot);
         telemetry.addData("CLOSE COMPARTMENT RIGHT", robot.compartmentRight.getPosition());
         sleep(1);
-        mechanismDriving.turnOnIntakeMotor(robot);
-        telemetry.addData("TURN ON INTAKE MOTOR", robot.intakeMotor.getPower());
+        mechanismDriving.turnIntakeIntakeMotor(robot);
+        telemetry.addData("TURN INTAKE INTAKE MOTOR", robot.intakeMotor.getPower());
         sleep(1);
         mechanismDriving.turnOffIntakeMotor(robot);
         telemetry.addData("TURN OFF INTAKE MOTOR", robot.intakeMotor.getPower());
