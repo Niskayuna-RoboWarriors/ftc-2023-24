@@ -2,15 +2,14 @@ package org.firstinspires.ftc.teamcode;
 
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /** Incorporates estimates from multiple sources to create a single positioning estimate
@@ -180,7 +179,7 @@ class IMUPositioning{
 
     /** applies the IMU parameters and calibrates hte gyro
      */
-    public static void Initialize(){
+    public static void Initialize(OpMode opMode){
         imu.initialize(parameters);
 
         //wait for the gyro to be calibrated

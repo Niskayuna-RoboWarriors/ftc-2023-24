@@ -1,4 +1,4 @@
-/* Authors: Arin Khare, Kai Vernooy
+/* Authors: James Lian, Tyler Montgomery, Jason Lian
  */
 
 package org.firstinspires.ftc.teamcode;
@@ -18,20 +18,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  */
 public class RobotManager {
 
-
-    public enum AllianceColor {BLUE, RED};
-    public enum StartingSide {LEFT, RIGHT};
-    public enum ParkingPosition {LEFT, RIGHT, MIDDLE};
-    public enum MovementMode {FORWARD_ONLY, STRAFE};
     public Robot robot;
-    public AllianceColor allianceColor;
-    public StartingSide startingSide;
-
-    public MovementMode movementMode;
 
     public MechanismDriving mechanismDriving;
     public NavigationTeleOp navigation;
-//    public ComputerVision computerVision;
+    public ComputerVision computerVision;
 
     protected GamepadWrapper gamepads;
     public ElapsedTime elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -41,24 +32,14 @@ public class RobotManager {
      * @param hardwareMap
      * @param gamepad1
      * @param gamepad2
-     * @param path
-     * @param allianceColor
-     * @param startingSide
-     * @param movementMode
      * @param telemetry
      * @param elapsedTime
      */
-    public RobotManager(HardwareMap hardwareMap, Gamepad gamepad1, Gamepad gamepad2,
-                        ArrayList<Position> path, AllianceColor allianceColor, StartingSide startingSide,
-                        MovementMode movementMode, Telemetry telemetry, ElapsedTime elapsedTime) {
+    public RobotManager(HardwareMap hardwareMap, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, ElapsedTime elapsedTime) {
 
         this.elapsedTime = elapsedTime;
-        this.allianceColor = allianceColor;
-        this.startingSide = startingSide;
-
         elapsedTime.reset();
         robot = new Robot(hardwareMap, telemetry, elapsedTime);
-        robot.telemetry.addData("auton path", path.size());
         navigation = new NavigationTeleOp();
         mechanismDriving = new MechanismDriving();
 

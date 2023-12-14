@@ -14,8 +14,6 @@ public class NavigationTeleOp {
     public static enum Action {NONE, SLIDES_LOW, SLIDES_HIGH,};
     //Makes actions of the Robot that can be used anywhere within the folder.
 
-    //**AUTONOMOUS CONSTANTS**
-    public enum MovementMode {FORWARD_ONLY, BACKWARD_ONLY, STRAFE_LEFT, STRAFE_RIGHT};
 
     //Movements within the robot Autonomous Mode
     public final double STRAFE_ACCELERATION = 0.1; //Number indicated Inches per second squared
