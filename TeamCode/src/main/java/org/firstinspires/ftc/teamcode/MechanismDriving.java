@@ -218,7 +218,7 @@ public class MechanismDriving {
                 robot.intakeMotor.setPower(INTAKE_MOTOR_SPEED);
                 break;
             case OUTTAKE:
-                robot.intakeMotor.setPower(OUTTAKE_MOTOR_SPEED)
+                robot.intakeMotor.setPower(OUTTAKE_MOTOR_SPEED);
         }
         robot.telemetry.addData("SET INTAKE MOTOR POWER", robot.intakeMotor.getPower());
     }
@@ -247,7 +247,11 @@ public class MechanismDriving {
 
     public void dropPixel(Robot robot) {
         turnOuttakeIntakeMotor(robot);
-        CenterStage.waitMilliseconds(500);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         turnOffIntakeMotor(robot);
     }
 }

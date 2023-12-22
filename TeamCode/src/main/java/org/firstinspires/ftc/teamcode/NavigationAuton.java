@@ -3,7 +3,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
 
-public class NavigationAuton {
+public class NavigationAuton extends BaseNavigation{
     public enum rotationDirection {CLOCKWISE, COUNTERCLOCKWISE};
 
     public static enum Action {NONE, SLIDES_LOW, SLIDES_HIGH,};
@@ -65,21 +65,20 @@ public class NavigationAuton {
     public void Navigation(AutonomousPathing path, CenterStageAuton.MovementMode movementMode) {
         this.movementMode = movementMode;
         this.pathIndex = 0;
-    };
+    }
 
     /**Makes the robot travel along the pth until it reaches a POI (Position of Interest)
      * |Auton| |Blocking|
-     * @param centerStageAuton the auton
      * @param robot        the physical robot itself
      */
-    public Position travelToNextPOI(CenterStageAuton centerStageAuton, Robot robot) {
+    public Position travelToNextPOI(Robot robot) {
         if (path.size() <= pathIndex) {
             robot.telemetry.addData("Path size <= to the path index, end of travel. pathIndex:", pathIndex); //This will show on the console. (Phone)
             return null;
         }
         Position target = path.get(pathIndex);
         robot.positionManager.updatePosition(robot); //This constantly updates the position on the robot on the field.
-        travelToPOI(target, robot)
+        travelToPOI(target, robot);
         pathIndex++; //increments path index to the next value...
         return path.get(pathIndex - 1); //Return the point where the robot is currently at
     }
@@ -95,7 +94,7 @@ public class NavigationAuton {
 
             case STRAFE://go directly to the target. do not care about the direction the robot is facing during travle
                 travelLinear(target, target.strafePower, robot);
-                double difference;
+                double difference =0;
 //                if (pathIndex > 0) { //
 //                    difference = target.getRotation() - path.get(pathIndex - 1).getRotation();
 //                } else { //whatever the current rotation is...
@@ -105,7 +104,7 @@ public class NavigationAuton {
                 robot.telemetry.addData("Target", target);
                 robot.telemetry.update();
 //                deadReckoningRotation(centerStageAuton, robot, difference, target.rotatePower);
-                deadReckoningRotation(centerStageAuton, robot, target.rotatePower);
+                deadReckoningRotation(robot, 1,target.rotatePower);
                 break;
 
 //            case BACKWARD_ONLY: //Robot moving backward ONLY (if equal with movementMode)
@@ -369,9 +368,13 @@ public class NavigationAuton {
         //return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
     }
 
-    public void deadReckoningRotation(CenterStageAuton centerStageAuton, Robot robot, double time, double power) {
+    public void deadReckoningRotation(Robot robot, double time, double power) {
         NavigationTeleOp.setDriveMotorPowers(0.0, 0.0, power, robot, false);
-        centerStageAuton.waitMilliseconds((long) (time*ROTATION_TIME));
+        try {
+            Thread.sleep((long) (time*ROTATION_TIME));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         NavigationTeleOp.stopMovement(robot);
     }
 
