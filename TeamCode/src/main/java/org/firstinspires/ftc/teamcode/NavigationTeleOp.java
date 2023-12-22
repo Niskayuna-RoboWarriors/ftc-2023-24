@@ -81,9 +81,9 @@ public class NavigationTeleOp {
 
 
         if (distance <= JOYSTICK_DEAD_ZONE_SIZE) {
-            strafePower = SLOW_MOVEMENT_SCALE_FACTOR; //Set as 0.3 (3/10th full power)
+            strafePower = 0; //Set as 0.3 (3/10th full power)
         } else {
-            strafePower = distance + MOVEMENT_MAX_POWER; //Set as 1 (full power)
+            strafePower = distance * MOVEMENT_MAX_POWER; //Set as 1 (full power)
         }
         //Pre-sets robot slide states at what speed.
         if (robot.desiredSlideState == Robot.SlideState.HIGH && robot.slides.getPower() == 0) {
@@ -160,7 +160,7 @@ public class NavigationTeleOp {
         } else if (Math.abs(moveDirection - Math.PI) % Math.PI < Math.PI / 12) {
             moveDirection = Math.PI;
         } else if (Math.abs(moveDirection + Math.PI / 2) < Math.PI / 12) {
-            moveDirection = Math.PI / 2;
+            moveDirection = -Math.PI / 2;
         } else {
             moveDirection = moveDirection;
         }

@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -157,8 +158,8 @@ class EncoderPositioning{
 
 
 class IMUPositioning{
-    static private BNO055IMU imu;
-    static private BNO055IMU.Parameters parameters;
+    static private IMU imu;
+    static private IMU.Parameters parameters;
 
     /**
      *
@@ -166,14 +167,19 @@ class IMUPositioning{
      */
     IMUPositioning(HardwareMap hardwareMap){
         //configure the parameters for the IMU
-        parameters = new BNO055IMU.Parameters();
-        parameters.mode = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled = false; //we hate logging stuff, so we kept it false :)
+        parameters = new IMU.Parameters(
+                new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+                )
+        );
+//        parameters.mode = IMU.SensorMode.IMU;
+//        parameters.angleUnit = IMU.AngleUnit.RADIANS;
+//        parameters.accelUnit = IMU.AccelUnit.METERS_PERSEC_PERSEC;
+//        parameters.loggingEnabled = false; //we hate logging stuff, so we kept it false :)
 
         //get the IMU
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu = hardwareMap.get(IMU.class, "imu");
 
     }
 
@@ -183,15 +189,15 @@ class IMUPositioning{
         imu.initialize(parameters);
 
         //wait for the gyro to be calibrated
-        while (!imu.isGyroCalibrated()){
-        }
+//        while (!imu.isGyroCalibrated()){
+//        }
     }
 
     /**
      *returns the angle of the robot. (angle is theta)
      */
     public double getAngle(){ //getAngle is theta.
-        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle;
+        return imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle;
     }
 
     /**updates the current rotation of the robot from the IMU

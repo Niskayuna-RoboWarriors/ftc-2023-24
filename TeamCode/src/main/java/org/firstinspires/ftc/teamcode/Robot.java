@@ -16,10 +16,10 @@ public class Robot {
      */
     public enum MotorConfigs {
         //drive motors
-        FRONT_LEFT  ("front_left", DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
+        FRONT_LEFT  ("front_left", DcMotor.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT),
         FRONT_RIGHT ("front_right",DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
-        REAR_LEFT   ("rear_left",  DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
-        REAR_RIGHT  ("rear_right", DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
+        REAR_LEFT   ("rear_left",  DcMotor.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT),
+        REAR_RIGHT  ("rear_right", DcMotor.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT),
 
         //linear slides motors
         SLIDES         ("slides_motor",         DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE),
@@ -128,8 +128,8 @@ public class Robot {
 
 
     //Enums for states
-    public static enum SlideState             {RETRACTED, LOW, MEDIUM, HIGH, UNREADY, MOVE_UP, MOVE_DOWN, STOPPED};
-    public SlideState desiredSlideState = SlideState.UNREADY;
+    public static enum SlideState             {RETRACTED, LOW, MEDIUM, HIGH, MOVE_UP, MOVE_DOWN, STOPPED};
+    public SlideState desiredSlideState = SlideState.RETRACTED;
     public int desiredSlidePosition;
     public enum ParkingPosition        {INSIDE, MIDDLE, OUTSIDE};
     public static enum CompartmentState       {OPEN, CLOSED};
@@ -185,11 +185,11 @@ public class Robot {
 //        slidesLimitSwitch= Robot.SwitchConfigs.initialize(Robot.SwitchConfigs.SLIDES_LIMIT, hardwareMap);
 
         // Set slides state to Retracted
-        if (desiredSlideState == SlideState.UNREADY) { //if the slides have yet to be initialised then reset the encoders for the slides and set the slide state to retracted
-            this.telemetry.addData("desired string state", desiredSlideState.toString());
-            resetEncoder(slides);
-            desiredSlideState = SlideState.RETRACTED;
-        }
+//        if (desiredSlideState == SlideState.UNREADY) { //if the slides have yet to be initialised then reset the encoders for the slides and set the slide state to retracted
+        this.telemetry.addData("desired string state", desiredSlideState.toString());
+        resetEncoder(slides);
+//            desiredSlideState = SlideState.RETRACTED;
+
     }
 
     public static void resetEncoder(DcMotor motor) {
