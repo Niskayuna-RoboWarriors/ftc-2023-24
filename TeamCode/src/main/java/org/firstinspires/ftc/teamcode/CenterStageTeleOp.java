@@ -30,7 +30,7 @@ public class CenterStageTeleOp extends OpMode {
         robotManager = new RobotManager(hardwareMap, gamepad1, gamepad2, telemetry, elapsedTime);
         telemetry.addData("init after robot manager", null);
         telemetry.update();
-         IMUPositioning.Initialize(this);
+        IMUPositioning.Initialize(this);
         telemetry.addData("Initalized", null);
         telemetry.update();
     }

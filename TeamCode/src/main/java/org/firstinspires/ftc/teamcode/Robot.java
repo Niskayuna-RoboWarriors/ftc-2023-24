@@ -16,9 +16,9 @@ public class Robot {
      */
     public enum MotorConfigs {
         //drive motors
-        FRONT_LEFT  ("front_left", DcMotor.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT),
-        FRONT_RIGHT ("front_right",DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
-        REAR_LEFT   ("rear_left",  DcMotor.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT),
+        FRONT_LEFT  ("front_left", DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
+        FRONT_RIGHT ("front_right",DcMotor.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT),
+        REAR_LEFT   ("rear_left",  DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
         REAR_RIGHT  ("rear_right", DcMotor.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT),
 
         //linear slides motors
@@ -180,9 +180,12 @@ public class Robot {
         slides            = Objects.requireNonNull(Robot.MotorConfigs.initialize(Robot.MotorConfigs.SLIDES, hardwareMap));
         intakeMotor            = Objects.requireNonNull(Robot.MotorConfigs.initialize(Robot.MotorConfigs.INTAKE_MOTOR, hardwareMap));
         planeSpring     = Objects.requireNonNull(Robot.ServoConfigs.initialize(Robot.ServoConfigs.PLANE_SPRING, hardwareMap));
-        compartmentLeft     = Objects.requireNonNull(Robot.ServoConfigs.initialize(Robot.ServoConfigs.COMPARTMENT_LEFT, hardwareMap));
-        compartmentRight     = Objects.requireNonNull(Robot.ServoConfigs.initialize(Robot.ServoConfigs.COMPARTMENT_RIGHT, hardwareMap));
+        //compartmentLeft     = Objects.requireNonNull(Robot.ServoConfigs.initialize(Robot.ServoConfigs.COMPARTMENT_LEFT, hardwareMap));
+        //compartmentRight     = Objects.requireNonNull(Robot.ServoConfigs.initialize(Robot.ServoConfigs.COMPARTMENT_RIGHT, hardwareMap));
 //        slidesLimitSwitch= Robot.SwitchConfigs.initialize(Robot.SwitchConfigs.SLIDES_LIMIT, hardwareMap);
+
+
+        slides.setPower(1.0);
 
         // Set slides state to Retracted
 //        if (desiredSlideState == SlideState.UNREADY) { //if the slides have yet to be initialised then reset the encoders for the slides and set the slide state to retracted

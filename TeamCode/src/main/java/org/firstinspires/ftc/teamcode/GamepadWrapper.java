@@ -75,7 +75,7 @@ public class GamepadWrapper {
             case SET_SLIDES_HIGH:
                 return gamepad2.dpad_up;
             case TOGGLE_INTAKE_MOTOR_ROTATION:
-                return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
+                return gamepad2.circle;
             case TOGGLE_RIGHT_BUCKET:
                 return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
             case TOGGLE_LEFT_BUCKET:

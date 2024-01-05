@@ -94,13 +94,13 @@ public class RobotManager {
         }
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_INTAKE_MOTOR_ROTATION)) {
             if (robot.desiredIntakeMotorState == Robot.IntakeMotorState.OFF) {
-                robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
+                robot.desiredIntakeMotorState = Robot.IntakeMotorState.INTAKE;
             }
-            else if (robot.desiredIntakeMotorState == Robot.IntakeMotorState.OUTTAKE) {
+            else if (robot.desiredIntakeMotorState == Robot.IntakeMotorState.INTAKE) {
                 robot.desiredIntakeMotorState = Robot.IntakeMotorState.OUTTAKE;
             }
             else {
-                robot.desiredIntakeMotorState = Robot.IntakeMotorState.INTAKE;
+                robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
             }
         }
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.PLANE_RELEASE)) {
@@ -116,7 +116,7 @@ public class RobotManager {
     /** Wraps mechanism driving update functions
      */
     public void driveMechanisms() {
-        mechanismDriving.updateCompartments(robot);
+        //mechanismDriving.updateCompartments(robot);
         mechanismDriving.updateSlides(robot);
         mechanismDriving.updatePlaneSpring(robot);
         mechanismDriving.updateIntakeMotor(robot);

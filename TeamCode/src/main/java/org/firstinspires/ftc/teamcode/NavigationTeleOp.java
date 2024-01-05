@@ -77,7 +77,7 @@ public class NavigationTeleOp {
 
         AnalogValues analogValues = gamepads.getAnalogValues();
         //Limits the output values between 0 - 1. 0 = no power, 1 = full power
-        double distance = Range.clip(Math.sqrt(Math.pow(analogValues.gamepad1LeftStickX, 2) + Math.pow(analogValues.gamepad1LeftStickY, 2)), 0, 1);
+        double distance = Range.clip(Math.hypot(analogValues.gamepad1LeftStickX, analogValues.gamepad1LeftStickY), 0, 1);
 
 
         if (distance <= JOYSTICK_DEAD_ZONE_SIZE) {
@@ -139,7 +139,7 @@ public class NavigationTeleOp {
         // NOTE: right-side drivetrain motor inputs don't have to be negated because their directions will be reversed
         //       upon initialization.
 
-        double turn = gamepads.gamepad1.right_stick_x;
+        double turn = -gamepads.gamepad1.right_stick_x;
         double rotationPower = ROTATION_POWER;
         if (Math.abs(turn) < JOYSTICK_DEAD_ZONE_SIZE) {
             turn = 0;

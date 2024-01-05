@@ -31,7 +31,7 @@ public class MechanismDriving {
     static final double PLANE_SPRING_SERVO_TIME = 500;
 
     // Intake motor
-    static final double INTAKE_MOTOR_SPEED = 1;
+    static final double INTAKE_MOTOR_SPEED = -.5;
     static final double OUTTAKE_MOTOR_SPEED = 0.2;
 
     /**
@@ -119,12 +119,14 @@ public class MechanismDriving {
         while (robot.elapsedTime.milliseconds() - startingTime < COMPARTMENT_SERVO_TIME) {}
     }
 
+
+
     /** Sets slide motor powers to move in direction of desired position, if necessary.
      *
      * @return whether the slides are in the desired position.
      */
     public boolean updateSlides(Robot robot) {
-        if (!slidePositions.containsKey(robot.desiredSlideState)) return false; // temp 
+        if (!slidePositions.containsKey(robot.desiredSlideState)) return false; // temp
         robot.desiredSlidePosition = slidePositions.get(robot.desiredSlideState);
         double mainSpeed; // "ramp" the motor speeds down based on how far away from the destination the motors are
         mainSpeed = maxSpeedCoefficient * Range.clip(Math.abs(robot.desiredSlidePosition - robot.slides.getCurrentPosition())/slideRampDownDist, 0.1, 1);
