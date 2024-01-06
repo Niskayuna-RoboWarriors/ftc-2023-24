@@ -96,10 +96,14 @@ public class RobotManager {
             if (robot.desiredIntakeMotorState == Robot.IntakeMotorState.OFF) {
                 robot.desiredIntakeMotorState = Robot.IntakeMotorState.INTAKE;
             }
-            else if (robot.desiredIntakeMotorState == Robot.IntakeMotorState.INTAKE) {
-                robot.desiredIntakeMotorState = Robot.IntakeMotorState.OUTTAKE;
-            }
             else {
+                robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
+            }
+        }
+        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_OUTTAKE_MOTOR_ROTATION)) {
+            if (robot.desiredIntakeMotorState == Robot.IntakeMotorState.OFF) {
+                robot.desiredIntakeMotorState = Robot.IntakeMotorState.OUTTAKE;
+            } else {
                 robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
             }
         }
