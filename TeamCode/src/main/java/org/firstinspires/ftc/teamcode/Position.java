@@ -70,9 +70,10 @@ public class Position {
       * @param action the action that should be perfomed when the robot reaches this position
       * @param name the name of this positon  (for debugging)
       */
-    public Position(NavigationAuton.Action action, String name){
+    public Position(NavigationAuton.Action action, String name,double theta){
         this.name=name;
         this.action=action;
+        setRotation(theta);
     }
 
     //Sets all of the variables as a public function.
