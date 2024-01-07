@@ -2,14 +2,17 @@ package org.firstinspires.ftc.teamcode;
 
 
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AutonomousPathing {
-    public static final double TILE_SIZE = 24;
+    public static final double TILE_SIZE = 24; //24 inches is tile size
     // These two constants aren't used but store the offsets from the center of the tile to the real starting position
     public static final double Y_OFFSET = -0.25;
     public static final double X_OFFSET = -0.15;
+    public static final double HALF_ROBOT_TILE_LENGTH = 0; //TODO NEEDS TO BE RECONFIGURED TO THE CORRECT VALUE
     private RobotManager robotManager;
 
     public AutonomousPathing(RobotManager robotManager, CenterStageAuton.AllianceColor allianceColor, CenterStageAuton.StartingSide startingSide,
@@ -21,69 +24,10 @@ public class AutonomousPathing {
 
         ArrayList<Position> path = robotManager.navigationAuton.path;
         //generate path here
-        generatePath(allianceColor,startingSide,movementMode,pixelPosition,parkingPosition,autonMode);
+        generatePath(allianceColor,startingSide,pixelPosition,parkingPosition);
 
     }
 
-    ///**
-    // * @param allianceColor    where the robot starts in auton mode on the field
-    // * @param parkingPosition the parking position of the robot during auton mode.
-    // */
-    //public void configurePath(CenterStageAuton.AllianceColor allianceColor, CenterStageAuton.StartingSide startingSide,
-    //                          CenterStageAuton.PixelPosition pixelPosition, CenterStageAuton.AutonMode autonMode,
-    //                          CenterStageAuton.ParkingPosition parkingPosition) {
-    //    if (startingSide == CenterStageAuton.StartingSide.LEFT) {
-    //        //T
-    //    }
-    //    else {
-//
-    //    }
-    //    transformPath(allianceColor, startingSide);
-    //    //Set parking location
-    //    setParkingLocation(allianceColor, parkingPosition);
-    //}
-
-    ///**
-    // * Transforms the path from the default of BLUE side alliance color if necessary
-    // * @param allianceColor the starting side of the robot, and what color it is on
-    // */
-    //private void transformPath(CenterStageAuton.AllianceColor allianceColor, CenterStageAuton.StartingSide startingSide) {
-    //    for (int i = 0; i < path.size(); i++) {
-    //        Position pos = path.get(i);
-    //        Position copy = new Position(pos.getX(),pos.getY(), pos.getName(),pos.getAction(),pos.getStrafePower(),pos.getRotatePower(),pos.getRotation());
-//  //          if (allianceColor == CenterStageAuton.AllianceColor.RED) {
-//  //              copy.setY(-copy.getY());
-    //            copy.setRotation(-copy.getRotation());
-//  //          }
-//  //          if (allianceColor == CenterStageAuton.AllianceColor.RED) {
-//  //              copy.setX(-copy.getX());
-//  //              copy.setRotation(-copy.getRotation());
-//  //          }
-    //        if (startingSide == CenterStageAuton.StartingSide.RIGHT) {
-    //            // Adjust left-wards on X axis to account for perspective that's further to the right
-    //            copy.setX(-2*TILE_SIZE + copy.getY());
-    //        }
-    //        path.set(i, copy);
-    //    }
-    //}
-
-
-    ///**
-    // * @param allianceColor the starting side of the robot, and what color it is on
-    // * @param parkingPosition the parking position of the robot, and where the robot is parking
-    // */
-    //private void setParkingLocation(CenterStageAuton.AllianceColor allianceColor, CenterStageAuton.ParkingPosition parkingPosition) {
-    //    // TO DO: Add paths for three different paths
-    //    //Parks in a signal parking spot to have a chance for 20 points
-    //    if (parkingPosition == CenterStageAuton.ParkingPosition.LEFT) {
-    //        path.add(AutonomousPaths.leftParking); //No transformation occurs on this position so it will be the same
-    //    } else if (parkingPosition == CenterStageAuton.ParkingPosition.CENTER) {
-    //        path.add(AutonomousPaths.centerParking);
-    //    }
-    //    else {
-    //        path.add(AutonomousPaths.rightParking);
-    //    }
-    //}
     public void runAutonPath() {
         Robot robot = robotManager.robot;
         NavigationAuton nav = robotManager.navigationAuton;
@@ -92,138 +36,113 @@ public class AutonomousPathing {
         }
         robot.telemetry.addData(":","FINISHED PATH");
 
-        //TODO IMPLEMENT
-        /*if (startingSide == CenterStageAuton.StartingSide.LEFT) {
-            // Dropping the pixel
-            //robotManager.
-            if (pixelPosition == CenterStageAuton.PixelPosition == CenterStageAuton.PixelPosition.LEFT) {
-                rotate(Math.PI, 1, robot);
-                robotManager.mechanismDriving.dropPixel(robot);
-                rotate(Math.PI/2, 1, robot);
+    }
+
+    /**
+     * @param allianceColor The alliance color on what team were on (in this case, it is blue or red)
+     * @param startingSide The starting side of the robot (is it further from the backdrop, or closer to the backdrop)
+     * @param pixelPosition The randomized position on where to put the pixel (right, center, or left)
+     * @param parkingPosition Where the robot is parking from the backboard (parking to the left of the backboard, or the right of the backboard)
+     */
+    void generatePath(CenterStageAuton.AllianceColor allianceColor, CenterStageAuton.StartingSide startingSide,
+                       CenterStageAuton.PixelPosition pixelPosition,
+                      CenterStageAuton.ParkingPosition parkingPosition){
+        //TODO
+        robotManager.navigationAuton.path = new ArrayList<>();
+        ArrayList<Position> path = robotManager.navigationAuton.path;
+
+        //move to center spike mark
+        path.add(new Position(0,1.69*TILE_SIZE-HALF_ROBOT_TILE_LENGTH,0,"move to center Spike mark")); //move forward initially
+
+        switch(pixelPosition){
+            case LEFT :
+                path.add(new Position(0,0,Math.PI/4,"face pixel position"));//face pixel spike mark
+                path.add(new Position(-0.259*TILE_SIZE,0,0,"move to pixel spike mark"));//move to pixel spike mark
+                break;
+            case RIGHT:
+                path.add(new Position(0,0, Math.PI/-4, "face pixel position"));//face pixel spike mark
+                path.add(new Position(0.259*TILE_SIZE,0,0,"move to pixel spike mark"));//move to pixel spike mark
+                break;
+            case CENTER:
+                //face pixel spike mark//for center do nothing
+                path.add(new Position(0,0.259*TILE_SIZE,0,"move to pixel spike mark"));//move to pixel spike mark
+
+        }
+
+
+        //place purple pixel
+        //TODO Write code to purple pixel
+
+
+
+        //return to center spike mark
+        switch(pixelPosition){
+            case LEFT :
+                path.add(new Position(0.259*TILE_SIZE,0,0,"move to pixel spike mark"));//move to pixel spike mark
+                break;
+            case RIGHT:
+                path.add(new Position(-0.259*TILE_SIZE,0,0,"move to pixel spike mark"));//move to pixel spike mark
+                break;
+            case CENTER:
+                //face pixel spike mark//for center do nothing
+                path.add(new Position(0,-0.259*TILE_SIZE,0,"move to pixel spike mark"));//move to pixel spike mark
+        }
+        //movement distances for easy adjustments
+        final double AVOID_PIXEL_DISTANCE = 0.25 * TILE_SIZE; //Avoid the pizel distance within interfering with the other team
+        final double ADJUSTMENT_TO_BOARD_DISTANCE=1*TILE_SIZE; //the distacne from the place the robot un adjusts to the board
+        final double PLACEMENT_TO_PARK_DISTANCE = 1*TILE_SIZE; //the parking distance
+        final double NEAR_POST_ADJUST_DISTANCE =1 * TILE_SIZE;
+        final double FAR_POST_ADJUST_DISTANCE = 3 * TILE_SIZE;
+
+        if(allianceColor == CenterStageAuton.AllianceColor.BLUE) { //If alliance color is blue (FROM THE FAR SIDE)
+            //move to pixel board avoiding placed pixel if necessary
+            if (startingSide == CenterStageAuton.StartingSide.FURTHER) { //starting from further side
+                path.add(new Position(0, -AVOID_PIXEL_DISTANCE, 0, "AVOID LEFT PIXEL"));
+                path.add(new Position(-FAR_POST_ADJUST_DISTANCE * TILE_SIZE, 0, 0, "move toward board"));
+            }else{ //assume everything is as close as possible...
+                path.add(new Position(0, -AVOID_PIXEL_DISTANCE, 0, "AVOID LEFT PIXEL"));
+                path.add(new Position(-NEAR_POST_ADJUST_DISTANCE * TILE_SIZE, 0, 0, "move toward board"));
             }
-            else if (pixelPosition == CenterStageAuton.PixelPosition == CenterStageAuton.PixelPosition.CENTER) {
-                robotManager.mechanismDriving.dropPixel(robot);
+
+            path.add(new Position(0,AVOID_PIXEL_DISTANCE,0,"un avoid pixel"));
+            path.add(new Position(0,0,Math.PI/4,"rotate to face board"));
+            path.add(new Position(-ADJUSTMENT_TO_BOARD_DISTANCE,0,0,"move to board"));
+
+            //place pixel
+
+            //move to designated parking position (BLUE)
+            path.add(new Position(0.1*TILE_SIZE,0,0,"back up"));
+            if(parkingPosition == CenterStageAuton.ParkingPosition.LEFT){ //parking left
+                path.add(new Position(0,-PLACEMENT_TO_PARK_DISTANCE,0,"PARK THE ROBOT. WHY DOES IT MOVE WHERE IT WANTS TO GO?!?!?"));
+            }else{ //assume everything is right, park it to the right
+                path.add(new Position(0,PLACEMENT_TO_PARK_DISTANCE,0,"PARK THE ROBOT OMG"));
             }
-            else {
-                rotate(0, 1, robot);
-                robotManager.mechanismDriving.dropPixel(robot);
-                rotate(Math.PI/2, 1, robot);
+
+        } else { //If alliance color is red (literally just assume it is red, and nothing else)
+            //move to pixel board avoiding placed pixel if necessary
+            if (startingSide == CenterStageAuton.StartingSide.FURTHER) { //starting from further side
+                path.add(new Position(0, -AVOID_PIXEL_DISTANCE, 0, "AVOID LEFT PIXEL"));
+                path.add(new Position(FAR_POST_ADJUST_DISTANCE * TILE_SIZE, 0, 0, "move toward board"));
+            }else{
+                path.add(new Position(0, -AVOID_PIXEL_DISTANCE, 0, "AVOID LEFT PIXEL"));
+                path.add(new Position(NEAR_POST_ADJUST_DISTANCE * TILE_SIZE, 0, 0, "move toward board"));
             }
-            // Moving to backdrop
-            if (autonMode == CenterStageAuton.StartingSide.TOP) {
-                NavigationAuton.traveltoPOI();
-                rotate(Math.PI, 1, robot);
-                NavigationAuton.traveltoPOI();
-                NavigationAuton.traveltoPOI();
-                robotManager.mechanismDriving.dropPixel(robot);
-            }
-            else if (autonMode == CenterStageAuton.StartingSide.MIDDLE) {
-                NavigationAuton.traveltoPOI();
-                robotManager.mechanismDriving.dropPixel(robot);
-            }
-            else {
-                NavigationAuton.traveltoPOI();
-                rotate(Math.PI, 1, robot);
-                NavigationAuton.traveltoPOI();
-                NavigationAuton.traveltoPOI();
-                robotManager.mechanismDriving.dropPixel(robot);
-            }
-            // Parking
-            if (parkingPosition == CenterStageAuton.ParkingPosition.LEFT) {
-                robotManager.navigationAuton.travelToNextPOI(robot);
-            }
-            if (parkingPosition == CenterStageAuton.ParkingPosition.CENTER) {
-                robotManager.navigationAuton.travelToNextPOI(robot);
-            }
-            else {
-                NavigationAuton.traveltoPOI(leftTopParking);
+
+
+            path.add(new Position(0,AVOID_PIXEL_DISTANCE,0,"un avoid pixel"));
+            path.add(new Position(0,0,-Math.PI/4,"rotate to face board"));
+            path.add(new Position(ADJUSTMENT_TO_BOARD_DISTANCE,0,0,"move to board"));
+
+            //place pixel
+
+            //move to designated parking position
+            path.add(new Position(-0.1*TILE_SIZE,0,0,"back up"));
+            if(parkingPosition == CenterStageAuton.ParkingPosition.RIGHT){ //parking right
+                path.add(new Position(0,-PLACEMENT_TO_PARK_DISTANCE,0,"PARK THE ROBOT. WHY DOES IT MOVE WHERE IT WANTS TO GO?!?!?"));
+            }else{ //assume everything is left, park it to the right
+                path.add(new Position(0,PLACEMENT_TO_PARK_DISTANCE,0,"PARK THE ROBOT OMG"));
             }
         }
-        else {
-            // Dropping the pixel
-            NavigationAuton.travelToPOI(pixelLeftJunction, robot)
-            if (pixelPosition == CenterStageAuton.PixelPosition == CenterStageAuton.PixelPosition.LEFT) {
-                rotate(Math.PI, 1, robot);
-                robotManager.mechanismDriving.dropPixel(robot);
-                rotate(Math.PI/2, 1, robot);
-            }
-            else if (pixelPosition == CenterStageAuton.PixelPosition == CenterStageAuton.PixelPosition.CENTER) {
-                robotManager.mechanismDriving.dropPixel(robot);
-            }
-            else {
-                rotate(0, 1, robot);
-                robotManager.mechanismDriving.dropPixel(robot);
-                rotate(Math.PI/2, 1, robot);
-            }
-            // Moving to backdrop
-            if (autonMode == CenterStageAuton.StartingSide.TOP) {
-                NavigationAuton.traveltoPOI();
-                rotate(Math.PI, 1, robot);
-                NavigationAuton.traveltoPOI();
-                NavigationAuton.traveltoPOI();
-                robotManager.mechanismDriving.dropPixel(robot);
-            }
-            else if (autonMode == CenterStageAuton.StartingSide.MIDDLE) {
-                NavigationAuton.traveltoPOI();
-                robotManager.mechanismDriving.dropPixel(robot);
-            }
-            else {
-                NavigationAuton.traveltoPOI();
-                rotate(Math.PI, 1, robot);
-                NavigationAuton.traveltoPOI();
-                NavigationAuton.traveltoPOI();
-                robotManager.mechanismDriving.dropPixel(robot);
-            }
-            // Parking
-            if (parkingPosition == CenterStageAuton.ParkingPosition.LEFT) {
-                NavigationAuton.traveltoPOI(leftBottomParking);
-            }
-            else if (parkingPosition == CenterStageAuton.ParkingPosition.CENTER) {
-                NavigationAuton.traveltoPOI(leftCenterParking);
-            }
-            else {
-                NavigationAuton.traveltoPOI(leftTopParking);
-            }
-        }*/
-    }
 
-    void generatePath(CenterStageAuton.AllianceColor allianceColor, CenterStageAuton.StartingSide startingSide,
-                      CenterStageAuton.MovementMode movementMode, CenterStageAuton.PixelPosition pixelPosition,
-                      CenterStageAuton.ParkingPosition parkingPosition, CenterStageAuton.AutonMode autonMode){
-        //TODO
-        //create the paths here or something
-
-    }
-
-    /** Hardcoded paths through the playing field during the Autonomous period.*/
-    public static class AutonomousPaths{
-        // From the perspective of a Left Starting Side and a Blue Alliance Color
-
-        //Junctions
-        //Leaving this up to the Autonomous team. Not gonna do anything else beyond this point, since the code from 2022-2023 was all about Auton movement.
-        public static Position pixelLeftJunction = new Position(0*TILE_SIZE, 1*TILE_SIZE, 0, "pixelLeftJunction");
-        public static Position pixelRightJunction = new Position(2*TILE_SIZE, 1*TILE_SIZE, 0, "pixelRightJunction");
-
-        // TODO! Change these so that they reflect the full possible 6*3 intermediate locations
-        //Intermediate Locations. Since these values could be transformed, inner refers to the middle of the entire field, center
-        // to the center of the left or right, and outer refers to the very edges of the field next to either side wall
-        // Back refers to the tiles closest to the wall, front refers to the tiles furthest away from the wall/drivers
-        public static Position intermediateInnerBack = new Position(0.85*TILE_SIZE, -0.25*TILE_SIZE, 0, "intermediateInnerBack");
-        public static Position intermediateCenterBack = new Position(-0.15*TILE_SIZE, -0.25*TILE_SIZE, 0, "intermediateCenterBack");
-        public static Position intermediateOuterBack = new Position(-1.15*TILE_SIZE, -0.25*TILE_SIZE, 0, "intermediateOuterBack");
-        public static Position intermediateInnerMiddle = new Position(0.85*TILE_SIZE, -1.25*TILE_SIZE, 0, "intermediateInnerMiddle");
-        public static Position intermediateCenterMiddle = new Position(-0.15*TILE_SIZE, -1.25*TILE_SIZE, 0, "intermediateCenterMiddle");
-        public static Position intermediateOuterMiddle = new Position(-1.15*TILE_SIZE, -1.25*TILE_SIZE, 0, "intermediateOuterMiddle");
-        public static Position intermediateInnerFront = new Position(0.85*TILE_SIZE, -2.25*TILE_SIZE, -Math.PI/2, "intermediateInnerFront");
-        public static Position intermediateCenterFront = new Position(-0.15*TILE_SIZE, -2.25*TILE_SIZE, -Math.PI/2, "intermediateCenterFront");
-        public static Position intermediateOuterFront = new Position(-1.15*TILE_SIZE,-2.25*TILE_SIZE, 0, "intermediateOuterFront");
-
-        // Parking
-        public static Position leftBottomParking = new Position(-1.5*TILE_SIZE, 0, 0, "leftBottomParking");
-        public static Position leftCenterParking = new Position(-1.5*TILE_SIZE, 1*TILE_SIZE, 0, "leftCenterParking");
-        public static Position leftTopParking = new Position(-1.5*TILE_SIZE, 2* TILE_SIZE, 0, "leftTopParking");
-        public static Position rightBottomParking = new Position(1.5*TILE_SIZE, 0, 0, "rightBottomParking");
-        public static Position rightCenterParking = new Position(1.5*TILE_SIZE, 1*TILE_SIZE, 0, "rightCenterParking");
-        public static Position rightTopParking = new Position(1.5*TILE_SIZE, 2* TILE_SIZE, 0, "rightTopParking");
     }
 }
