@@ -1,11 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-
-
-import org.checkerframework.checker.units.qual.A;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class AutonomousPathing {
     public static final double TILE_SIZE = 24; //24 inches is tile size
@@ -71,7 +66,7 @@ public class AutonomousPathing {
         robotManager.navigationAuton.path = new ArrayList<>();
         ArrayList<Position> path = robotManager.navigationAuton.path;
         double desiredAngle =0;
-        Position cumulativePosition = new Position();
+        Position cumulativePosition = new Position();//represents the cumulative position the robot should be at.
 
 
         //move to center spike mark
