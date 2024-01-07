@@ -128,9 +128,9 @@ public class MechanismDriving {
     public boolean updateSlides(GamepadWrapper gamepads, Robot robot) {
         if (!slidePositions.containsKey(robot.desiredSlideState)) {
             if (robot.desiredSlideState != robot.SlideState.MOVE_UP
-              &&robot.desiredSlideState != robot.SlideState.MOVE_DOWN
-              ||Math.abs(robot.slides.getCurrentPosition()-slidesPositions.get(HIGH)) 
-              ||Math.abs(robot.slides.getCurrentPosition()-slidesPositions.get(LOW))
+                && robot.desiredSlideState != robot.SlideState.MOVE_DOWN
+                || Math.abs(robot.slides.getCurrentPosition() - slidesPositions.get(HIGH)) <= EPSILON 
+                || Math.abs(robot.slides.getCurrentPosition() - slidesPositions.get(LOW)) <= EPSILON
             )   {
                 robot.slides.setPower(0.0);
                 return true;
