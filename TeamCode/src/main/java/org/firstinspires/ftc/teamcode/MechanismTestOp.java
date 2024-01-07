@@ -16,8 +16,6 @@ public class MechanismTestOp extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry, elapsedTime);
-        robot.slides.setPower(1.0);
-        telemetry.addData("intake motor power", robot.slides.getPower());
         //mechanismDriving.openLeftCompartment(robot);
         //telemetry.addData("OPEN COMPARTMENT LEFT", robot.compartmentLeft.getPosition());
         sleep(1);

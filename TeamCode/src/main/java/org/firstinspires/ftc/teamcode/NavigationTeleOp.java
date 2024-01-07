@@ -139,7 +139,7 @@ public class NavigationTeleOp {
         // NOTE: right-side drivetrain motor inputs don't have to be negated because their directions will be reversed
         //       upon initialization.
 
-        double turn = -gamepads.gamepad1.right_stick_x;
+        double turn = -gamepads.gamepad1.right_stick_x; //turning was in the wrong direction, so negative sign
         double rotationPower = ROTATION_POWER;
         if (Math.abs(turn) < JOYSTICK_DEAD_ZONE_SIZE) {
             turn = 0;

@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import static java.lang.Math.abs;
+
 import java.sql.Driver;
 
 /** Wraps a gamepad so that button mappings are stored in one place.

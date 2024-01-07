@@ -121,7 +121,7 @@ public class RobotManager {
      */
     public void driveMechanisms() {
         //mechanismDriving.updateCompartments(robot);
-        mechanismDriving.updateSlides(robot);
+        mechanismDriving.updateSlides(gamepads, robot);
         mechanismDriving.updatePlaneSpring(robot);
         mechanismDriving.updateIntakeMotor(robot);
 

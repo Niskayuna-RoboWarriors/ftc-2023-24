@@ -125,8 +125,18 @@ public class MechanismDriving {
      *
      * @return whether the slides are in the desired position.
      */
-    public boolean updateSlides(Robot robot) {
-        if (!slidePositions.containsKey(robot.desiredSlideState)) return false; // temp
+    public boolean updateSlides(GamepadWrapper gamepads, Robot robot) {
+        if (!slidePositions.containsKey(robot.desiredSlideState)) {
+            if (robot.desiredSlideState != robot.SlideState.MOVE_UP
+              &&robot.desiredSlideState != robot.SlideState.MOVE_DOWN
+              ||Math.abs(robot.slides.getCurrentPosition()-slidesPositions.get(HIGH)) 
+              ||Math.abs(robot.slides.getCurrentPosition()-slidesPositions.get(LOW))
+            )   return true;
+            double speed = gamepads.gamepad2.left_stick_y * maxSpeedCoefficient;
+            robot.slides.setPower(speed);
+            return true;
+            //not sure what to return, but return value isn't used anyways so whatever
+        }
         robot.desiredSlidePosition = slidePositions.get(robot.desiredSlideState);
         double mainSpeed; // "ramp" the motor speeds down based on how far away from the destination the motors are
         mainSpeed = maxSpeedCoefficient * Range.clip(Math.abs(robot.desiredSlidePosition - robot.slides.getCurrentPosition())/slideRampDownDist, 0.1, 1);
