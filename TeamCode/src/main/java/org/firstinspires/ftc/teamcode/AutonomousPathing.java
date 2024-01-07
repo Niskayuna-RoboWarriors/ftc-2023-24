@@ -71,40 +71,55 @@ public class AutonomousPathing {
         robotManager.navigationAuton.path = new ArrayList<>();
         ArrayList<Position> path = robotManager.navigationAuton.path;
         double desiredAngle =0;
+        Position cumulativePosition = new Position();
+
 
         //move to center spike mark
-        path.add(new Position(0,1.69*TILE_SIZE-HALF_ROBOT_TILE_LENGTH,desiredAngle,"move to center Spike mark")); //move forward initially
+
+        cumulativePosition = Position.add(new Position(0,1.69*TILE_SIZE-HALF_ROBOT_TILE_LENGTH,0,"move to center Spike mark"),cumulativePosition);
+        path.add(cumulativePosition);
+
 
         switch(pixelPosition){
             case LEFT :
                 desiredAngle = Math.PI/4;
-                path.add(new Position(-0.259*TILE_SIZE,0,desiredAngle,"move to pixel spike mark"));//move to pixel spike mark
+                cumulativePosition = Position.add(new Position(-0.259*TILE_SIZE,0,0,"move to pixel spike mark"),cumulativePosition);
+                cumulativePosition.setRotation(desiredAngle);
+                path.add(cumulativePosition);//move to pixel spike mark
                 break;
             case RIGHT:
                 desiredAngle = Math.PI/-4;
-                path.add(new Position(0.259*TILE_SIZE,0,desiredAngle,"move to pixel spike mark"));//move to pixel spike mark
+                cumulativePosition = Position.add(new Position(0.259*TILE_SIZE,0,0,"move to pixel spike mark"),cumulativePosition);
+                cumulativePosition.setRotation(desiredAngle);
+                path.add(cumulativePosition);//move to pixel spike mark
                 break;
             case CENTER:
                 //face pixel spike mark//for center do nothing
                 desiredAngle = 0;
-                path.add(new Position(0,0.259*TILE_SIZE,desiredAngle,"move to pixel spike mark"));//move to pixel spike mark
+                cumulativePosition = Position.add(new Position(0,0.259*TILE_SIZE,0,"move to pixel spike mark"),cumulativePosition);
+                cumulativePosition.setRotation(desiredAngle);
+                path.add(cumulativePosition);//move to pixel spike mark
 
         }
 
         //place purple pixel
-        path.add(new Position(NavigationAuton.Action.DROP_PURPLE, "Dropping Purple Pixel on Spike Mark",desiredAngle));
+        cumulativePosition = Position.add(new Position(NavigationAuton.Action.DROP_PURPLE, "Dropping Purple Pixel on Spike Mark"),cumulativePosition);
+        path.add(cumulativePosition);
 
         //return to center spike mark
         switch(pixelPosition){
             case LEFT :
-                path.add(new Position(0.259*TILE_SIZE,0,desiredAngle,"move to pixel spike mark"));//move to pixel spike mark
+                cumulativePosition = Position.add(new Position(0.259*TILE_SIZE,0,0,"move to pixel spike mark"),cumulativePosition);
+                path.add(cumulativePosition);//move to pixel spike mark
                 break;
             case RIGHT:
-                path.add(new Position(-0.259*TILE_SIZE,0,desiredAngle,"move to pixel spike mark"));//move to pixel spike mark
+                cumulativePosition = Position.add(new Position(-0.259*TILE_SIZE,0,0,"move to pixel spike mark"),cumulativePosition);
+                path.add(cumulativePosition);//move to pixel spike mark
                 break;
             case CENTER:
                 //face pixel spike mark//for center do nothing
-                path.add(new Position(0,-0.259*TILE_SIZE,desiredAngle,"move to pixel spike mark"));//move to pixel spike mark
+                cumulativePosition = Position.add(new Position(0,-0.259*TILE_SIZE,0,"move to pixel spike mark"),cumulativePosition);
+                path.add(cumulativePosition);//move to pixel spike mark
         }
         //movement distances for easy adjustments
         final double AVOID_PIXEL_DISTANCE = 0.25 * TILE_SIZE; //Avoid the pizel distance within interfering with the other team
@@ -116,52 +131,74 @@ public class AutonomousPathing {
         if(allianceColor == CenterStageAuton.AllianceColor.BLUE) { //If alliance color is blue (FROM THE FAR SIDE)
             //move to pixel board avoiding placed pixel if necessary
             if (startingSide == CenterStageAuton.StartingSide.FURTHER) { //starting from further side
-                path.add(new Position(0, -AVOID_PIXEL_DISTANCE, desiredAngle, "AVOID LEFT PIXEL"));
-                path.add(new Position(-FAR_POST_ADJUST_DISTANCE * TILE_SIZE, 0, desiredAngle, "move toward board"));
+                cumulativePosition = Position.add(new Position(0, -AVOID_PIXEL_DISTANCE, 0, "AVOID LEFT PIXEL"),cumulativePosition);
+                path.add(cumulativePosition);
+                cumulativePosition = Position.add(new Position(-FAR_POST_ADJUST_DISTANCE * TILE_SIZE, 0, 0, "move toward board"),cumulativePosition);
+                path.add(cumulativePosition);
             }else{ //assume everything is as close as possible...
-                path.add(new Position(0, -AVOID_PIXEL_DISTANCE, desiredAngle, "AVOID LEFT PIXEL"));
-                path.add(new Position(-NEAR_POST_ADJUST_DISTANCE * TILE_SIZE, 0, desiredAngle, "move toward board"));
+                cumulativePosition = Position.add(new Position(0, -AVOID_PIXEL_DISTANCE, 0, "AVOID LEFT PIXEL"),cumulativePosition);
+                path.add(cumulativePosition);
+                cumulativePosition = Position.add(new Position(-NEAR_POST_ADJUST_DISTANCE * TILE_SIZE, 0, 0, "move toward board"),cumulativePosition);
+                path.add(cumulativePosition);
             }
 
-            path.add(new Position(0,AVOID_PIXEL_DISTANCE,desiredAngle,"un avoid pixel"));
+            cumulativePosition = Position.add(new Position(0,AVOID_PIXEL_DISTANCE,0,"un avoid pixel"),cumulativePosition);
             desiredAngle = Math.PI/4; // rotate to face board
-            path.add(new Position(-ADJUSTMENT_TO_BOARD_DISTANCE,0,desiredAngle,"move to board"));
+            cumulativePosition.setRotation(desiredAngle);
+            path.add(cumulativePosition);
+            cumulativePosition = Position.add(new Position(-ADJUSTMENT_TO_BOARD_DISTANCE,0,0,"move to board"),cumulativePosition);
+            path.add(cumulativePosition);
 
             //place pixel
-            path.add(new Position(NavigationAuton.Action.DROP_YELLOW, "Dropping Yellow Pixel on Backdrop",desiredAngle));
+            cumulativePosition = Position.add(new Position(NavigationAuton.Action.DROP_YELLOW, "Dropping Yellow Pixel on Backdrop"),cumulativePosition);
+            path.add(cumulativePosition);
 
             //move to designated parking position (BLUE)
-            path.add(new Position(0.1*TILE_SIZE,0,desiredAngle,"back up"));
+            cumulativePosition = Position.add(new Position(0.1*TILE_SIZE,0,0,"back up"),cumulativePosition);
+            path.add(cumulativePosition);
             if(parkingPosition == CenterStageAuton.ParkingPosition.LEFT){ //parking left
-                path.add(new Position(0,-PLACEMENT_TO_PARK_DISTANCE,desiredAngle,"PARK THE ROBOT. WHY DOES IT MOVE WHERE IT WANTS TO GO?!?!?"));
+                cumulativePosition = Position.add(new Position(0,-PLACEMENT_TO_PARK_DISTANCE,0,"PARK THE ROBOT. WHY DOES IT MOVE WHERE IT WANTS TO GO?!?!?"),cumulativePosition);
+                path.add(cumulativePosition);
             }else{ //assume everything is right, park it to the right
-                path.add(new Position(0,PLACEMENT_TO_PARK_DISTANCE,desiredAngle,"PARK THE ROBOT OMG"));
+                cumulativePosition = Position.add(new Position(0,PLACEMENT_TO_PARK_DISTANCE,0,"PARK THE ROBOT OMG"),cumulativePosition);
+                path.add(cumulativePosition);
             }
 
         } else { //If alliance color is red (literally just assume it is red, and nothing else)
             //move to pixel board avoiding placed pixel if necessary
             if (startingSide == CenterStageAuton.StartingSide.FURTHER) { //starting from further side
-                path.add(new Position(0, -AVOID_PIXEL_DISTANCE, desiredAngle, "AVOID LEFT PIXEL"));
-                path.add(new Position(FAR_POST_ADJUST_DISTANCE * TILE_SIZE, 0, 0, "move toward board"));
+                cumulativePosition = Position.add(new Position(0, -AVOID_PIXEL_DISTANCE, 0, "AVOID LEFT PIXEL"),cumulativePosition);
+                path.add(cumulativePosition);
+                cumulativePosition = Position.add(new Position(FAR_POST_ADJUST_DISTANCE * TILE_SIZE, 0, 0, "move toward board"),cumulativePosition);
+                path.add(cumulativePosition);
             }else{
-                path.add(new Position(0, -AVOID_PIXEL_DISTANCE, desiredAngle, "AVOID LEFT PIXEL"));
-                path.add(new Position(NEAR_POST_ADJUST_DISTANCE * TILE_SIZE, 0, 0, "move toward board"));
+                cumulativePosition = Position.add(new Position(0, -AVOID_PIXEL_DISTANCE, 0, "AVOID LEFT PIXEL"),cumulativePosition);
+                path.add(cumulativePosition);
+                cumulativePosition = Position.add(new Position(NEAR_POST_ADJUST_DISTANCE * TILE_SIZE, 0, 0, "move toward board"),cumulativePosition);
+                path.add(cumulativePosition);
             }
 
 
-            path.add(new Position(0,AVOID_PIXEL_DISTANCE,desiredAngle,"un avoid pixel"));
+            cumulativePosition = Position.add(new Position(0,AVOID_PIXEL_DISTANCE,0,"un avoid pixel"),cumulativePosition);
             desiredAngle = -Math.PI/4;//rotate to face board
-            path.add(new Position(ADJUSTMENT_TO_BOARD_DISTANCE,0,desiredAngle,"move to board"));
+            cumulativePosition.setRotation(desiredAngle);
+            path.add(cumulativePosition);
+            cumulativePosition = Position.add(new Position(ADJUSTMENT_TO_BOARD_DISTANCE,0,0,"move to board"),cumulativePosition);
+            path.add(cumulativePosition);
 
             //place pixel
-            path.add(new Position(NavigationAuton.Action.DROP_YELLOW, "Dropping Yellow Pixel on Backdrop",desiredAngle));
+            cumulativePosition = Position.add(new Position(NavigationAuton.Action.DROP_YELLOW, "Dropping Yellow Pixel on Backdrop"),cumulativePosition);
+            path.add(cumulativePosition);
 
             //move to designated parking position
-            path.add(new Position(-0.1*TILE_SIZE,0,desiredAngle,"back up"));
+            cumulativePosition = Position.add(new Position(-0.1*TILE_SIZE,0,0,"back up"),cumulativePosition);
+            path.add(cumulativePosition);
             if(parkingPosition == CenterStageAuton.ParkingPosition.RIGHT){ //parking right
-                path.add(new Position(0,-PLACEMENT_TO_PARK_DISTANCE,desiredAngle,"PARK THE ROBOT. WHY DOES IT MOVE WHERE IT WANTS TO GO?!?!?"));
+                cumulativePosition = Position.add(new Position(0,-PLACEMENT_TO_PARK_DISTANCE,0,"PARK THE ROBOT. WHY DOES IT MOVE WHERE IT WANTS TO GO?!?!?"),cumulativePosition);
+                path.add(cumulativePosition);
             }else{ //assume everything is left, park it to the right
-                path.add(new Position(0,PLACEMENT_TO_PARK_DISTANCE,desiredAngle,"PARK THE ROBOT OMG"));
+                cumulativePosition = Position.add(new Position(0,PLACEMENT_TO_PARK_DISTANCE,0,"PARK THE ROBOT OMG"),cumulativePosition);
+                path.add(cumulativePosition);
             }
         }
 

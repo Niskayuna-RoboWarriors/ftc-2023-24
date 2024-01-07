@@ -70,10 +70,9 @@ public class Position {
       * @param action the action that should be perfomed when the robot reaches this position
       * @param name the name of this positon  (for debugging)
       */
-    public Position(NavigationAuton.Action action, String name,double theta){
+    public Position(NavigationAuton.Action action, String name){
         this.name=name;
         this.action=action;
-        setRotation(theta);
     }
 
     //Sets all of the variables as a public function.
@@ -115,7 +114,8 @@ public class Position {
     }
 
     public static Position add(Position a, Position b) {
-       return new Position(a.getX() + b.getX(), a.getY() + b.getY(), (a.getRotation() + b.getRotation()) % (2 * Math.PI),"");
+       return new Position(a.getX() + b.getX(), a.getY() + b.getY(), a.name,a.action,a.strafePower,a.rotatePower,
+               (a.getRotation() + b.getRotation()) % (2 * Math.PI));
     }
     /**sets the rotation of the position
     *p@param r the angle to set to
