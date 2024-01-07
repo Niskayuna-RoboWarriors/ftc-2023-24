@@ -131,7 +131,10 @@ public class MechanismDriving {
               &&robot.desiredSlideState != robot.SlideState.MOVE_DOWN
               ||Math.abs(robot.slides.getCurrentPosition()-slidesPositions.get(HIGH)) 
               ||Math.abs(robot.slides.getCurrentPosition()-slidesPositions.get(LOW))
-            )   return true;
+            )   {
+                robot.slides.setPower(0.0);
+                return true;
+            }
             double speed = gamepads.gamepad2.left_stick_y * maxSpeedCoefficient;
             robot.slides.setPower(speed);
             return true;
