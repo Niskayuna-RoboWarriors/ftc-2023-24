@@ -16,9 +16,8 @@ public class AutonomousPathing {
     private RobotManager robotManager;
 
     public AutonomousPathing(RobotManager robotManager, CenterStageAuton.AllianceColor allianceColor, CenterStageAuton.StartingSide startingSide,
-                             CenterStageAuton.MovementMode movementMode, CenterStageAuton.PixelPosition pixelPosition,
-                             CenterStageAuton.ParkingPosition parkingPosition, CenterStageAuton.AutonMode autonMode) {
-//        robotManager.robot.telemetry.addData("auton path", path.size());
+                             CenterStageAuton.PixelPosition pixelPosition,
+                             CenterStageAuton.ParkingPosition parkingPosition) {
         this.robotManager = robotManager;
         robotManager.navigationAuton.path = new ArrayList<>();
 
@@ -32,10 +31,31 @@ public class AutonomousPathing {
         Robot robot = robotManager.robot;
         NavigationAuton nav = robotManager.navigationAuton;
         while(nav.pathIndex < nav.path.size()){
+            if(nav.path.get(nav.pathIndex).getAction() != NavigationAuton.Action.NONE){ //if the action on the current path index is not null
+                handleAction(nav.path.get(nav.pathIndex)); //now lets handle this below...
+            }
             nav.travelToNextPOI(robot);
         }
         robot.telemetry.addData(":","FINISHED PATH");
 
+    }
+
+    private void handleAction(Position position) {
+        NavigationAuton.Action action = position.getAction();
+        //TODO make the robot place the pixels
+        switch(action){
+            case DROP_PURPLE:
+                //do the thing for purple drop
+                //no idea how this happens, but it happens here
+                break;
+            case DROP_YELLOW:
+                //do the thing for yellow drop
+                //no idea how this happens, but it happens here
+                break;
+
+            default:
+                throw new RuntimeException("attempted to execute an action that has not been implemented: "+action);
+        }
     }
 
     /**
@@ -69,11 +89,8 @@ public class AutonomousPathing {
 
         }
 
-
         //place purple pixel
-        //TODO Write code to purple pixel
-
-
+        path.add(new Position(NavigationAuton.Action.DROP_PURPLE, "Dropping Purple Pixel on Spike Mark"));
 
         //return to center spike mark
         switch(pixelPosition){
@@ -109,6 +126,7 @@ public class AutonomousPathing {
             path.add(new Position(-ADJUSTMENT_TO_BOARD_DISTANCE,0,0,"move to board"));
 
             //place pixel
+            path.add(new Position(NavigationAuton.Action.DROP_YELLOW, "Dropping Yellow Pixel on Backdrop"));
 
             //move to designated parking position (BLUE)
             path.add(new Position(0.1*TILE_SIZE,0,0,"back up"));
@@ -134,6 +152,7 @@ public class AutonomousPathing {
             path.add(new Position(ADJUSTMENT_TO_BOARD_DISTANCE,0,0,"move to board"));
 
             //place pixel
+            path.add(new Position(NavigationAuton.Action.DROP_YELLOW, "Dropping Yellow Pixel on Backdrop"));
 
             //move to designated parking position
             path.add(new Position(-0.1*TILE_SIZE,0,0,"back up"));

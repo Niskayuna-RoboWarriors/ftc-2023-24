@@ -45,7 +45,7 @@ public class CenterStageAuton extends LinearOpMode {
         IMUPositioning.Initialize(this);
         CenterStageAuton.PixelPosition pixelPosition = robotManager.computerVision.getPixelPosition();
 
-        autonomousPathing = new AutonomousPathing(robotManager, allianceColor, startingSide, movementMode, pixelPosition, parkingPosition, autonMode);
+        autonomousPathing = new AutonomousPathing(robotManager, allianceColor, startingSide, pixelPosition, parkingPosition);
         autonomousPathing.runAutonPath();
 
     }

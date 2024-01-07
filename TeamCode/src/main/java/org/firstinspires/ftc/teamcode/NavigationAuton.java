@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class NavigationAuton extends BaseNavigation{
     public enum rotationDirection {CLOCKWISE, COUNTERCLOCKWISE};
 
-    public static enum Action {NONE, SLIDES_LOW, SLIDES_HIGH,};
+    public static enum Action {NONE, DROP_PURPLE, DROP_YELLOW,};
     private CenterStageAuton.MovementMode movementMode;
     //Makes actions of the Robot that can be used anywhere within the folder.
 
