@@ -93,7 +93,7 @@ public class RobotManager {
             }
         }
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_INTAKE_MOTOR_ROTATION)) {
-            if (robot.desiredIntakeMotorState == Robot.IntakeMotorState.OFF) {
+            if (robot.desiredIntakeMotorState != Robot.IntakeMotorState.INTAKE) {
                 robot.desiredIntakeMotorState = Robot.IntakeMotorState.INTAKE;
             }
             else {
@@ -101,7 +101,7 @@ public class RobotManager {
             }
         }
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_OUTTAKE_MOTOR_ROTATION)) {
-            if (robot.desiredIntakeMotorState == Robot.IntakeMotorState.OFF) {
+            if (robot.desiredIntakeMotorState != Robot.IntakeMotorState.OUTTAKE) {
                 robot.desiredIntakeMotorState = Robot.IntakeMotorState.OUTTAKE;
             } else {
                 robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
