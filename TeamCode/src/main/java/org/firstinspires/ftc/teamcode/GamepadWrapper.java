@@ -77,15 +77,15 @@ public class GamepadWrapper {
             case SET_SLIDES_HIGH:
                 return gamepad2.dpad_up;
             case TOGGLE_INTAKE_MOTOR_ROTATION:
-                return gamepad2.circle;
+                return gamepad2.b;
             case TOGGLE_OUTTAKE_MOTOR_ROTATION:
-                return gamepad2.square;
+                return gamepad2.x;
 //            case TOGGLE_RIGHT_BUCKET:
 //                return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
 //            case TOGGLE_LEFT_BUCKET:
 //                return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
             case PLANE_RELEASE:
-                return gamepad2.cross;
+                return gamepad2.a;
         }
         assert false; //if you really want the robot to crash, then i guess you can use this function. if this manages to reach this, your a frekin genius, (or a duck hole)
         return false;
