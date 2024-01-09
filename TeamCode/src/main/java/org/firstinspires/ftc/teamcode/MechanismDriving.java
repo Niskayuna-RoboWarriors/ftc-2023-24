@@ -130,7 +130,7 @@ public class MechanismDriving {
             if (robot.desiredSlideState != robot.SlideState.MOVE_UP
                 && robot.desiredSlideState != robot.SlideState.MOVE_DOWN
                 || Math.abs(robot.slides.getCurrentPosition() - slidesPositions.get(HIGH)) <= EPSILON 
-                || Math.abs(robot.slides.getCurrentPosition() - slidesPositions.get(LOW)) <= EPSILON
+                || Math.abs(robot.slides.getCurrentPosition()) <= EPSILON
             )   {
                 robot.slides.setPower(0.0);
                 return true;
