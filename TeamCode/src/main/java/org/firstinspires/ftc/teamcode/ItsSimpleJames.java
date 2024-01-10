@@ -9,6 +9,7 @@ public class ItsSimpleJames extends LinearOpMode{
     @Override
     public void runOpMode() {
         RobotManager robotManager = new RobotManager(hardwareMap, gamepad1, gamepad2, telemetry, new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS));
+        waitForStart();
         NavigationTeleOp.setDriveMotorPowers(Math.PI/2,1,0,robotManager.robot,false);
         try {
             Thread.sleep(4000);
