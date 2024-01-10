@@ -31,8 +31,8 @@ public class MechanismDriving {
     static final double PLANE_SPRING_SERVO_TIME = 500;
 
     // Intake motor
-    static final double INTAKE_MOTOR_SPEED = -.5;
-    static final double OUTTAKE_MOTOR_SPEED = 0.2;
+    static final double INTAKE_MOTOR_SPEED = -1;
+    static final double OUTTAKE_MOTOR_SPEED = 0.7;
 
     /**
      * Update left compartment
@@ -127,9 +127,9 @@ public class MechanismDriving {
      */
     public boolean updateSlides(GamepadWrapper gamepads, Robot robot) {
         if (!slidePositions.containsKey(robot.desiredSlideState)) {
-            if (robot.desiredSlideState != robot.SlideState.MOVE_UP
-                && robot.desiredSlideState != robot.SlideState.MOVE_DOWN
-                || Math.abs(robot.slides.getCurrentPosition() - slidesPositions.get(HIGH)) <= EPSILON 
+            if (robot.desiredSlideState != Robot.SlideState.MOVE_UP
+                && robot.desiredSlideState != Robot.SlideState.MOVE_DOWN
+                || Math.abs(robot.slides.getCurrentPosition() - slidePositions.get(Robot.SlideState.HIGH)) <= EPSILON
                 || Math.abs(robot.slides.getCurrentPosition()) <= EPSILON
             )   {
                 robot.slides.setPower(0.0);
@@ -141,6 +141,8 @@ public class MechanismDriving {
             //not sure what to return, but return value isn't used anyways so whatever
         }
         robot.desiredSlidePosition = slidePositions.get(robot.desiredSlideState);
+        robot.telemetry.addData("desired slide position", robot.desiredSlidePosition);
+        robot.telemetry.addData("current slide position", robot.slides.getCurrentPosition());
         double mainSpeed; // "ramp" the motor speeds down based on how far away from the destination the motors are
         mainSpeed = maxSpeedCoefficient * Range.clip(Math.abs(robot.desiredSlidePosition - robot.slides.getCurrentPosition())/slideRampDownDist, 0.1, 1);
         mainSpeed = Range.clip(mainSpeed, 0.4, 1);//limit the max speed to 1 and the min speed to 0.05
@@ -173,7 +175,7 @@ public class MechanismDriving {
     public void moveSlides(Robot robot, Robot.SlideState targetSlideState) {
         //if (targetSlideState == Robot.SlideState.UNREADY) { return; }
         robot.desiredSlideState = targetSlideState;
-        while (updateSlides(robot) != true) {};
+        while (updateSlides(null, robot) != true) {};
     }
 
     /**
