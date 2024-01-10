@@ -5,8 +5,10 @@ import android.preference.PreferenceManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import java.util.Arrays;
+
 @TeleOp(name="configure shared prefs", group="TeleOp OpMode")
-public class configureSharedPrefsOpMode extends OpMode {
+public class ConfigureSharedPrefsOp extends OpMode {
     final String[][] VALUES = {
             {"STRAFE", "FORWARD_ONLY"}, {"BLUE", "RED"}, {"LEFT", "RIGHT", "MIDDLE"}, {"TOP", "MIDDLE", "BOTTOM"}, {"FAR", "CLOSE"}
     };
@@ -22,7 +24,7 @@ public class configureSharedPrefsOpMode extends OpMode {
         Arrays.fill(currentIndexes, -1);
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.hardwareMap.appContext);
 
-        telemetry.addData("Ready to set shared prefs\nPress play to start");
+        telemetry.addData("Ready to set shared prefs\nPress play to start", null);
         telemetry.update();
 
         currentValues[0] = sharedPrefs.getString("movement_mode", "ERROR");
@@ -49,14 +51,14 @@ public class configureSharedPrefsOpMode extends OpMode {
         }
 
         if (System.nanoTime() / 1000000 < dispUntil){
-            telemetry.addData("saved");
+            telemetry.addData("saved", null);
         }
 
         telemetry.update();
 
         if(gamepad1.x){
             savePrefs();
-            telemetry.addData("saved");
+            telemetry.addData("saved", null);
             telemetry.update();
         }
         if(gamepad1.dpad_up && !prevUP){
@@ -103,7 +105,7 @@ public class configureSharedPrefsOpMode extends OpMode {
     }
 
     String padding(int a) {
-        StringBuilder p = newStringBuilder();
+        StringBuilder p = new StringBuilder();
         if (a > 0) {
             for (int i = 0; i < a; i++) {
                 p.append(" ");

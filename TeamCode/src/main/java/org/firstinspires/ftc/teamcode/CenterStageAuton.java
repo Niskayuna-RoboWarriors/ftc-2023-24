@@ -46,7 +46,7 @@ public class CenterStageAuton extends LinearOpMode {
         CenterStageAuton.PixelPosition pixelPosition = robotManager.computerVision.getPixelPosition();
 
         autonomousPathing = new AutonomousPathing(robotManager, allianceColor, startingSide, movementMode, pixelPosition, parkingPosition, autonMode);
-        autonomousPathing.runAutonPath();
+        autonomousPathing.runAutonPath(robotManager, robotManager.robot, allianceColor, startingSide, pixelPosition, autonMode, parkingPosition);
 
     }
     public void initSharedPreferences() {

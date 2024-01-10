@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 
-/** Autonomous OpMode for Center Stage.
+/** Tele-Op OpMode for Center Stage.
  */
 @TeleOp(name="CenterStage Tele-Op", group="TeleOp OpMode")
 public class CenterStageTeleOp extends OpMode {
@@ -25,8 +25,14 @@ public class CenterStageTeleOp extends OpMode {
      */
     @Override
     public void init() {
+        telemetry.addData("init", "start");
+        telemetry.update();
         robotManager = new RobotManager(hardwareMap, gamepad1, gamepad2, telemetry, elapsedTime);
+        telemetry.addData("init after robot manager", null);
+        telemetry.update();
         IMUPositioning.Initialize(this);
+        telemetry.addData("Initalized", null);
+        telemetry.update();
     }
 
     /**method that gets called when the play button gets pressed
