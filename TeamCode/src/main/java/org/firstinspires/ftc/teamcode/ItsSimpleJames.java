@@ -10,6 +10,11 @@ public class ItsSimpleJames extends LinearOpMode{
     public void runOpMode() {
         RobotManager robotManager = new RobotManager(hardwareMap, gamepad1, gamepad2, telemetry, new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS));
         waitForStart();
+        NavigationTeleOp.setDriveMotorPowers(0,1,0,robotManager.robot,false);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e){
+            throw new RuntimeException(e);
         NavigationTeleOp.setDriveMotorPowers(Math.PI/2,1,0,robotManager.robot,false);
         try {
             Thread.sleep(4000);
@@ -18,4 +23,4 @@ public class ItsSimpleJames extends LinearOpMode{
         }
         NavigationTeleOp.stopMovement(robotManager.robot);
     }
-}
+}}
