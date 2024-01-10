@@ -16,10 +16,10 @@ public class Robot {
      */
     public enum MotorConfigs {
         //drive motors
-        FRONT_LEFT  ("front_left", DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
+        FRONT_LEFT  ("front_left", DcMotor.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT),
         FRONT_RIGHT ("front_right",DcMotor.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT),
-        REAR_LEFT   ("rear_left",  DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
-        REAR_RIGHT  ("rear_right", DcMotor.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT),
+        REAR_LEFT   ("rear_left",  DcMotor.Direction.REVERSE, DcMotor.ZeroPowerBehavior.FLOAT),
+        REAR_RIGHT  ("rear_right", DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.FLOAT),
 
         //linear slides motors
         SLIDES         ("slides_motor",         DcMotor.Direction.FORWARD, DcMotor.ZeroPowerBehavior.BRAKE),
@@ -185,13 +185,13 @@ public class Robot {
 //        slidesLimitSwitch= Robot.SwitchConfigs.initialize(Robot.SwitchConfigs.SLIDES_LIMIT, hardwareMap);
 
 
-        slides.setPower(1.0);
 
         // Set slides state to Retracted
 //        if (desiredSlideState == SlideState.UNREADY) { //if the slides have yet to be initialised then reset the encoders for the slides and set the slide state to retracted
         this.telemetry.addData("desired string state", desiredSlideState.toString());
+        this.telemetry.update();
         resetEncoder(slides);
-//            desiredSlideState = SlideState.RETRACTED;
+        desiredSlideState = SlideState.RETRACTED;
 
     }
 
