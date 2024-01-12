@@ -13,12 +13,12 @@ public class MechanismDriving {
     public static final int LOWERING_AMOUNT = 100;
     public static final Map<Robot.SlideState, Integer> slidePositions = new HashMap<Robot.SlideState, Integer>() {{
        put(Robot.SlideState.RETRACTED, 0);
-       put(Robot.SlideState.LOW, 700);
+       put(Robot.SlideState.LOW, 1000);
        put(Robot.SlideState.MEDIUM, 1850);
-       put(Robot.SlideState.HIGH, 3500);
+       put(Robot.SlideState.HIGH, 2400);
     }};
     double slideRampDownDist=1000, maxSpeedCoefficient=0.8;
-    public static final int EPSILON = 150;  // slide encoder position tolerance;
+    public static final int EPSILON = 10;  // slide encoder position tolerance;
 
     // Compartment variables
     static final double COMPARTMENT_CLOSED_POS = 0;
@@ -127,15 +127,18 @@ public class MechanismDriving {
      */
     public boolean updateSlides(GamepadWrapper gamepads, Robot robot) {
         if (!slidePositions.containsKey(robot.desiredSlideState)) {
-            if (robot.desiredSlideState != Robot.SlideState.MOVE_UP
-                && robot.desiredSlideState != Robot.SlideState.MOVE_DOWN
-                || Math.abs(robot.slides.getCurrentPosition() - slidePositions.get(Robot.SlideState.HIGH)) <= EPSILON
-                || Math.abs(robot.slides.getCurrentPosition()) <= EPSILON
+            // if position not set then check if analog and then use analog movement instead of going to a position
+            // Negation needed as Down is positive on FTC controllers
+            double speed = -gamepads.gamepad2.left_stick_y * maxSpeedCoefficient;
+            if (robot.desiredSlideState != Robot.SlideState.MOVE_ANALOG
+                || speed > 0 && Math.abs(robot.slides.getCurrentPosition() - slidePositions.get(Robot.SlideState.HIGH)) <= EPSILON
+                || speed < 0 && Math.abs(robot.slides.getCurrentPosition()) <= EPSILON
             )   {
                 robot.slides.setPower(0.0);
                 return true;
             }
-            double speed = gamepads.gamepad2.left_stick_y * maxSpeedCoefficient;
+            robot.telemetry.addData("desired slide position", robot.desiredSlidePosition);
+            robot.telemetry.addData("current slide position", robot.slides.getCurrentPosition());
             robot.slides.setPower(speed);
             return true;
             //not sure what to return, but return value isn't used anyways so whatever
@@ -221,7 +224,7 @@ public class MechanismDriving {
      * Updates intake motor.
      * @param robot
      */
-    public void updateIntakeMotor(Robot robot) {
+    public void updateIntakeMotor(GamepadWrapper gamepads, Robot robot) {
         robot.telemetry.addData("UPDATE INTAKE MOTOR STATE", robot.desiredIntakeMotorState);
         switch (robot.desiredIntakeMotorState) {
             case OFF:
@@ -232,6 +235,8 @@ public class MechanismDriving {
                 break;
             case OUTTAKE:
                 robot.intakeMotor.setPower(OUTTAKE_MOTOR_SPEED);
+            case ANALOG:
+                robot.intakeMotor.setPower(1 * gamepads.gamepad2.right_stick_y);
         }
         robot.telemetry.addData("SET INTAKE MOTOR POWER", robot.intakeMotor.getPower());
     }
@@ -242,7 +247,7 @@ public class MechanismDriving {
      */
     public void turnOffIntakeMotor(Robot robot) {
         robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
-        updateIntakeMotor(robot);
+        updateIntakeMotor(null, robot);
     }
 
     /**
@@ -251,11 +256,11 @@ public class MechanismDriving {
      */
     public void turnIntakeIntakeMotor(Robot robot) {
         robot.desiredIntakeMotorState = Robot.IntakeMotorState.INTAKE;
-        updateIntakeMotor(robot);
+        updateIntakeMotor(null, robot);
     }
     public void turnOuttakeIntakeMotor(Robot robot) {
         robot.desiredIntakeMotorState = Robot.IntakeMotorState.OUTTAKE;
-        updateIntakeMotor(robot);
+        updateIntakeMotor(null, robot);
     }
 
     public void dropPixel(Robot robot) {
