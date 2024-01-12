@@ -128,14 +128,14 @@ public class Robot {
 
 
     //Enums for states
-    public static enum SlideState             {RETRACTED, LOW, MEDIUM, HIGH, MOVE_UP, MOVE_DOWN, STOPPED};
+    public static enum SlideState             {RETRACTED, LOW, MEDIUM, HIGH, MOVE_ANALOG, STOPPED};
     public SlideState desiredSlideState = SlideState.RETRACTED;
     public int desiredSlidePosition;
     public enum ParkingPosition        {INSIDE, MIDDLE, OUTSIDE};
     public static enum CompartmentState       {OPEN, CLOSED};
     public CompartmentState desiredCompartmentLeftState = CompartmentState.CLOSED;
     public CompartmentState desiredCompartmentRightState = CompartmentState.CLOSED;
-    public static enum IntakeMotorState       {INTAKE, OUTTAKE, OFF};
+    public static enum IntakeMotorState       {INTAKE, OUTTAKE, OFF, ANALOG};
     public IntakeMotorState desiredIntakeMotorState = IntakeMotorState.OFF;
     public static enum PlaneSpringState       {UNRELEASED, RELEASED};
     public PlaneSpringState desiredPlaneSpringState = PlaneSpringState.UNRELEASED;

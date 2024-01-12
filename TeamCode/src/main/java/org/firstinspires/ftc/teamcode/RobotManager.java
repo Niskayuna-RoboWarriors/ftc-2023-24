@@ -85,11 +85,11 @@ public class RobotManager {
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.SET_SLIDES_HIGH)) {
             robot.desiredSlideState = Robot.SlideState.HIGH;
         }
-        else if (gamepads.gamepad2.left_stick_y > NavigationTeleOp.JOYSTICK_DEAD_ZONE_SIZE) {
-            robot.desiredSlideState = Robot.SlideState.MOVE_DOWN;
+        else if (Math.abs(gamepads.gamepad2.left_stick_y) > NavigationTeleOp.JOYSTICK_DEAD_ZONE_SIZE) {
+            robot.desiredSlideState = Robot.SlideState.MOVE_ANALOG;
         }
-        else if (gamepads.gamepad2.left_stick_y < -NavigationTeleOp.JOYSTICK_DEAD_ZONE_SIZE) {
-            robot.desiredSlideState = Robot.SlideState.MOVE_UP;
+        else if (Math.abs(gamepads.gamepad2.left_stick_y) <= NavigationTeleOp.JOYSTICK_DEAD_ZONE_SIZE) {
+            robot.desiredSlideState = Robot.SlideState.STOPPED;
         }
 //        // Automatically set it to stopped if not actively being moved up or down
 //        else if (robot.desiredSlideState == Robot.SlideState.MOVE_DOWN || robot.desiredSlideState == Robot.SlideState.MOVE_UP) {
@@ -111,7 +111,7 @@ public class RobotManager {
 //                robot.desiredCompartmentLeftState = Robot.CompartmentState.CLOSED;
 //            }
 //        }
-        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_INTAKE_MOTOR_ROTATION)) {
+        if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_INTAKE_MOTOR_ROTATION)) {
             if (robot.desiredIntakeMotorState != Robot.IntakeMotorState.INTAKE) {
                 robot.desiredIntakeMotorState = Robot.IntakeMotorState.INTAKE;
             }
@@ -143,7 +143,7 @@ public class RobotManager {
         //mechanismDriving.updateCompartments(robot);
         mechanismDriving.updateSlides(gamepads, robot);
         mechanismDriving.updatePlaneSpring(robot);
-        mechanismDriving.updateIntakeMotor(robot);
+        mechanismDriving.updateIntakeMotor(gamepads, robot);
 
     }
     public void moveRobot() {
