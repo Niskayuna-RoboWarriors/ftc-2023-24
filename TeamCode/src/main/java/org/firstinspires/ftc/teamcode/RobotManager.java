@@ -135,6 +135,9 @@ public class RobotManager {
                 robot.desiredPlaneSpringState = Robot.PlaneSpringState.UNRELEASED;
             }
         }
+        else if (Math.abs(gamepads.gamepad2.right_stick_y) > NavigationTeleOp.JOYSTICK_DEAD_ZONE_SIZE) {
+            robot.desiredIntakeMotorState = Robot.IntakeMotorState.ANALOG;
+        }
         gamepads.updatePrevious();
     };
     /** Wraps mechanism driving update functions

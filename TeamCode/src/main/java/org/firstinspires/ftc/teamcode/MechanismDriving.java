@@ -32,7 +32,7 @@ public class MechanismDriving {
 
     // Intake motor
     static final double INTAKE_MOTOR_SPEED = -1;
-    static final double OUTTAKE_MOTOR_SPEED = 0.7;
+    static final double OUTTAKE_MOTOR_SPEED = 1;
 
     /**
      * Update left compartment
@@ -236,7 +236,7 @@ public class MechanismDriving {
             case OUTTAKE:
                 robot.intakeMotor.setPower(OUTTAKE_MOTOR_SPEED);
             case ANALOG:
-                robot.intakeMotor.setPower(1 * gamepads.gamepad2.right_stick_y);
+                robot.intakeMotor.setPower(gamepads.gamepad2.right_stick_y*Math.abs(gamepads.gamepad2.right_stick_y));
         }
         robot.telemetry.addData("SET INTAKE MOTOR POWER", robot.intakeMotor.getPower());
     }
