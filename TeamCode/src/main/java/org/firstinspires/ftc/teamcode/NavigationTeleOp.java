@@ -44,7 +44,8 @@ public class NavigationTeleOp {
 
     //**TELEOP CONSTANTS**
     static final double MOVEMENT_MAX_POWER = 1; //Sets the maximum power to full power. (Full power is between 0 - 1)
-    static final double ROTATION_POWER = 0.5; //Sets the maximum rotation power 1/2 full power
+    static final double STRAIGHT_MOVEMENT_POWER = 0.7;
+    static final double ROTATION_POWER = 1; //Sets the maximum rotation power 1/2 full power
     static final double REDUCED_ROTATION_POWER = 0.2; //Lets the minimum rotation power to 1/5th full power
     static final double SLOW_MOVEMENT_SCALE_FACTOR = 0.3; //idk what this means
     static final double MEDIUM_MOVEMENT_SCALE_FACTOR = 0.6; //idk what this means
@@ -118,13 +119,13 @@ public class NavigationTeleOp {
             if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_BACKWARD)) { //invert the forward to just backwards
                 direction = Math.PI * -0.5;
             }
-            setDriveMotorPowers(direction, strafePower, 0.0, robot, false);
+            setDriveMotorPowers(direction, STRAIGHT_MOVEMENT_POWER, 0.0, robot, false);
         } else if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_LEFT)) { //default direction. Set as 0
             direction = Math.PI;
-            setDriveMotorPowers(direction, strafePower, 0.0, robot, false);
+            setDriveMotorPowers(direction, STRAIGHT_MOVEMENT_POWER, 0.0, robot, false);
         } else if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_RIGHT)) {
             direction = 0;
-            setDriveMotorPowers(direction, strafePower, 0.0, robot, false);
+            setDriveMotorPowers(direction, STRAIGHT_MOVEMENT_POWER, 0.0, robot, false);
         }
 
     }
