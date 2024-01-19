@@ -43,10 +43,13 @@ public class CenterStageAuton extends LinearOpMode {
         initSharedPreferences();
         robotManager = new RobotManager(hardwareMap, gamepad1, gamepad2, telemetry, elapsedTime);
         IMUPositioning.Initialize(this);
-        CenterStageAuton.PixelPosition pixelPosition = robotManager.computerVision.getPixelPosition();
+        pixelPosition = robotManager.computerVision.getPixelPosition();
 
-        autonomousPathing = new AutonomousPathing(robotManager, allianceColor, startingSide, movementMode, pixelPosition, parkingPosition, autonMode);
-        autonomousPathing.runAutonPath(robotManager, robotManager.robot, allianceColor, startingSide, pixelPosition, autonMode, parkingPosition);
+
+        telemetry.addData("pixel position", pixelPosition);
+        telemetry.update();
+//        autonomousPathing = new AutonomousPathing(robotManager, allianceColor, startingSide, movementMode, pixelPosition, parkingPosition, autonMode);
+//        autonomousPathing.runAutonPath(robotManager, robotManager.robot, allianceColor, startingSide, pixelPosition, autonMode, parkingPosition);
 
     }
     public void initSharedPreferences() {
