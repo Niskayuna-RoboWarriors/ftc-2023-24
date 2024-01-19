@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="ParkAuton", group="Linear OpMode")
-public class ParkAuton extends LinearOpMode{
+@Autonomous(name="ParkAutonRed", group="Linear OpMode")
+public class ParkAutonRed extends LinearOpMode{
 
     private ElapsedTime elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
 
@@ -13,14 +13,14 @@ public class ParkAuton extends LinearOpMode{
     public void runOpMode() {
         RobotManager robotManager = new RobotManager(hardwareMap, gamepad1, gamepad2, telemetry, elapsedTime);
         waitForStart();
-        NavigationTeleOp.setDriveMotorPowers(0,1,0,robotManager.robot,false);
+        NavigationTeleOp.setDriveMotorPowers(-Math.PI/2,0.7,0,robotManager.robot,false);
 //        try {
 //            Thread.sleep(200);
 //        } catch (InterruptedException e){
 //            throw new RuntimeException(e);
 //        }
-        waitMilliseconds(300);
-        NavigationTeleOp.setDriveMotorPowers(Math.PI/2,1,0,robotManager.robot,false);
+        waitMilliseconds(100);
+        NavigationTeleOp.setDriveMotorPowers(0,0.7,0,robotManager.robot,false);
 //        try {
 //            Thread.sleep(4000);
 //        } catch (InterruptedException e) {
