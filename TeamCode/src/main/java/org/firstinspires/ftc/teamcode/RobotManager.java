@@ -44,7 +44,7 @@ public class RobotManager {
         navigation = new NavigationTeleOp();
         mechanismDriving = new MechanismDriving();
 
-        // computerVision = new ComputerVision(hardwareMap, robot.telemetry, elapsedTime);
+        computerVision = new ComputerVision(hardwareMap, robot.telemetry, elapsedTime);
 
         gamepads = new GamepadWrapper(gamepad1, gamepad2);
         gamepads.updatePrevious();

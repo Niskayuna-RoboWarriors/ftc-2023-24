@@ -22,7 +22,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -41,15 +45,15 @@ public class ComputerVision extends LinearOpMode
 
     // Lens intrinsics
     // UNITS ARE PIXELS
-    // NOTE: this calibration is for the C920 webcam at 800x448.
+    // NOTE: this calibration is for the AUKEY webcam at 1920x1080.
     // You will need to do your own calibration for other configurations!
-    double fx = 578.272;
-    double fy = 578.272;
-    double cx = 402.145;
-    double cy = 221.506;
+    double fx = 1506.89815403;
+    double fy = 1506.89815403;
+    double cx = 960;
+    double cy = 540;
 
     // UNITS ARE METERS
-    double tagsize = 0.166;
+    double tagsize = 0.103;
 
     //insert ID of sleeve
     int left = 1;
@@ -59,9 +63,13 @@ public class ComputerVision extends LinearOpMode
     int ID_TAG_OF_INTEREST = 18; // Tag ID 18 from the 36h11 family
 
     AprilTagDetection tagOfInterest = null;
-
-    public ComputerVision() {
-
+    HardwareMap hardwareMap;
+    Telemetry telemetry;
+    ElapsedTime elapsedTime;
+    public ComputerVision(HardwareMap hardwareMap, Telemetry telemetry, ElapsedTime elapsedTime) {
+        this.hardwareMap = hardwareMap;
+        this.telemetry = telemetry;
+        this.elapsedTime = elapsedTime;
     };
     @Override
     public void runOpMode() {
@@ -69,30 +77,42 @@ public class ComputerVision extends LinearOpMode
     }
     public CenterStageAuton.PixelPosition getPixelPosition()
     {
+        telemetry.addData("start getPixelPosition", 1);
+        telemetry.update();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        telemetry.addData("cameraMonitorViewId", cameraMonitorViewId);
+        telemetry.update();
 //        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        camera = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+//        camera = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        telemetry.addData("camera created", camera);
+        telemetry.update();
         aprilTagDetectionPipeline = new ComputerVisionLibrariesFunctions(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
+        telemetry.addData("pipeline", aprilTagDetectionPipeline);
+        telemetry.update();
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
             public void onOpened()
             {
                 //camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
-                camera.startStreaming(864,480, OpenCvCameraRotation.UPRIGHT);
+                telemetry.addData("on opened being called!!", 1);
+                telemetry.update();
+                camera.startStreaming(1920,1080, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
             public void onError(int errorCode)
             {
-
+                telemetry.addData("ERROR??? ", errorCode);
             }
         });
 
         telemetry.setMsTransmissionInterval(50);
-
+        telemetry.addLine("after camera opened");
+        telemetry.update();
         /*
          * The INIT-loop:
          * This REPLACES waitForStart!
