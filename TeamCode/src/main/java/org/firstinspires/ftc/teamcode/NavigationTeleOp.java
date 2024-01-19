@@ -44,7 +44,7 @@ public class NavigationTeleOp extends BaseNavigation{
 
     //**TELEOP CONSTANTS**
     static final double MOVEMENT_MAX_POWER = 1; //Sets the maximum power to full power. (Full power is between 0 - 1)
-    static final double STRAIGHT_MOVEMENT_POWER = 0.7;
+    static final double STRAIGHT_MOVEMENT_POWER = 1;
     static final double ROTATION_POWER = 1; //Sets the maximum rotation power 1/2 full power
     static final double REDUCED_ROTATION_POWER = 0.2; //Lets the minimum rotation power to 1/5th full power
     static final double SLOW_MOVEMENT_SCALE_FACTOR = 0.3; //idk what this means
@@ -52,7 +52,7 @@ public class NavigationTeleOp extends BaseNavigation{
 
 
     //**INSTANCE ATTRIBUTES**//
-    static public double[] wheel_speeds = {1, 1, 0.5, 1}; //Front Right Rear Right Front Left Rear Left.
+        static public double[] wheel_speeds = {1, 1, 0.5, 1}; //Front Right, Rear Right, Front Left, Rear Left.
     public double strafePower; //This is for Tele-Op ONLY.
 
     /*
@@ -110,14 +110,14 @@ public class NavigationTeleOp extends BaseNavigation{
         double direction;
         if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_FORWARD) || gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_BACKWARD)) {
             if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_LEFT)) {//moves left at 45° (or Northwest)
-                direction = Math.PI * 0.75;
+                direction = Math.PI * -0.75;
             } else if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_RIGHT)) { //moves right at 45° (or Northeast)
-                direction = Math.PI * 0.25;
+                direction = Math.PI * -0.25;
             } else {//moving forward
-                direction = Math.PI * 0.5;
+                direction = Math.PI * -0.5;
             }
             if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_BACKWARD)) { //invert the forward to just backwards
-                direction = Math.PI * -0.5;
+                direction = Math.PI * 0.5;
             }
             setDriveMotorPowers(direction, STRAIGHT_MOVEMENT_POWER, 0.0, robot, false);
         } else if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_LEFT)) { //default direction. Set as 0
