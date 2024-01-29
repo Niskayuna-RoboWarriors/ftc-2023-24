@@ -31,16 +31,8 @@ public class PaperServoTestOpMode extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            if (runtime.milliseconds() % 2000 < 1000) {
-                servo.setPosition(MechanismDriving.PLANE_SPRING_UNRELEASED_POS);
-                telemetry.addData("Going to ", MechanismDriving.PLANE_SPRING_UNRELEASED_POS);
-            }
-            else {
-                servo.setPosition(MechanismDriving.PLANE_SPRING_RELEASED_POS);
-                telemetry.addData("Going to ", MechanismDriving.PLANE_SPRING_RELEASED_POS);
-            }
-
-            // Show the elapsed game time.
+            servo.setPosition(gamepad1.left_stick_y);
+            telemetry.addData("position", gamepad1.left_stick_y);
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
