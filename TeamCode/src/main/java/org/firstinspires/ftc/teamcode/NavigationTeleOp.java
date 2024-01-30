@@ -106,7 +106,7 @@ public class NavigationTeleOp extends BaseNavigation{
      * @param robot
      * @return whether any of the DPAD buttons were pressed
      */
-    public void moveStraight(GamepadWrapper gamepads, Robot robot) {
+        public void moveStraight(GamepadWrapper gamepads, Robot robot) {
         double direction;
         if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_FORWARD) || gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_BACKWARD)) {
             if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_LEFT)) {//moves left at 45° (or Northwest)

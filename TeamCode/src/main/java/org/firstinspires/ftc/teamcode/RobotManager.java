@@ -135,6 +135,22 @@ public class RobotManager {
                 robot.desiredPlaneSpringState = Robot.PlaneSpringState.UNRELEASED;
             }
         }
+        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.OPEN_CLAW)) {
+            robot.desiredClawState = Robot.clawState.OPEN2;
+        }
+        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.DROP_1_FROM_CLAW)) {
+            switch (robot.desiredClawState) {
+                case CLOSED:
+                    robot.desiredClawState = Robot.clawState.OPEN1;
+                    break;
+                case OPEN1:
+                    robot.desiredClawState = Robot.clawState.OPEN2;
+                    break;
+            }
+        }
+        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.CLOSE_CLAW)) {
+            robot.desiredClawState = Robot.clawState.CLOSED;
+        }
         else if (Math.abs(gamepads.gamepad2.right_stick_y) > NavigationTeleOp.JOYSTICK_DEAD_ZONE_SIZE) {
             robot.desiredIntakeMotorState = Robot.IntakeMotorState.ANALOG;
         }
