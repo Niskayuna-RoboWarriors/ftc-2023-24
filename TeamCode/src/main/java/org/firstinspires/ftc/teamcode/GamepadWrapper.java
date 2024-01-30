@@ -22,7 +22,9 @@ public class GamepadWrapper {
 
         //dunno bro | it was for debug and calibration stuff
         TOGGLE_WHEEL_SPEED_ADJUSTMENT,
-        REDUCED_CLOCKWISE, REDUCED_COUNTER_CLOCKWISE
+        REDUCED_CLOCKWISE, REDUCED_COUNTER_CLOCKWISE,
+
+        OPEN_CLAW, CLOSE_CLAW, DROP_1_FROM_CLAW
     }
 
     //gamepad1 is for movement
@@ -76,10 +78,12 @@ public class GamepadWrapper {
                 return gamepad2.dpad_right;
             case SET_SLIDES_HIGH:
                 return gamepad2.dpad_up;
-            case TOGGLE_INTAKE_MOTOR_ROTATION:
+            case OPEN_CLAW:
                 return gamepad2.b;
-            case TOGGLE_OUTTAKE_MOTOR_ROTATION:
+            case CLOSE_CLAW:
                 return gamepad2.x;
+            case DROP_1_FROM_CLAW:
+                return gamepad2.y;
 //            case TOGGLE_RIGHT_BUCKET:
 //                return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
 //            case TOGGLE_LEFT_BUCKET:

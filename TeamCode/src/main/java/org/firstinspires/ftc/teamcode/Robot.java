@@ -66,6 +66,7 @@ public class Robot {
         //not sure what to put here yet
 
         PLANE_SPRING("plane_spring", Servo.Direction.FORWARD),
+        CLAW("claw", Servo.Direction.FORWARD),
         COMPARTMENT_LEFT("compartment_left", Servo.Direction.FORWARD),
         COMPARTMENT_RIGHT("compartment_right", Servo.Direction.FORWARD);
         final String name;
@@ -141,13 +142,16 @@ public class Robot {
     public PlaneSpringState desiredPlaneSpringState = PlaneSpringState.UNRELEASED;
     enum MovementMode                         {NORMAL, FINE, ULTRA_FINE}
 
+    public static enum clawState {CLOSED, OPEN1, OPEN2}
+    public clawState desiredClawState  = clawState.OPEN2;
+
     MovementMode movementMode = MovementMode.NORMAL;
     boolean wheelSpeedAdjustment = false;
     
     // Hardware
     public DcMotor slides, intakeMotor;
     public DcMotor frontLeft, frontRight, rearLeft, rearRight;
-    public Servo planeSpring, compartmentLeft, compartmentRight;
+    public Servo planeSpring, claw, compartmentLeft, compartmentRight;
 
 //    public TouchSensor slidesLimitSwitch;
     //servos
@@ -180,6 +184,7 @@ public class Robot {
         slides            = Objects.requireNonNull(Robot.MotorConfigs.initialize(Robot.MotorConfigs.SLIDES, hardwareMap));
         intakeMotor            = Objects.requireNonNull(Robot.MotorConfigs.initialize(Robot.MotorConfigs.INTAKE_MOTOR, hardwareMap));
         planeSpring     = Objects.requireNonNull(Robot.ServoConfigs.initialize(Robot.ServoConfigs.PLANE_SPRING, hardwareMap));
+        claw = Objects.requireNonNull(Robot.ServoConfigs.initialize(Robot.ServoConfigs.CLAW, hardwareMap));
         //compartmentLeft     = Objects.requireNonNull(Robot.ServoConfigs.initialize(Robot.ServoConfigs.COMPARTMENT_LEFT, hardwareMap));
         //compartmentRight     = Objects.requireNonNull(Robot.ServoConfigs.initialize(Robot.ServoConfigs.COMPARTMENT_RIGHT, hardwareMap));
 //        slidesLimitSwitch= Robot.SwitchConfigs.initialize(Robot.SwitchConfigs.SLIDES_LIMIT, hardwareMap);

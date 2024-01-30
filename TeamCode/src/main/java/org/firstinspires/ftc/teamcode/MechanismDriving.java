@@ -34,6 +34,9 @@ public class MechanismDriving {
     static final double INTAKE_MOTOR_SPEED = -1;
     static final double OUTTAKE_MOTOR_SPEED = 1;
 
+    static final double CLAW_CLOSED = 0.3;
+    static final double CLAW_OPEN_1 = 0.35;
+    static final double CLAW_OPEN_2 = 0.4;
     /**
      * Update left compartment
      * @param robot
@@ -261,6 +264,22 @@ public class MechanismDriving {
     public void turnOuttakeIntakeMotor(Robot robot) {
         robot.desiredIntakeMotorState = Robot.IntakeMotorState.OUTTAKE;
         updateIntakeMotor(null, robot);
+    }
+
+    public void updateClaw(Robot robot) {
+        robot.telemetry.addData("robot desired claw state",robot.desiredClawState);
+        switch (robot.desiredClawState) {
+            case CLOSED:
+                robot.claw.setPosition(CLAW_CLOSED);
+                break;
+            case OPEN1:
+                robot.claw.setPosition(CLAW_OPEN_1);
+                break;
+            case OPEN2:
+                robot.claw.setPosition(CLAW_OPEN_2);
+                break;
+        }
+        robot.telemetry.addData("robot set claw position", robot.claw.getPosition());
     }
 
     public void dropPixel(Robot robot) {
