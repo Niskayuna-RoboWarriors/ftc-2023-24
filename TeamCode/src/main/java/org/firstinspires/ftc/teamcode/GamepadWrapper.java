@@ -71,7 +71,7 @@ public class GamepadWrapper {
 
             // Gamepad 2 Controls
             case SET_SLIDES_RETRACTED:
-                return gamepad2.dpad_down;
+                return gamepad2.dpad_down;  
             case SET_SLIDES_LOW:
                 return gamepad2.dpad_left;
             case SET_SLIDES_MEDIUM:

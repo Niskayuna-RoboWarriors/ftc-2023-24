@@ -92,21 +92,21 @@ public class RobotManager {
 //                robot.desiredCompartmentLeftState = Robot.CompartmentState.CLOSED;
 //            }
 //        }
-        if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_INTAKE_MOTOR_ROTATION)) {
-            if (robot.desiredIntakeMotorState != Robot.IntakeMotorState.INTAKE) {
-                robot.desiredIntakeMotorState = Robot.IntakeMotorState.INTAKE;
-            }
-            else {
-                robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
-            }
-        }
-        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_OUTTAKE_MOTOR_ROTATION)) {
-            if (robot.desiredIntakeMotorState != Robot.IntakeMotorState.OUTTAKE) {
-                robot.desiredIntakeMotorState = Robot.IntakeMotorState.OUTTAKE;
-            } else {
-                robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
-            }
-        }
+//        if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_INTAKE_MOTOR_ROTATION)) {
+//            if (robot.desiredIntakeMotorState != Robot.IntakeMotorState.INTAKE) {
+//                robot.desiredIntakeMotorState = Robot.IntakeMotorState.INTAKE;
+//            }
+//            else {
+//                robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
+//            }
+//        }
+//        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_OUTTAKE_MOTOR_ROTATION)) {
+//            if (robot.desiredIntakeMotorState != Robot.IntakeMotorState.OUTTAKE) {
+//                robot.desiredIntakeMotorState = Robot.IntakeMotorState.OUTTAKE;
+//            } else {
+//                robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
+//            }
+//        }
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.PLANE_RELEASE)) {
             if (robot.desiredPlaneSpringState == Robot.PlaneSpringState.UNRELEASED) {
                 robot.desiredPlaneSpringState = Robot.PlaneSpringState.RELEASED;
@@ -131,9 +131,9 @@ public class RobotManager {
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.CLOSE_CLAW)) {
             robot.desiredClawState = Robot.clawState.CLOSED;
         }
-        else if (Math.abs(gamepads.gamepad2.right_stick_y) > NavigationTeleOp.JOYSTICK_DEAD_ZONE_SIZE) {
-            robot.desiredIntakeMotorState = Robot.IntakeMotorState.ANALOG;
-        }
+//        else if (Math.abs(gamepads.gamepad2.right_stick_y) > NavigationTeleOp.JOYSTICK_DEAD_ZONE_SIZE) {
+//            robot.desiredIntakeMotorState = Robot.IntakeMotorState.ANALOG;
+//        }
         gamepads.updatePrevious();
     };
     /** Wraps mechanism driving update functions
@@ -142,7 +142,8 @@ public class RobotManager {
         //mechanismDriving.updateCompartments(robot);
         mechanismDriving.updateSlides(gamepads, robot);
         mechanismDriving.updatePlaneSpring(robot);
-        mechanismDriving.updateIntakeMotor(gamepads, robot);
+//        mechanismDriving.updateIntakeMotor(gamepads, robot);
+        mechanismDriving.updateClaw(robot);
 
     }
     public void moveRobot() {
