@@ -9,6 +9,7 @@ import java.sql.Driver;
 /** Wraps a gamepad so that button mappings are stored in one place.
  */
 public class GamepadWrapper {
+    public static final boolean isUsingPlaystation = false;
     public enum DriverAction {
         MOVE_STRAIGHT_FORWARD, MOVE_STRAIGHT_BACKWARD, MOVE_STRAIGHT_LEFT, MOVE_STRAIGHT_RIGHT,
 
@@ -62,15 +63,15 @@ public class GamepadWrapper {
             case MOVE_STRAIGHT_BACKWARD:
                 return gamepad1.dpad_down;
             case MOVE_STRAIGHT_LEFT:
-                return gamepad1.dpad_right;
-            case MOVE_STRAIGHT_RIGHT:
                 return gamepad1.dpad_left;
+            case MOVE_STRAIGHT_RIGHT:
+                return gamepad1.dpad_right;
             case SWITCH_TO_NORMAL_MOVEMENT:
-                return gamepad1.x;
+                return isUsingPlaystation ? gamepad1.square : gamepad1.x;
             case SWITCH_TO_FINE_MOVEMENT:
-                return gamepad1.y;
+                return isUsingPlaystation ? gamepad1.cross : gamepad1.y;
             case SWITCH_TO_ULTRA_FINE_MOVEMENT:
-                return gamepad1.b;
+                return isUsingPlaystation ? gamepad1.circle : gamepad1.b;
 
             //case REDUCED_CLOCKWISE:
             //    return gamepad1.x;
@@ -87,13 +88,15 @@ public class GamepadWrapper {
             case SET_SLIDES_HIGH:
                 return gamepad2.dpad_up;
             case OPEN_CLAW:
-                return gamepad2.b;
+                return isUsingPlaystation ? gamepad1.circle : gamepad1.b;
             case CLOSE_CLAW:
-                return gamepad2.x;
+                return isUsingPlaystation ? gamepad1.square : gamepad1.x;
             case DROP_1_FROM_CLAW:
-                return gamepad2.y;
+            //    return gamepad2.y;
+                return gamepad2.triangle;
             case PLANE_RELEASE:
-                return gamepad2.a;
+            //    return gamepad2.a;
+                return gamepad2.cross;
         }
         assert false; //if you really want the robot to crash, then i guess you can use this function. if this manages to reach this, your a frekin genius, (or a duck hole)
         return false;
