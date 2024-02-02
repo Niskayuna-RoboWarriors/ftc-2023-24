@@ -143,7 +143,7 @@ public class Robot {
     enum MovementMode                         {NORMAL, FINE, ULTRA_FINE}
 
     public static enum clawState {CLOSED, OPEN1, OPEN2}
-    public clawState desiredClawState  = clawState.OPEN2;
+    public clawState desiredClawState  = clawState.CLOSED;
 
     MovementMode movementMode = MovementMode.NORMAL;
     boolean wheelSpeedAdjustment = false;

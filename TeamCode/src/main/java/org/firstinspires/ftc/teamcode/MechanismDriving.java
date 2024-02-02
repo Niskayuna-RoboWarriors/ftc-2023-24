@@ -35,8 +35,8 @@ public class MechanismDriving {
     static final double OUTTAKE_MOTOR_SPEED = 1;
 
     static final double CLAW_CLOSED = 0.3;
-    static final double CLAW_OPEN_1 = 0.35;
-    static final double CLAW_OPEN_2 = 0.4;
+    static final double CLAW_OPEN_1 = 0.39;
+    static final double CLAW_OPEN_2 = 0.6;
     /**
      * Update left compartment
      * @param robot

@@ -24,7 +24,8 @@ public class GamepadWrapper {
         TOGGLE_WHEEL_SPEED_ADJUSTMENT,
         REDUCED_CLOCKWISE, REDUCED_COUNTER_CLOCKWISE,
 
-        OPEN_CLAW, CLOSE_CLAW, DROP_1_FROM_CLAW
+        OPEN_CLAW, CLOSE_CLAW, DROP_1_FROM_CLAW,
+        SWITCH_TO_NORMAL_MOVEMENT, SWITCH_TO_FINE_MOVEMENT, SWITCH_TO_ULTRA_FINE_MOVEMENT
     }
 
     //gamepad1 is for movement
@@ -64,10 +65,17 @@ public class GamepadWrapper {
                 return gamepad1.dpad_right;
             case MOVE_STRAIGHT_RIGHT:
                 return gamepad1.dpad_left;
-            case REDUCED_CLOCKWISE:
+            case SWITCH_TO_NORMAL_MOVEMENT:
                 return gamepad1.x;
-            case REDUCED_COUNTER_CLOCKWISE:
+            case SWITCH_TO_FINE_MOVEMENT:
+                return gamepad1.y;
+            case SWITCH_TO_ULTRA_FINE_MOVEMENT:
                 return gamepad1.b;
+
+            //case REDUCED_CLOCKWISE:
+            //    return gamepad1.x;
+            //case REDUCED_COUNTER_CLOCKWISE:
+            //    return gamepad1.b;
 
             // Gamepad 2 Controls
             case SET_SLIDES_RETRACTED:
@@ -84,10 +92,6 @@ public class GamepadWrapper {
                 return gamepad2.x;
             case DROP_1_FROM_CLAW:
                 return gamepad2.y;
-//            case TOGGLE_RIGHT_BUCKET:
-//                return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
-//            case TOGGLE_LEFT_BUCKET:
-//                return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
             case PLANE_RELEASE:
                 return gamepad2.a;
         }
