@@ -126,7 +126,7 @@ public class RobotManager {
 //                robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
 //            }
 //        }
-        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.PLANE_RELEASE)) {
+        if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.PLANE_RELEASE)) {
             if (robot.desiredPlaneSpringState == Robot.PlaneSpringState.UNRELEASED) {
                 robot.desiredPlaneSpringState = Robot.PlaneSpringState.RELEASED;
             }
@@ -134,7 +134,7 @@ public class RobotManager {
                 robot.desiredPlaneSpringState = Robot.PlaneSpringState.UNRELEASED;
             }
         }
-        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.OPEN_CLAW)) {
+        if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.OPEN_CLAW)) {
             robot.desiredClawState = Robot.clawState.OPEN2;
         }
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.DROP_1_FROM_CLAW)) {
@@ -167,8 +167,9 @@ public class RobotManager {
     }
     public void moveRobot() {
         navigation.updateStrafePower(gamepads, robot);
-        navigation.moveStraight(gamepads, robot);
-        navigation.moveJoystick(gamepads, robot);
+        if (!navigation.moveStraight(gamepads, robot)) {
+            navigation.moveJoystick(gamepads, robot);
+        }
     }
 
 }
