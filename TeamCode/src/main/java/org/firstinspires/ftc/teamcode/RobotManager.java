@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -26,7 +27,7 @@ public class RobotManager {
 
     protected GamepadWrapper gamepads;
     public ElapsedTime elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-
+    public Thread computerVisionThread;
     /**
      * makes robotmanager with subcomponents it's managing
      * @param hardwareMap
@@ -47,8 +48,18 @@ public class RobotManager {
 
         gamepads = new GamepadWrapper(gamepad1, gamepad2);
         gamepads.updatePrevious();
-
-
+        RobotManager temp = this;
+        computerVisionThread = new Thread(new Runnable() {
+            private RobotManager robotManager;
+            {
+                robotManager = temp;
+            }
+            @Override
+            public void run() {
+                robotManager.computerVision.getPixelOffset();
+            }
+        });
+        computerVisionThread.run();
     }
 
     /** Determine new robot desired states based on controller input (checks for button releases)
@@ -147,10 +158,10 @@ public class RobotManager {
 
     }
     public void moveRobot() {
+        navigation.updatePixelOffset(computerVision.getOffset());
         navigation.updateStrafePower(gamepads, robot);
         if (!navigation.moveStraight(gamepads, robot)) {
             navigation.moveJoystick(gamepads, robot);
         }
     }
-
 }

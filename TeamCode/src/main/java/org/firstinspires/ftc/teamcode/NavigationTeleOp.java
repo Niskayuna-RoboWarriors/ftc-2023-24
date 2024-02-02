@@ -54,6 +54,8 @@ public class NavigationTeleOp {
     //**INSTANCE ATTRIBUTES**//
         static public double[] wheel_speeds = {1, 1, 1, 1}; //Front Right, Rear Right, Front Left, Rear Left.
     public double strafePower; //This is for Tele-Op ONLY.
+    static public double pixelOffsetPower;
+    static final public double pixelOffsetMaxPower = .1;
 
     /*
      First position in this ArrayList is the first position that robot is planning to go to.
@@ -67,6 +69,11 @@ public class NavigationTeleOp {
     /**
      */
     public NavigationTeleOp() {
+    }
+
+    public void updatePixelOffset(int offset) {
+        pixelOffsetPower = Math.min(Math.abs(offset), 4)/4.0 * pixelOffsetMaxPower;
+        if (offset < 0) pixelOffsetPower = -pixelOffsetPower;
     }
 
     /** Updates the strafe power according to movement mode and gamepad 1 left trigger.
@@ -225,10 +232,17 @@ public class NavigationTeleOp {
                 break;
         }
 
-        double frontRightPower = (rawPowers[1] * power - turn) * wheel_speeds[0] * movementModeScaleFactor;
-        double rearRightPower = (rawPowers[0] * power - turn) * wheel_speeds[1] * movementModeScaleFactor;
-        double frontLeftPower = (rawPowers[0] * power + turn) * wheel_speeds[2] * movementModeScaleFactor;
-        double rearLeftPower = (rawPowers[1] * power + turn) * wheel_speeds[3] * movementModeScaleFactor;
+        double frontRightPower = (rawPowers[1] * power - turn) * wheel_speeds[0] * movementModeScaleFactor + pixelOffsetPower;
+        double rearRightPower = (rawPowers[0] * power - turn) * wheel_speeds[1] * movementModeScaleFactor + pixelOffsetPower;
+        double frontLeftPower = (rawPowers[0] * power + turn) * wheel_speeds[2] * movementModeScaleFactor + pixelOffsetPower;
+        double rearLeftPower = (rawPowers[1] * power + turn) * wheel_speeds[3] * movementModeScaleFactor + pixelOffsetPower;
+
+        double maxMax = Math.max(Math.max(frontLeftPower, frontRightPower), Math.max(rearLeftPower, rearRightPower));
+
+        frontRightPower /= maxMax;
+        rearRightPower /= maxMax;
+        frontLeftPower /= maxMax;
+        rearLeftPower /= maxMax;
 
         robot.telemetry.addData("front right power", frontRightPower);
         robot.telemetry.addData("rear right power", rearRightPower);
