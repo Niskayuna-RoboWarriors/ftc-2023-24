@@ -51,7 +51,7 @@ public class NavigationTeleOp extends BaseNavigation{
 
 
     //**INSTANCE ATTRIBUTES**//
-    static public double[] wheel_speeds = {0.95, 1, -1, -0.97}; //Back left, Back right, Front left, Front right. Temporary Note: currently FR from -0.90 to -0.92
+    static public double[] wheel_speeds = {1, 1, 0.5, 1}; //Front Right Rear Right Front Left Rear Left.
     public double strafePower; //This is for Tele-Op ONLY.
 
     /*
@@ -77,13 +77,13 @@ public class NavigationTeleOp extends BaseNavigation{
 
         AnalogValues analogValues = gamepads.getAnalogValues();
         //Limits the output values between 0 - 1. 0 = no power, 1 = full power
-        double distance = Range.clip(Math.sqrt(Math.pow(analogValues.gamepad1LeftStickX, 2) + Math.pow(analogValues.gamepad1LeftStickY, 2)), 0, 1);
+        double distance = Range.clip(Math.hypot(analogValues.gamepad1LeftStickX, analogValues.gamepad1LeftStickY), 0, 1);
 
 
         if (distance <= JOYSTICK_DEAD_ZONE_SIZE) {
-            strafePower = SLOW_MOVEMENT_SCALE_FACTOR; //Set as 0.3 (3/10th full power)
+            strafePower = 0; //Set as 0.3 (3/10th full power)
         } else {
-            strafePower = distance + MOVEMENT_MAX_POWER; //Set as 1 (full power)
+            strafePower = 0.5 * MOVEMENT_MAX_POWER; //Set as 1 (full power)
         }
         //Pre-sets robot slide states at what speed.
         if (robot.desiredSlideState == Robot.SlideState.HIGH && robot.slides.getPower() == 0) {
@@ -105,7 +105,7 @@ public class NavigationTeleOp extends BaseNavigation{
      * @param robot
      * @return whether any of the DPAD buttons were pressed
      */
-    public boolean moveStraight(GamepadWrapper gamepads, Robot robot) {
+    public void moveStraight(GamepadWrapper gamepads, Robot robot) {
         double direction;
         if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_FORWARD) || gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_BACKWARD)) {
             if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_LEFT)) {//moves left at 45° (or Northwest)
@@ -116,17 +116,17 @@ public class NavigationTeleOp extends BaseNavigation{
                 direction = Math.PI * 0.5;
             }
             if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_BACKWARD)) { //invert the forward to just backwards
-                direction = -Math.PI * 0.5;
+                direction = Math.PI * -0.5;
             }
+            setDriveMotorPowers(direction, strafePower, 0.0, robot, false);
         } else if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_LEFT)) { //default direction. Set as 0
             direction = Math.PI;
+            setDriveMotorPowers(direction, strafePower, 0.0, robot, false);
         } else if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_RIGHT)) {
             direction = 0;
-        } else {
-            return false;
+            setDriveMotorPowers(direction, strafePower, 0.0, robot, false);
         }
-        setDriveMotorPowers(direction, strafePower, 0.0, robot, false);
-        return true;
+
     }
 
     /** Changes drivetrain motor inputs based off the controller inputs
@@ -139,7 +139,7 @@ public class NavigationTeleOp extends BaseNavigation{
         // NOTE: right-side drivetrain motor inputs don't have to be negated because their directions will be reversed
         //       upon initialization.
 
-        double turn = gamepads.gamepad1.right_stick_x;
+        double turn = -gamepads.gamepad1.right_stick_x; //turning was in the wrong direction, so negative sign
         double rotationPower = ROTATION_POWER;
         if (Math.abs(turn) < JOYSTICK_DEAD_ZONE_SIZE) {
             turn = 0;
@@ -160,7 +160,7 @@ public class NavigationTeleOp extends BaseNavigation{
         } else if (Math.abs(moveDirection - Math.PI) % Math.PI < Math.PI / 12) {
             moveDirection = Math.PI;
         } else if (Math.abs(moveDirection + Math.PI / 2) < Math.PI / 12) {
-            moveDirection = Math.PI / 2;
+            moveDirection = -Math.PI / 2;
         } else {
             moveDirection = moveDirection;
         }
@@ -210,9 +210,15 @@ public class NavigationTeleOp extends BaseNavigation{
          * then the turn factor is combined with the speed for robot turing
          * finally the motor power is adjusted by a ration that individual to each wheel in case of one wheel having outsized influence on the movement of the robot for some hardware reason.
          */
+        robot.telemetry.addData("front right power", (rawPowers[1] * power - turn) * wheel_speeds[0]);
+        robot.telemetry.addData("rear right power", (rawPowers[0] * power - turn) * wheel_speeds[1]);
+        robot.telemetry.addData("front left power", (rawPowers[0] * power + turn) * wheel_speeds[2]);
+        robot.telemetry.addData("rear left power", (rawPowers[1] * power + turn) * wheel_speeds[3]);
+
+
         robot.frontRight.setPower((rawPowers[1] * power - turn) * wheel_speeds[0]); //Turns the front right wheel
-        robot.rearRight.setPower((rawPowers[0] * power + turn) * wheel_speeds[1]); //Turns the back right wheel
-        robot.frontLeft.setPower((rawPowers[0] * power - turn) * wheel_speeds[2]); //Turns the left front wheel
+        robot.rearRight.setPower((rawPowers[0] * power - turn) * wheel_speeds[1]); //Turns the back right wheel
+        robot.frontLeft.setPower((rawPowers[0] * power + turn) * wheel_speeds[2]); //Turns the left front wheel
         robot.rearLeft.setPower((rawPowers[1] * power + turn) * wheel_speeds[3]); //Turns the left back wheel
     }
 

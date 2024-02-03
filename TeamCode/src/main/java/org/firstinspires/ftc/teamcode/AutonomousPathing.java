@@ -59,6 +59,7 @@ public class AutonomousPathing {
      * @param pixelPosition The randomized position on where to put the pixel (right, center, or left)
      * @param parkingPosition Where the robot is parking from the backboard (parking to the left of the backboard, or the right of the backboard)
      */
+
     void generatePath(CenterStageAuton.AllianceColor allianceColor, CenterStageAuton.StartingSide startingSide,
                        CenterStageAuton.PixelPosition pixelPosition,
                       CenterStageAuton.ParkingPosition parkingPosition){

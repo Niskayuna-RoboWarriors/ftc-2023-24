@@ -7,11 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import java.util.ArrayList;
-import java.util.Random;
-
-@Autonomous(name="CenterStageAuton", group="Linear OpMode")
-public class CenterStageAuton extends LinearOpMode {
+@Autonomous(name="BlankAuton", group="Linear OpMode")
+public class BlankAutonOp extends LinearOpMode {
 
     private RobotManager robotManager;
     private AutonomousPathing autonomousPathing;
@@ -23,7 +20,7 @@ public class CenterStageAuton extends LinearOpMode {
     // Which Alliance we're on
     public enum AllianceColor {BLUE, RED};
     // Which side we're on (relative to our team)
-    public enum StartingSide {FURTHER, CLOSER};
+    public enum StartingSide {LEFT, RIGHT};
     // Where to park at the end of the autonomous period
     public enum ParkingPosition {LEFT, CENTER, RIGHT};
     // Movement mode during the autonomous period
@@ -31,23 +28,25 @@ public class CenterStageAuton extends LinearOpMode {
     // Position of the pixel placements
     public enum PixelPosition {LEFT, CENTER, RIGHT};
     public enum AutonMode {TOP, MIDDLE, BOTTOM};
-    private static MovementMode movementMode;
-    private static StartingSide startingSide;
-    private static AllianceColor allianceColor;
-    private static PixelPosition pixelPosition;
-    private static ParkingPosition parkingPosition;
-    private static AutonMode autonMode;
+    private static CenterStageAuton.MovementMode movementMode;
+    private static CenterStageAuton.StartingSide startingSide;
+    private static CenterStageAuton.AllianceColor allianceColor;
+    private static CenterStageAuton.PixelPosition pixelPosition;
+    private static CenterStageAuton.ParkingPosition parkingPosition;
+    private static CenterStageAuton.AutonMode autonMode;
 
     @Override
     public void runOpMode() {
         initSharedPreferences();
         robotManager = new RobotManager(hardwareMap, gamepad1, gamepad2, telemetry, elapsedTime);
         IMUPositioning.Initialize(this);
-        CenterStageAuton.PixelPosition pixelPosition = robotManager.computerVision.getPixelPosition();
 
-        autonomousPathing = new AutonomousPathing(robotManager, allianceColor, startingSide, pixelPosition, parkingPosition);
-        autonomousPathing.runAutonPath();
-      
+        /* Runs no code */
+        // CenterStageAuton.PixelPosition pixelPosition = robotManager.computerVision.getPixelPosition();
+
+        // autonomousPathing = new AutonomousPathing(robotManager, allianceColor, startingSide, movementMode, pixelPosition, parkingPosition, autonMode);
+        // autonomousPathing.runAutonPath(robotManager, robotManager.robot, allianceColor, startingSide, pixelPosition, autonMode, parkingPosition);
+
     }
     public void initSharedPreferences() {
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.hardwareMap.appContext);
@@ -73,46 +72,46 @@ public class CenterStageAuton extends LinearOpMode {
 
 
         /* Currently no waitTime functionality */
-        //make sure this is consistant with the values in ConfigureSharedPrefsOpMode
+
         if (allianceColorPref.equals("BLUE")) {
-            allianceColor = AllianceColor.BLUE;
+            allianceColor = CenterStageAuton.AllianceColor.BLUE;
         }
         else if (allianceColorPref.equals("RED")) {
-            allianceColor = AllianceColor.RED;
+            allianceColor = CenterStageAuton.AllianceColor.RED;
         }
 
-        if (startingSidePref.equals("FURTHER")) { //If further from backdrop
-            startingSide = StartingSide.FURTHER;
+        if (startingSidePref.equals("LEFT")) {
+            startingSide = CenterStageAuton.StartingSide.LEFT;
         }
-        else if (startingSidePref.equals("CLOSER")) { //If closer to backdrop
-            startingSide = StartingSide.CLOSER;
+        else if (startingSidePref.equals("RIGHT")) {
+            startingSide = CenterStageAuton.StartingSide.RIGHT;
         }
 
         if (movementModePref.equals("FORWARD_ONLY")) {
-            movementMode = MovementMode.FORWARD_ONLY;
+            movementMode = CenterStageAuton.MovementMode.FORWARD_ONLY;
         }
         else if (movementModePref.equals("STRAFE")) {
-            movementMode = MovementMode.STRAFE;
+            movementMode = CenterStageAuton.MovementMode.STRAFE;
         }
 
         if (autonModePref.equals("TOP")) {
-            autonMode = AutonMode.TOP;
+            autonMode = CenterStageAuton.AutonMode.TOP;
         }
         else if (autonModePref.equals("MIDDLE")) {
-            autonMode = AutonMode.MIDDLE;
+            autonMode = CenterStageAuton.AutonMode.MIDDLE;
         }
         else if (autonModePref.equals("BOTTOM")) {
-            autonMode = AutonMode.BOTTOM;
+            autonMode = CenterStageAuton.AutonMode.BOTTOM;
         }
 
         if (parkingPositionPref.equals("LEFT")) {
-            parkingPosition = ParkingPosition.LEFT;
+            parkingPosition = CenterStageAuton.ParkingPosition.LEFT;
         }
         else if (parkingPositionPref.equals("CENTER")) {
-            parkingPosition = ParkingPosition.CENTER;
+            parkingPosition = CenterStageAuton.ParkingPosition.CENTER;
         }
         else if (parkingPositionPref.equals("RIGHT")) {
-            parkingPosition = ParkingPosition.RIGHT;
+            parkingPosition = CenterStageAuton.ParkingPosition.RIGHT;
         }
     }
 

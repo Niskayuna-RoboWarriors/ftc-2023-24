@@ -8,7 +8,7 @@ import java.util.Map;
 /** Controls motors and servos that are not involved in moving the robot around the field.
  */
 public class MechanismDriving {
-
+    private ElapsedTime elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     // Slide variables
     public static final int LOWERING_AMOUNT = 100;
     public static final Map<Robot.SlideState, Integer> slidePositions = new HashMap<Robot.SlideState, Integer>() {{
@@ -26,13 +26,13 @@ public class MechanismDriving {
     static final double COMPARTMENT_SERVO_TIME = 500;
 
     // Plane spring variables
-    static final double PLANE_SPRING_UNRELEASED_POS = 0;
-    static final double PLANE_SPRING_RELEASED_POS = 0.25;
+    static final double PLANE_SPRING_UNRELEASED_POS = 0.3;
+    static final double PLANE_SPRING_RELEASED_POS = 0;
     static final double PLANE_SPRING_SERVO_TIME = 500;
 
     // Intake motor
-    static final double INTAKE_MOTOR_SPEED = 1;
-    static final double OUTTAKE_MOTOR_SPEED = 0.2;
+    static final double INTAKE_MOTOR_SPEED = -1;
+    static final double OUTTAKE_MOTOR_SPEED = 0.7;
 
     /**
      * Update left compartment
@@ -119,36 +119,49 @@ public class MechanismDriving {
         while (robot.elapsedTime.milliseconds() - startingTime < COMPARTMENT_SERVO_TIME) {}
     }
 
+
+
     /** Sets slide motor powers to move in direction of desired position, if necessary.
      *
      * @return whether the slides are in the desired position.
      */
-    public boolean updateSlides(Robot robot) {
-        if (robot.desiredSlideState != Robot.SlideState.UNREADY) {
-            robot.desiredSlidePosition = slidePositions.get(robot.desiredSlideState);
-
-            double mainSpeed; // "ramp" the motor speeds down based on how far away from the destination the motors are
-            mainSpeed = maxSpeedCoefficient * Range.clip(Math.abs(robot.desiredSlidePosition - robot.slides.getCurrentPosition())/slideRampDownDist, 0.1, 1);
-            mainSpeed = Range.clip(mainSpeed, 0.4, 1);//limit the max speed to 1 and the min speed to 0.05
-
-            // If the current position is less than desired position then move it up
-            if (robot.desiredSlidePosition - robot.slides.getCurrentPosition() > EPSILON) {
-                // Ensures that one motor does not go beyond the other too much
-                robot.slides.setPower(mainSpeed);
-            }
-
-            // If the current position is above the desired position, move these downwards
-            if (robot.slides.getCurrentPosition() - robot.desiredSlidePosition > EPSILON) {
-                robot.slides.setPower(-mainSpeed);
-            }
-
-            // Stop motors when we have reached the desired position
-            if (Math.abs(robot.slides.getCurrentPosition() - robot.desiredSlidePosition) < EPSILON) {
-                robot.slides.setPower(0);
+    public boolean updateSlides(GamepadWrapper gamepads, Robot robot) {
+        if (!slidePositions.containsKey(robot.desiredSlideState)) {
+            if (robot.desiredSlideState != Robot.SlideState.MOVE_UP
+                && robot.desiredSlideState != Robot.SlideState.MOVE_DOWN
+                || Math.abs(robot.slides.getCurrentPosition() - slidePositions.get(Robot.SlideState.HIGH)) <= EPSILON
+                || Math.abs(robot.slides.getCurrentPosition()) <= EPSILON
+            )   {
+                robot.slides.setPower(0.0);
                 return true;
-            } else {
-                return false;
             }
+            double speed = gamepads.gamepad2.left_stick_y * maxSpeedCoefficient;
+            robot.slides.setPower(speed);
+            return true;
+            //not sure what to return, but return value isn't used anyways so whatever
+        }
+        robot.desiredSlidePosition = slidePositions.get(robot.desiredSlideState);
+        robot.telemetry.addData("desired slide position", robot.desiredSlidePosition);
+        robot.telemetry.addData("current slide position", robot.slides.getCurrentPosition());
+        double mainSpeed; // "ramp" the motor speeds down based on how far away from the destination the motors are
+        mainSpeed = maxSpeedCoefficient * Range.clip(Math.abs(robot.desiredSlidePosition - robot.slides.getCurrentPosition())/slideRampDownDist, 0.1, 1);
+        mainSpeed = Range.clip(mainSpeed, 0.4, 1);//limit the max speed to 1 and the min speed to 0.05
+
+        // If the current position is less than desired position then move it up
+        if (robot.desiredSlidePosition - robot.slides.getCurrentPosition() > EPSILON) {
+            // Ensures that one motor does not go beyond the other too much
+            robot.slides.setPower(mainSpeed);
+        }
+
+        // If the current position is above the desired position, move these downwards
+        if (robot.slides.getCurrentPosition() - robot.desiredSlidePosition > EPSILON) {
+            robot.slides.setPower(-mainSpeed);
+        }
+
+        // Stop motors when we have reached the desired position
+        if (Math.abs(robot.slides.getCurrentPosition() - robot.desiredSlidePosition) < EPSILON) {
+            robot.slides.setPower(0);
+            return true;
         } else {
             return false;
         }
@@ -160,9 +173,9 @@ public class MechanismDriving {
      * @param targetSlideState
      */
     public void moveSlides(Robot robot, Robot.SlideState targetSlideState) {
-        if (targetSlideState == Robot.SlideState.UNREADY) { return; }
+        //if (targetSlideState == Robot.SlideState.UNREADY) { return; }
         robot.desiredSlideState = targetSlideState;
-        while (updateSlides(robot) != true) {};
+        while (updateSlides(null, robot) != true) {};
     }
 
     /**
@@ -253,6 +266,11 @@ public class MechanismDriving {
             throw new RuntimeException(e);
         }
         turnOffIntakeMotor(robot);
+    }
+
+    public void waitMilliseconds(long ms) {
+        double start_time = elapsedTime.time();
+        while (elapsedTime.time() - start_time < ms) {}
     }
 }
 

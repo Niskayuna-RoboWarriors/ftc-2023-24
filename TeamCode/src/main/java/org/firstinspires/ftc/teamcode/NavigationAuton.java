@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
 
 public class NavigationAuton extends BaseNavigation{
+
     public enum rotationDirection {CLOCKWISE, COUNTERCLOCKWISE};
 
     public static enum Action {NONE, DROP_PURPLE, DROP_YELLOW,};
@@ -408,5 +410,8 @@ public class NavigationAuton extends BaseNavigation{
         }
     }
 
-
+    public void waitMilliseconds(long ms) {
+        double start_time = elapsedTime.time();
+        while (elapsedTime.time() - start_time < ms) {}
+    }
 }

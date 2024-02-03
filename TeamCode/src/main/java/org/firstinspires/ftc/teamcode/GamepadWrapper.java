@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import static java.lang.Math.abs;
+
 import java.sql.Driver;
 
 /** Wraps a gamepad so that button mappings are stored in one place.
@@ -10,7 +12,7 @@ public class GamepadWrapper {
     public enum DriverAction {
         MOVE_STRAIGHT_FORWARD, MOVE_STRAIGHT_BACKWARD, MOVE_STRAIGHT_LEFT, MOVE_STRAIGHT_RIGHT,
 
-        TOGGLE_INTAKE_MOTOR_ROTATION,
+        TOGGLE_INTAKE_MOTOR_ROTATION, TOGGLE_OUTTAKE_MOTOR_ROTATION,
 
         SET_SLIDES_RETRACTED, SET_SLIDES_LOW, SET_SLIDES_MEDIUM, SET_SLIDES_HIGH,
 
@@ -20,7 +22,7 @@ public class GamepadWrapper {
 
         //dunno bro | it was for debug and calibration stuff
         TOGGLE_WHEEL_SPEED_ADJUSTMENT,
-        REDUCED_CLOCKWISE, REDUCED_COUNTER_CLOCKWISE,
+        REDUCED_CLOCKWISE, REDUCED_COUNTER_CLOCKWISE
     }
 
     //gamepad1 is for movement
@@ -30,6 +32,8 @@ public class GamepadWrapper {
     public GamepadWrapper(Gamepad gamepad1, Gamepad gamepad2) {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
+        this.previous_gamepad1 = new Gamepad();
+        this.previous_gamepad2 = new Gamepad();
         updatePrevious();
     }
 
@@ -73,13 +77,15 @@ public class GamepadWrapper {
             case SET_SLIDES_HIGH:
                 return gamepad2.dpad_up;
             case TOGGLE_INTAKE_MOTOR_ROTATION:
-                return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
-            case TOGGLE_RIGHT_BUCKET:
-                return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
-            case TOGGLE_LEFT_BUCKET:
-                return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
+                return gamepad2.b;
+            case TOGGLE_OUTTAKE_MOTOR_ROTATION:
+                return gamepad2.x;
+//            case TOGGLE_RIGHT_BUCKET:
+//                return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
+//            case TOGGLE_LEFT_BUCKET:
+//                return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
             case PLANE_RELEASE:
-                return false; //TODO DETERMINE KEYBIND ON THE PLAYSTATION CONTROLLER
+                return gamepad2.a;
         }
         assert false; //if you really want the robot to crash, then i guess you can use this function. if this manages to reach this, your a frekin genius, (or a duck hole)
         return false;
