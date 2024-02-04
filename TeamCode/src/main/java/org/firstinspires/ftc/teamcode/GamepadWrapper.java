@@ -67,11 +67,11 @@ public class GamepadWrapper {
             case MOVE_STRAIGHT_RIGHT:
                 return gamepad1.dpad_right;
             case SWITCH_TO_NORMAL_MOVEMENT:
-                return isUsingPlaystation ? gamepad1.square : gamepad1.x;
+                return gamepad1.square || gamepad1.x;
             case SWITCH_TO_FINE_MOVEMENT:
-                return isUsingPlaystation ? gamepad1.cross : gamepad1.y;
+                return gamepad1.cross || gamepad1.y;
             case SWITCH_TO_ULTRA_FINE_MOVEMENT:
-                return isUsingPlaystation ? gamepad1.circle : gamepad1.b;
+                return gamepad1.circle || gamepad1.b;
 
             //case REDUCED_CLOCKWISE:
             //    return gamepad1.x;
@@ -88,15 +88,13 @@ public class GamepadWrapper {
             case SET_SLIDES_HIGH:
                 return gamepad2.dpad_up;
             case OPEN_CLAW:
-                return isUsingPlaystation ? gamepad1.circle : gamepad1.b;
+                return gamepad1.circle || gamepad1.b;
             case CLOSE_CLAW:
-                return isUsingPlaystation ? gamepad1.square : gamepad1.x;
+                return gamepad1.square || gamepad1.x;
             case DROP_1_FROM_CLAW:
-            //    return gamepad2.y;
-                return gamepad2.triangle;
+                return gamepad2.triangle || gamepad2.y;
             case PLANE_RELEASE:
-            //    return gamepad2.a;
-                return gamepad2.cross;
+                return gamepad2.cross || gamepad2.a;
         }
         assert false; //if you really want the robot to crash, then i guess you can use this function. if this manages to reach this, your a frekin genius, (or a duck hole)
         return false;
