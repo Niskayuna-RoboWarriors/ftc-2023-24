@@ -28,6 +28,7 @@ public class RobotManager {
     protected GamepadWrapper gamepads;
     public ElapsedTime elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     public Thread computerVisionThread;
+    public AtomicInteger pixelOffset;
     /**
      * makes robotmanager with subcomponents it's managing
      * @param hardwareMap
@@ -49,17 +50,22 @@ public class RobotManager {
         gamepads = new GamepadWrapper(gamepad1, gamepad2);
         gamepads.updatePrevious();
         RobotManager temp = this;
+        pixelOffset = new AtomicInteger(0);
         computerVisionThread = new Thread(new Runnable() {
             private RobotManager robotManager;
+            private AtomicInteger offset;
             {
                 robotManager = temp;
+                offset = pixelOffset;
             }
             @Override
             public void run() {
-                robotManager.computerVision.getPixelOffset();
+                while (true) {
+                    offset.set(robotManager.computerVision.getPixelOffset());
+                }
             }
         });
-        computerVisionThread.run();
+        computerVisionThread.start();
     }
 
     /** Determine new robot desired states based on controller input (checks for button releases)
@@ -158,7 +164,7 @@ public class RobotManager {
 
     }
     public void moveRobot() {
-        navigation.updatePixelOffset(computerVision.getOffset());
+        navigation.updatePixelOffset(pixelOffset.get(), robot);
         navigation.updateStrafePower(gamepads, robot);
         if (!navigation.moveStraight(gamepads, robot)) {
             navigation.moveJoystick(gamepads, robot);

@@ -9,9 +9,9 @@ import java.util.ArrayList;
 /** Keeps track of the robot's desired path and makes it follow it accurately.
  */
 public class NavigationTeleOp {
-    public enum rotationDirection {CLOCKWISE, COUNTERCLOCKWISE};
+    public enum rotationDirection {CLOCKWISE, COUNTERCLOCKWISE}
 
-    public static enum Action {NONE, SLIDES_LOW, SLIDES_HIGH,};
+    public enum Action {NONE, SLIDES_LOW, SLIDES_HIGH}
     //Makes actions of the Robot that can be used anywhere within the folder.
 
 
@@ -55,7 +55,9 @@ public class NavigationTeleOp {
         static public double[] wheel_speeds = {1, 1, 1, 1}; //Front Right, Rear Right, Front Left, Rear Left.
     public double strafePower; //This is for Tele-Op ONLY.
     static public double pixelOffsetPower;
-    static final public double pixelOffsetMaxPower = .1;
+    static final public double pixelOffsetMaxPower = 0.1;
+
+    static public double strafeBearing;
 
     /*
      First position in this ArrayList is the first position that robot is planning to go to.
@@ -71,7 +73,15 @@ public class NavigationTeleOp {
     public NavigationTeleOp() {
     }
 
-    public void updatePixelOffset(int offset) {
+    /**
+     * only has power if slides are retracted
+     * scales offset to abs(offset) <= 4
+     * @param offset offset from AutoPixel
+     * @param robot robot
+     */
+    public void updatePixelOffset(int offset, Robot robot) {
+        //early return if slides are not retracted
+        if (Math.abs(robot.slides.getCurrentPosition()) > MechanismDriving.EPSILON) return;
         pixelOffsetPower = Math.min(Math.abs(offset), 4)/4.0 * pixelOffsetMaxPower;
         if (offset < 0) pixelOffsetPower = -pixelOffsetPower;
     }
@@ -233,11 +243,11 @@ public class NavigationTeleOp {
         }
 
         double frontRightPower = (rawPowers[1] * power - turn) * wheel_speeds[0] * movementModeScaleFactor + pixelOffsetPower;
-        double rearRightPower = (rawPowers[0] * power - turn) * wheel_speeds[1] * movementModeScaleFactor + pixelOffsetPower;
-        double frontLeftPower = (rawPowers[0] * power + turn) * wheel_speeds[2] * movementModeScaleFactor + pixelOffsetPower;
+        double rearRightPower = (rawPowers[0] * power - turn) * wheel_speeds[1] * movementModeScaleFactor - pixelOffsetPower;
+        double frontLeftPower = (rawPowers[0] * power + turn) * wheel_speeds[2] * movementModeScaleFactor - pixelOffsetPower;
         double rearLeftPower = (rawPowers[1] * power + turn) * wheel_speeds[3] * movementModeScaleFactor + pixelOffsetPower;
 
-        double maxMax = Math.max(Math.max(frontLeftPower, frontRightPower), Math.max(rearLeftPower, rearRightPower));
+        double maxMax = Math.max(1, Math.max(Math.max(frontLeftPower, frontRightPower), Math.max(rearLeftPower, rearRightPower)));
 
         frontRightPower /= maxMax;
         rearRightPower /= maxMax;

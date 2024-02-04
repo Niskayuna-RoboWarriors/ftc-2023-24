@@ -55,6 +55,7 @@ public class CenterStageTeleOp extends OpMode {
         telemetry.addData("after drive mechanisms", robotManager.elapsedTime.time()-start_time);
         robotManager.moveRobot();
         telemetry.addData("after maneuver", robotManager.elapsedTime.time()-start_time);
+        telemetry.addData("approximate loops per second", 1000.0/(robotManager.elapsedTime.time()-start_time));
         telemetry.update();
     }
 
