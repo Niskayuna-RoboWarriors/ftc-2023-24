@@ -23,7 +23,7 @@ public class CenterStageAuton extends LinearOpMode {
     // Which Alliance we're on
     public enum AllianceColor {BLUE, RED};
     // Which side we're on (relative to our team)
-    public enum StartingSide {LEFT, RIGHT};
+    public enum StartingSide {FURTHER, CLOSER};
     // Where to park at the end of the autonomous period
     public enum ParkingPosition {LEFT, CENTER, RIGHT};
     // Movement mode during the autonomous period
@@ -45,9 +45,9 @@ public class CenterStageAuton extends LinearOpMode {
         IMUPositioning.Initialize(this);
         CenterStageAuton.PixelPosition pixelPosition = robotManager.computerVision.getPixelPosition();
 
-        autonomousPathing = new AutonomousPathing(robotManager, allianceColor, startingSide, movementMode, pixelPosition, parkingPosition, autonMode);
-        autonomousPathing.runAutonPath(robotManager, robotManager.robot, allianceColor, startingSide, pixelPosition, autonMode, parkingPosition);
-
+        autonomousPathing = new AutonomousPathing(robotManager, allianceColor, startingSide, pixelPosition, parkingPosition);
+        autonomousPathing.runAutonPath();
+      
     }
     public void initSharedPreferences() {
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.hardwareMap.appContext);
@@ -73,7 +73,7 @@ public class CenterStageAuton extends LinearOpMode {
 
 
         /* Currently no waitTime functionality */
-
+        //make sure this is consistant with the values in ConfigureSharedPrefsOpMode
         if (allianceColorPref.equals("BLUE")) {
             allianceColor = AllianceColor.BLUE;
         }
@@ -81,11 +81,11 @@ public class CenterStageAuton extends LinearOpMode {
             allianceColor = AllianceColor.RED;
         }
 
-        if (startingSidePref.equals("LEFT")) {
-            startingSide = StartingSide.LEFT;
+        if (startingSidePref.equals("FURTHER")) { //If further from backdrop
+            startingSide = StartingSide.FURTHER;
         }
-        else if (startingSidePref.equals("RIGHT")) {
-            startingSide = StartingSide.RIGHT;
+        else if (startingSidePref.equals("CLOSER")) { //If closer to backdrop
+            startingSide = StartingSide.CLOSER;
         }
 
         if (movementModePref.equals("FORWARD_ONLY")) {

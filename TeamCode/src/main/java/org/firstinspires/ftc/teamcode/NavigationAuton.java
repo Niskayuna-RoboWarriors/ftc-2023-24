@@ -4,11 +4,11 @@ import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
 
-public class NavigationAuton {
-    private ElapsedTime elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+public class NavigationAuton extends BaseNavigation{
+
     public enum rotationDirection {CLOCKWISE, COUNTERCLOCKWISE};
 
-    public static enum Action {NONE, SLIDES_LOW, SLIDES_HIGH,};
+    public static enum Action {NONE, DROP_PURPLE, DROP_YELLOW,};
     private CenterStageAuton.MovementMode movementMode;
     //Makes actions of the Robot that can be used anywhere within the folder.
 
@@ -67,14 +67,13 @@ public class NavigationAuton {
     public void Navigation(AutonomousPathing path, CenterStageAuton.MovementMode movementMode) {
         this.movementMode = movementMode;
         this.pathIndex = 0;
-    };
+    }
 
     /**Makes the robot travel along the pth until it reaches a POI (Position of Interest)
      * |Auton| |Blocking|
-     * @param centerStageAuton the auton
      * @param robot        the physical robot itself
      */
-    public Position travelToNextPOI(CenterStageAuton centerStageAuton, Robot robot) {
+    public Position travelToNextPOI(Robot robot) {
         if (path.size() <= pathIndex) {
             robot.telemetry.addData("Path size <= to the path index, end of travel. pathIndex:", pathIndex); //This will show on the console. (Phone)
             return null;
@@ -90,25 +89,14 @@ public class NavigationAuton {
         robot.telemetry.addData("name", target.getName()); //Gets the name.
         switch (movementMode) {
             case FORWARD_ONLY: //Robot moving forward ONLY (if equal with movementMode)
-                rotate(getAngleBetween(robot.getPosition(), target) - Math.PI / 2, target.rotatePower, robot);
-                travelLinear(target, target.getStrafePower(), robot);
-                rotate(target.getRotation(), target.getRotatePower(), robot);
-                break; //case statement ends.
+                rotate(getAngleBetween(robot.getPosition(), target) - Math.PI / 2, target.rotatePower, robot);//face in the desired direction of movement
+                travelLinear(target, target.getStrafePower(), robot);//go to the position
+                rotate(target.getRotation(), target.getRotatePower(), robot);//rotate to the desired direction
+                break; //switch statement ends.
 
             case STRAFE://go directly to the target. do not care about the direction the robot is facing during travle
-                travelLinear(target, target.strafePower, robot);
-                double difference;
-//                if (pathIndex > 0) { //
-//                    difference = target.getRotation() - path.get(pathIndex - 1).getRotation();
-//                } else { //whatever the current rotation is...
-//                    difference = target.getRotation();
-//                }
-                difference = target.getRotation();
-                robot.telemetry.addData("Difference", difference);
-                robot.telemetry.addData("Target", target);
-                robot.telemetry.update();
-//                deadReckoningRotation(robot, difference, target.rotatePower);
-                deadReckoningRotation(robot, difference, target.rotatePower);
+                travelLinear(target, target.strafePower, robot);//go to the position
+                rotate(target.getRotation(), target.getRotatePower(), robot);//rotate to the desired direction
                 break;
 
 //            case BACKWARD_ONLY: //Robot moving backward ONLY (if equal with movementMode)
@@ -374,7 +362,11 @@ public class NavigationAuton {
 
     public void deadReckoningRotation(Robot robot, double time, double power) {
         NavigationTeleOp.setDriveMotorPowers(0.0, 0.0, power, robot, false);
-        waitMilliseconds((long) (time*ROTATION_TIME));
+        try {
+            Thread.sleep((long) (time*ROTATION_TIME));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         NavigationTeleOp.stopMovement(robot);
     }
 

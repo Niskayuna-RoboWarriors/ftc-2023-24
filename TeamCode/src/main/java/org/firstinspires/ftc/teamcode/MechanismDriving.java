@@ -260,7 +260,11 @@ public class MechanismDriving {
 
     public void dropPixel(Robot robot) {
         turnOuttakeIntakeMotor(robot);
-        waitMilliseconds(500);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         turnOffIntakeMotor(robot);
     }
 

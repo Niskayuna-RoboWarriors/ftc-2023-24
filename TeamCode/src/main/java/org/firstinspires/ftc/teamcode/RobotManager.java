@@ -22,6 +22,7 @@ public class RobotManager {
 
     public MechanismDriving mechanismDriving;
     public NavigationTeleOp navigation;
+    public NavigationAuton navigationAuton;
     public ComputerVision computerVision;
 
     protected GamepadWrapper gamepads;
@@ -50,6 +51,24 @@ public class RobotManager {
 
 
     }
+
+    /**
+         * constructor for auton
+         * @param hardwareMap
+         * @param telemetry
+         * @param elapsedTime
+         */
+        public RobotManager(HardwareMap hardwareMap, Telemetry telemetry, ElapsedTime elapsedTime) {
+
+            this.elapsedTime = elapsedTime;
+            elapsedTime.reset();
+            robot = new Robot(hardwareMap, telemetry, elapsedTime);
+            navigationAuton = new NavigationAuton();
+            mechanismDriving = new MechanismDriving();
+
+
+
+        }
 
     /** Determine new robot desired states based on controller input (checks for button releases)
      */
@@ -100,11 +119,12 @@ public class RobotManager {
                 robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
             }
         }
-        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_OUTTAKE_MOTOR_ROTATION)) {
-            if (robot.desiredIntakeMotorState != Robot.IntakeMotorState.OUTTAKE) {
-                robot.desiredIntakeMotorState = Robot.IntakeMotorState.OUTTAKE;
-            } else {
+        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_INTAKE_MOTOR_ROTATION)) {
+            if (robot.desiredIntakeMotorState == Robot.IntakeMotorState.INTAKE) {
                 robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
+            }
+            else {
+                robot.desiredIntakeMotorState = Robot.IntakeMotorState.INTAKE;
             }
         }
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.PLANE_RELEASE)) {

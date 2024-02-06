@@ -8,10 +8,10 @@ import java.util.ArrayList;
 
 /** Keeps track of the robot's desired path and makes it follow it accurately.
  */
-public class NavigationTeleOp {
+public class NavigationTeleOp extends BaseNavigation{
     public enum rotationDirection {CLOCKWISE, COUNTERCLOCKWISE};
 
-    public static enum Action {NONE, SLIDES_LOW, SLIDES_HIGH,};
+
     //Makes actions of the Robot that can be used anywhere within the folder.
 
 

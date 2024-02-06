@@ -18,7 +18,7 @@ public class Position {
     protected String name;
     protected double x; //Stores the Y value in the robot's position on the field
     protected double y; //Stores the Y value in the robot's position on the field
-    protected NavigationTeleOp.Action action = NavigationTeleOp.Action.NONE;
+    protected NavigationAuton.Action action = NavigationAuton.Action.NONE;
     //Add constructors if needed
     protected double strafePower = 1.0; //Strafe is set to FULL POWER. Number can range ONLY from -1 to 1
     protected double rotatePower = 1.0; //Rotation is set to FULL POWER.
@@ -55,7 +55,7 @@ public class Position {
       * @param rotatePower the amount of power on the wheels when the robots spins (speeds ranges from 0 to 1)
       * @param action the action that should be perfomed when the robot reaches this position
       */
-    public Position(double x, double y, String name, NavigationTeleOp.Action action, double strafePower, double rotatePower, double theta) {
+    public Position(double x, double y, String name, NavigationAuton.Action action, double strafePower, double rotatePower, double theta) {
         this.x = x;
         this.y = y;
         this.name = name;
@@ -64,6 +64,15 @@ public class Position {
         this.rotatePower = rotatePower; //Sets rotatePower form Line 24
         this.action = action;
 
+    }
+
+     /**create a point to preform a specific action
+      * @param action the action that should be perfomed when the robot reaches this position
+      * @param name the name of this positon  (for debugging)
+      */
+    public Position(NavigationAuton.Action action, String name){
+        this.name=name;
+        this.action=action;
     }
 
     //Sets all of the variables as a public function.
@@ -88,7 +97,7 @@ public class Position {
     public double getRotation(){
         return rotation;
     }
-    public NavigationTeleOp.Action getAction(){
+    public NavigationAuton.Action getAction(){
         return action;
     }
     public String getName(){
@@ -105,7 +114,8 @@ public class Position {
     }
 
     public static Position add(Position a, Position b) {
-       return new Position(a.getX() + b.getX(), a.getY() + b.getY(), (a.getRotation() + b.getRotation()) % (2 * Math.PI),"");
+       return new Position(a.getX() + b.getX(), a.getY() + b.getY(), a.name,a.action,a.strafePower,a.rotatePower,
+               (a.getRotation() + b.getRotation()) % (2 * Math.PI));
     }
     /**sets the rotation of the position
     *p@param r the angle to set to
