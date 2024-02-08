@@ -37,6 +37,8 @@ public class MechanismDriving {
     static final double CLAW_CLOSED = 0.3;
     static final double CLAW_OPEN_1 = 0.39;
     static final double CLAW_OPEN_2 = 0.6;
+    static final double CLAW_ROTATOR_DOWN = 0.33;
+    static final double CLAW_ROTATOR_PARALLEL = 0.1;
     /**
      * Update left compartment
      * @param robot
@@ -281,6 +283,14 @@ public class MechanismDriving {
                 break;
         }
         robot.telemetry.addData("robot set claw position", robot.claw.getPosition());
+        robot.telemetry.addData("robot desired claw rotator state", robot.desiredClawRotatorState);
+        switch (robot.desiredClawRotatorState) {
+            case DOWN:
+                robot.clawRotator.setPosition(CLAW_ROTATOR_DOWN);
+            case PARALLEL:
+                robot.clawRotator.setPosition(CLAW_ROTATOR_PARALLEL);
+        }
+        robot.telemetry.addData("robot set claw rotator position", robot.clawRotator.getPosition());
     }
 
     public void dropPixel(Robot robot) {

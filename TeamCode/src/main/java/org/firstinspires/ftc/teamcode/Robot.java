@@ -67,6 +67,7 @@ public class Robot {
 
         PLANE_SPRING("plane_spring", Servo.Direction.FORWARD),
         CLAW("claw", Servo.Direction.FORWARD),
+        CLAW_ROTATOR("claw2", Servo.Direction.FORWARD),
         COMPARTMENT_LEFT("compartment_left", Servo.Direction.FORWARD),
         COMPARTMENT_RIGHT("compartment_right", Servo.Direction.FORWARD);
         final String name;
@@ -141,6 +142,8 @@ public class Robot {
     public static enum PlaneSpringState       {UNRELEASED, RELEASED};
     public PlaneSpringState desiredPlaneSpringState = PlaneSpringState.UNRELEASED;
     enum MovementMode                         {NORMAL, FINE, ULTRA_FINE}
+    enum clawRotatorState {DOWN, PARALLEL}
+    public clawRotatorState desiredClawRotatorState = clawRotatorState.DOWN;
 
     public static enum clawState {CLOSED, OPEN1, OPEN2}
     public clawState desiredClawState  = clawState.CLOSED;
@@ -151,7 +154,7 @@ public class Robot {
     // Hardware
     public DcMotor slides, intakeMotor;
     public DcMotor frontLeft, frontRight, rearLeft, rearRight;
-    public Servo planeSpring, claw, compartmentLeft, compartmentRight;
+    public Servo planeSpring, claw, clawRotator, compartmentLeft, compartmentRight;
 
 //    public TouchSensor slidesLimitSwitch;
     //servos
@@ -185,6 +188,8 @@ public class Robot {
         intakeMotor            = Objects.requireNonNull(Robot.MotorConfigs.initialize(Robot.MotorConfigs.INTAKE_MOTOR, hardwareMap));
         planeSpring     = Objects.requireNonNull(Robot.ServoConfigs.initialize(Robot.ServoConfigs.PLANE_SPRING, hardwareMap));
         claw = Objects.requireNonNull(Robot.ServoConfigs.initialize(Robot.ServoConfigs.CLAW, hardwareMap));
+        clawRotator = Objects.requireNonNull(Robot.ServoConfigs.initialize(ServoConfigs.CLAW_ROTATOR, hardwareMap));
+
         //compartmentLeft     = Objects.requireNonNull(Robot.ServoConfigs.initialize(Robot.ServoConfigs.COMPARTMENT_LEFT, hardwareMap));
         //compartmentRight     = Objects.requireNonNull(Robot.ServoConfigs.initialize(Robot.ServoConfigs.COMPARTMENT_RIGHT, hardwareMap));
 //        slidesLimitSwitch= Robot.SwitchConfigs.initialize(Robot.SwitchConfigs.SLIDES_LIMIT, hardwareMap);
