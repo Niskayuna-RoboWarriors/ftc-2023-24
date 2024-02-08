@@ -61,7 +61,8 @@ public class RobotManager {
             @Override
             public void run() {
                 while (true) {
-                    offset.set(robotManager.computerVision.getPixelOffset());
+                    break;
+                    //offset.set(robotManager.computerVision.getPixelOffset());
                 }
             }
         });
@@ -71,6 +72,22 @@ public class RobotManager {
     /** Determine new robot desired states based on controller input (checks for button releases)
      */
     public void readControllerInputs() {
+        if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.SWITCH_TO_NORMAL_MOVEMENT)) {
+            robot.movementMode = Robot.MovementMode.NORMAL;
+        }
+        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.SWITCH_TO_FINE_MOVEMENT)) {
+            robot.movementMode = Robot.MovementMode.FINE;
+        }
+        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.SWITCH_TO_ULTRA_FINE_MOVEMENT)) {
+            robot.movementMode = Robot.MovementMode.ULTRA_FINE;
+        }
+        if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.CHANGE_CLAW_ROTATOR_POSITION)) {
+            if (robot.desiredClawRotatorState == Robot.clawRotatorState.DOWN) {
+                robot.desiredClawRotatorState = Robot.clawRotatorState.PARALLEL;
+            } else {
+                robot.desiredClawRotatorState = Robot.clawRotatorState.DOWN;
+            }
+        }
         if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.SET_SLIDES_RETRACTED)) {
             robot.desiredSlideState = Robot.SlideState.RETRACTED;
         }

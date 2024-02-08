@@ -26,7 +26,8 @@ public class GamepadWrapper {
         REDUCED_CLOCKWISE, REDUCED_COUNTER_CLOCKWISE,
 
         OPEN_CLAW, CLOSE_CLAW, DROP_1_FROM_CLAW,
-        SWITCH_TO_NORMAL_MOVEMENT, SWITCH_TO_FINE_MOVEMENT, SWITCH_TO_ULTRA_FINE_MOVEMENT
+        SWITCH_TO_NORMAL_MOVEMENT, SWITCH_TO_FINE_MOVEMENT, SWITCH_TO_ULTRA_FINE_MOVEMENT,
+        CHANGE_CLAW_ROTATOR_POSITION
     }
 
     //gamepad1 is for movement
@@ -94,6 +95,8 @@ public class GamepadWrapper {
             case DROP_1_FROM_CLAW:
                 return gamepad2.triangle || gamepad2.y;
             case PLANE_RELEASE:
+                return gamepad2.left_bumper;
+            case CHANGE_CLAW_ROTATOR_POSITION:
                 return gamepad2.cross || gamepad2.a;
         }
         assert false; //if you really want the robot to crash, then i guess you can use this function. if this manages to reach this, your a frekin genius, (or a duck hole)

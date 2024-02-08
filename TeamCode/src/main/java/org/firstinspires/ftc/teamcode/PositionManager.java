@@ -12,7 +12,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import java.util.HashMap;
 import java.util.Objects;
-
 /** Incorporates estimates from multiple sources to create a single positioning estimate
  */
 public class PositionManager {
