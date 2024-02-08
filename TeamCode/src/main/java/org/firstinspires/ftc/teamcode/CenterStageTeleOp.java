@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /** Tele-Op OpMode for Center Stage.
@@ -20,7 +21,8 @@ public class CenterStageTeleOp extends OpMode {
 
     private RobotManager robotManager;
     private ElapsedTime elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-
+    public Thread computerVisionThread;
+    public AtomicInteger pixelOffset;
     /**method that gets called when the init button is pressed
      */
     @Override
@@ -33,6 +35,23 @@ public class CenterStageTeleOp extends OpMode {
         IMUPositioning.Initialize(this);
         telemetry.addData("Initalized", null);
         telemetry.update();
+
+        pixelOffset = new AtomicInteger(0);
+//        computerVisionThread = new Thread(new Runnable() {
+////            private RobotManager robotManager;
+////            private AtomicInteger offset;
+////            {
+////                robotManager = this;
+////                offset = pixelOffset;
+////            }
+//            @Override
+//            public void run() {
+//                while (true) {
+//                    robotManager.pixelOffset.set((int) robotManager.computerVision.getPixelOffset());
+//                }
+//            }
+//        });
+//        computerVisionThread.start();
     }
 
     /**method that gets called when the play button gets pressed

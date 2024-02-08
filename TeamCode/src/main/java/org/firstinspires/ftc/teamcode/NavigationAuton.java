@@ -54,6 +54,8 @@ public class NavigationAuton extends BaseNavigation{
     //**INSTANCE ATTRIBUTES**//
     public double[] wheel_speeds = {0.95, 1, -1, -0.97}; //Back left, Back right, Front left, Front right. Temporary Note: currently FR from -0.90 to -0.92
     public double strafePower; //This is for Tele-Op ONLY.
+    private ElapsedTime elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+
 
     /*
      First position in this ArrayList is the first position that robot is planning to go to.

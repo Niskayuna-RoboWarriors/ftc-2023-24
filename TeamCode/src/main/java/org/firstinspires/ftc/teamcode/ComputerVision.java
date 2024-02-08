@@ -31,7 +31,6 @@ import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
@@ -40,6 +39,7 @@ public class ComputerVision extends LinearOpMode
 {
     OpenCvCamera camera;
     ComputerVisionLibrariesFunctions aprilTagDetectionPipeline;
+    AutoPixel autoPixel;
 
     static final double FEET_PER_METER = 3.28084;
 
@@ -88,7 +88,6 @@ public class ComputerVision extends LinearOpMode
         telemetry.addData("camera created", camera);
         telemetry.update();
         aprilTagDetectionPipeline = new ComputerVisionLibrariesFunctions(tagsize, fx, fy, cx, cy);
-
         camera.setPipeline(aprilTagDetectionPipeline);
         telemetry.addData("pipeline", aprilTagDetectionPipeline);
         telemetry.update();
@@ -217,25 +216,6 @@ public class ComputerVision extends LinearOpMode
         //       else {
 
 
-        /*
-         * Insert your autonomous code here, probably using the tag pose to decide your configuration.
-         */
-
-        // e.g.
-//            if(tagOfInterest.pose.x <= 20)
-//            {
-        // do something
-//            }
-//            else if(tagOfInterest.pose.x >= 20 && tagOfInterest.pose.x <= 50)
-//            {
-        // do something else
-//            }
-//            else if(tagOfInterest.pose.x >= 50)
-//            {
-        // do something else
-//            }
-//        }
-
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
         // while (opModeIsActive()) {sleep(20);}
@@ -250,5 +230,63 @@ public class ComputerVision extends LinearOpMode
 //        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
 //        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
 //        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+    }
+
+    public long getPixelOffset() {
+        telemetry.addData("start getPixelPosition", 1);
+        telemetry.update();
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        telemetry.addData("cameraMonitorViewId", cameraMonitorViewId);
+        telemetry.update();
+//        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+//        camera = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        telemetry.addData("camera created", camera);
+        telemetry.update();
+        autoPixel = new AutoPixel();
+        camera.setPipeline(autoPixel);
+        telemetry.addData("pipeline", autoPixel);
+        telemetry.update();
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                //camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+                telemetry.addData("on opened being called!!", 1);
+                telemetry.update();
+                camera.startStreaming(1920,1080, OpenCvCameraRotation.UPRIGHT);
+                telemetry.addData("on opened after called!!", 1);
+                telemetry.update();
+            }
+
+            @Override
+            public void onError(int errorCode)
+            {
+                telemetry.addData("ERROR??? ", errorCode);
+            }
+        });
+
+//        telemetry.setMsTransmissionInterval(50);
+        telemetry.addLine("after camera opened");
+        telemetry.update();
+        int i = 0;
+
+        while (!isStopRequested()) {
+            long[] results = autoPixel.getOffset();
+            telemetry.addData("pixel offset,", results[0]);
+            telemetry.addData("count,", results[1]);
+            telemetry.addData("sum,", results[2]);
+            telemetry.addData("B,", results[3]);
+            telemetry.addData("G,", results[4]);
+            telemetry.addData("R,", results[5]);
+            telemetry.addData("iterations,", i);
+//            telemetry.addData("pixel offset,", autoPixel.getOffset());
+            telemetry.update();
+            sleep(20);
+        }
+        telemetry.addLine("ends finally");
+        telemetry.update();
+        return 0;
     }
 }

@@ -28,7 +28,6 @@ public class RobotManager {
 
     protected GamepadWrapper gamepads;
     public ElapsedTime elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-    public Thread computerVisionThread;
     public AtomicInteger pixelOffset;
     /**
      * makes robotmanager with subcomponents it's managing
@@ -42,6 +41,7 @@ public class RobotManager {
 
         this.elapsedTime = elapsedTime;
         elapsedTime.reset();
+        pixelOffset = new AtomicInteger(0);
         robot = new Robot(hardwareMap, telemetry, elapsedTime);
         navigation = new NavigationTeleOp();
         mechanismDriving = new MechanismDriving();
@@ -50,23 +50,7 @@ public class RobotManager {
 
         gamepads = new GamepadWrapper(gamepad1, gamepad2);
         gamepads.updatePrevious();
-        RobotManager temp = this;
-        pixelOffset = new AtomicInteger(0);
-        computerVisionThread = new Thread(new Runnable() {
-            private RobotManager robotManager;
-            private AtomicInteger offset;
-            {
-                robotManager = temp;
-                offset = pixelOffset;
-            }
-            @Override
-            public void run() {
-                while (true) {
-                    offset.set(robotManager.computerVision.getPixelOffset());
-                }
-            }
-        });
-        computerVisionThread.start();
+
     }
 
     /**
@@ -111,22 +95,6 @@ public class RobotManager {
 //        // Automatically set it to stopped if not actively being moved up or down
 //        else if (robot.desiredSlideState == Robot.SlideState.MOVE_DOWN || robot.desiredSlideState == Robot.SlideState.MOVE_UP) {
 //            robot.desiredSlideState = Robot.SlideState.STOPPED;
-//        }
-//        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_RIGHT_BUCKET)) {
-//            if (robot.desiredCompartmentRightState == Robot.CompartmentState.CLOSED) {
-//                robot.desiredCompartmentRightState = Robot.CompartmentState.OPEN;
-//            }
-//            else {
-//                robot.desiredCompartmentRightState = Robot.CompartmentState.CLOSED;
-//            }
-//        }
-//        else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_LEFT_BUCKET)) {
-//            if (robot.desiredCompartmentLeftState == Robot.CompartmentState.CLOSED) {
-//                robot.desiredCompartmentLeftState = Robot.CompartmentState.OPEN;
-//            }
-//            else {
-//                robot.desiredCompartmentLeftState = Robot.CompartmentState.CLOSED;
-//            }
 //        }
 //        if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_INTAKE_MOTOR_ROTATION)) {
 //            if (robot.desiredIntakeMotorState != Robot.IntakeMotorState.INTAKE) {

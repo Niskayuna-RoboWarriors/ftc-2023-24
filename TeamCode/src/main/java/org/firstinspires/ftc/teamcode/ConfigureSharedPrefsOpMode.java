@@ -10,7 +10,7 @@ import java.util.Arrays;
 /**an op mode that creates an easy and intuitive way to configure shared prefs from the phone
  * @author Stephen Duffy 2023
  */
-@TeleOp(name="configure shared prefs", group="TeleOp OpMode")
+@TeleOp(name="configure shared prefs op mode", group="TeleOp OpMode")
 public class ConfigureSharedPrefsOpMode extends OpMode {
 
 

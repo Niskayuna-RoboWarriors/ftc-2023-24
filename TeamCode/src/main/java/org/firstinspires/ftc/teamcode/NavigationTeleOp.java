@@ -82,9 +82,12 @@ public class NavigationTeleOp extends BaseNavigation {
      */
     public void updatePixelOffset(int offset, Robot robot) {
         //early return if slides are not retracted
-        if (Math.abs(robot.slides.getCurrentPosition()) > MechanismDriving.EPSILON) return;
+        if (Math.abs(robot.slides.getCurrentPosition()) > MechanismDriving.EPSILON) {
+            pixelOffsetPower = 0;
+            return;
+        }
         pixelOffsetPower = Math.min(Math.abs(offset), 4)/4.0 * pixelOffsetMaxPower;
-        if (offset < 0) pixelOffsetPower = -pixelOffsetPower;
+//        if (offset < 0) pixelOffsetPower = -pixelOffsetPower;
     }
 
     /** Updates the strafe power according to movement mode and gamepad 1 left trigger.

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import java.util.Arrays;
 
-@TeleOp(name="configure shared prefs", group="TeleOp OpMode")
+@TeleOp(name="configure shared prefs old", group="TeleOp OpMode")
 public class ConfigureSharedPrefsOp extends OpMode {
     final String[][] VALUES = {
             {"STRAFE", "FORWARD_ONLY"}, {"BLUE", "RED"}, {"LEFT", "RIGHT", "MIDDLE"}, {"TOP", "MIDDLE", "BOTTOM"}, {"FAR", "CLOSE"}
