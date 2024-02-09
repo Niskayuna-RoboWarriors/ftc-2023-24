@@ -28,24 +28,24 @@ public class AutonomousPathing {
         while(nav.pathIndex < nav.path.size()){
             Position p = nav.travelToNextPOI(robot);
             if(p.getAction() != NavigationAuton.Action.NONE){ //if the action on the current path index is not null
-                handleAction(p); //now lets handle this below...
+                handleAction(p, robot); //now lets handle this below...
             }
         }
         robot.telemetry.addData(":","FINISHED PATH");
 
     }
 
-    private void handleAction(Position position) {
+    private void handleAction(Position position, Robot robot) {
         NavigationAuton.Action action = position.getAction();
         //TODO make the robot place the pixels
         switch(action){
             case DROP_PURPLE:
-                //do the thing for purple drop
-                //no idea how this happens, but it happens here
+                robotManager.mechanismDriving.setClawOpen1(robot);
+                robotManager.mechanismDriving.setClawRotatorParallel(robot);
                 break;
             case DROP_YELLOW:
-                //do the thing for yellow drop
-                //no idea how this happens, but it happens here
+                robotManager.mechanismDriving.moveSlides(robot, Robot.SlideState.LOW);
+                robotManager.mechanismDriving.setClawOpen2(robot);
                 break;
 
             default:

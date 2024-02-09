@@ -21,8 +21,7 @@ public class GamepadWrapper {
 
         PLANE_RELEASE,
 
-        //dunno bro | it was for debug and calibration stuff
-        TOGGLE_WHEEL_SPEED_ADJUSTMENT,
+        TOGGLE_AUTOPIXEL,
         REDUCED_CLOCKWISE, REDUCED_COUNTER_CLOCKWISE,
 
         OPEN_CLAW, CLOSE_CLAW, DROP_1_FROM_CLAW,
@@ -57,7 +56,7 @@ public class GamepadWrapper {
     private boolean getButtonStateFromGamepads(Gamepad gamepad1, Gamepad gamepad2, DriverAction action) {
         switch (action){
             // Gamepad 1 Controls
-            case TOGGLE_WHEEL_SPEED_ADJUSTMENT:
+            case TOGGLE_AUTOPIXEL:
                 return gamepad1.left_bumper;
             case MOVE_STRAIGHT_FORWARD:
                 return gamepad1.dpad_up;

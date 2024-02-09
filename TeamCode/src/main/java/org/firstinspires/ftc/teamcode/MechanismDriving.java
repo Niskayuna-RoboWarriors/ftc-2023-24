@@ -39,93 +39,7 @@ public class MechanismDriving {
     static final double CLAW_OPEN_2 = 0.6;
     static final double CLAW_ROTATOR_DOWN = 0.33;
     static final double CLAW_ROTATOR_PARALLEL = 0.1;
-    /**
-     * Update left compartment
-     * @param robot
-     */
-    public void updateCompartmentLeft(Robot robot) {
-        robot.telemetry.addData("UPDATE COMPARTMENT LEFT SERVO STATE", robot.desiredCompartmentLeftState);
-        switch (robot.desiredCompartmentLeftState) {
-            case CLOSED:
-                robot.compartmentLeft.setPosition(COMPARTMENT_CLOSED_POS);
-                break;
-            case OPEN:
-                robot.compartmentLeft.setPosition(COMPARTMENT_OPEN_POS);
-                break;
-        }
-        robot.telemetry.addData("SET COMPARTMENT LEFT SERVO POSITION", robot.compartmentLeft.getPosition());
-    }
-
-    /**
-     * Update right compartment
-     * @param robot
-     */
-    public void updateCompartmentRight(Robot robot) {
-        robot.telemetry.addData("UPDATE COMPARTMENT RIGHT SERVO STATE", robot.desiredCompartmentRightState);
-        switch (robot.desiredCompartmentRightState) {
-            case CLOSED:
-                robot.compartmentRight.setPosition(COMPARTMENT_CLOSED_POS);
-                break;
-            case OPEN:
-                robot.compartmentRight.setPosition(COMPARTMENT_OPEN_POS);
-                break;
-        }
-        robot.telemetry.addData("SET COMPARTMENT RIGHT SERVO POSITION", robot.compartmentRight.getPosition());
-    }
-
-    /**
-     * Update both compartments
-     * @param robot
-     */
-    public void updateCompartments(Robot robot) {
-        updateCompartmentRight(robot);
-        updateCompartmentLeft(robot);
-    }
-
-    /**
-     * Block execution until left comparmtment is opened
-     * @param robot
-     */
-    public void openLeftCompartment(Robot robot) {
-        robot.desiredCompartmentLeftState = Robot.CompartmentState.OPEN;
-        double startingTime = robot.elapsedTime.milliseconds();
-        updateCompartmentLeft(robot);
-        while (robot.elapsedTime.milliseconds() - startingTime < COMPARTMENT_SERVO_TIME) {}
-    }
-    /**
-     * Block execution until left comparmtment is closed
-     * @param robot
-     */
-    public void closeLeftCompartment(Robot robot) {
-        robot.desiredCompartmentLeftState = Robot.CompartmentState.CLOSED;
-        double startingTime = robot.elapsedTime.milliseconds();
-        updateCompartmentLeft(robot);
-        while (robot.elapsedTime.milliseconds() - startingTime < COMPARTMENT_SERVO_TIME) {}
-    }
-
-    /**
-     * Block execution until right comparmtment is opened
-     * @param robot
-     */
-    public void openRightCompartment(Robot robot) {
-        robot.desiredCompartmentRightState = Robot.CompartmentState.OPEN;
-        double startingTime = robot.elapsedTime.milliseconds();
-        updateCompartmentRight(robot);
-        while (robot.elapsedTime.milliseconds() - startingTime < COMPARTMENT_SERVO_TIME) {}
-    }
-    /**
-     * Block execution until right comparmtment is closed
-     * @param robot
-     */
-    public void closeRightCompartment(Robot robot) {
-        robot.desiredCompartmentRightState = Robot.CompartmentState.CLOSED;
-        double startingTime = robot.elapsedTime.milliseconds();
-        updateCompartmentRight(robot);
-        while (robot.elapsedTime.milliseconds() - startingTime < COMPARTMENT_SERVO_TIME) {}
-    }
-
-
-
+    
 
     /** Sets slide motor powers to move in direction of desired position, if necessary.
      *
@@ -208,7 +122,7 @@ public class MechanismDriving {
      * Block execution until right comparmtment is opened
      * @param robot
      */
-    public void releasePlaneSpring(Robot robot) {
+    public void setPlaneSpringReleasedPos(Robot robot) {
         robot.desiredPlaneSpringState = Robot.PlaneSpringState.RELEASED;
         double startingTime = robot.elapsedTime.milliseconds();
         updatePlaneSpring(robot);
@@ -219,55 +133,55 @@ public class MechanismDriving {
      * Block execution until plane spring is unreleased. NOTE: *NO GUARANTEE THAT UNRELEASING A RELEASED SPRING WILL WORK PROPERLY*
      * @param robot
      */
-    public void unreleasePlaneSpring(Robot robot) {
+    public void setPlaneSpringUnreleasedPos(Robot robot) {
         robot.desiredPlaneSpringState = Robot.PlaneSpringState.UNRELEASED;
         double startingTime = robot.elapsedTime.milliseconds();
         updatePlaneSpring(robot);
         while (robot.elapsedTime.milliseconds() - startingTime < PLANE_SPRING_SERVO_TIME) {}
     }
 
-    /**
-     * Updates intake motor.
-     * @param robot
-     */
-    public void updateIntakeMotor(GamepadWrapper gamepads, Robot robot) {
-        robot.telemetry.addData("UPDATE INTAKE MOTOR STATE", robot.desiredIntakeMotorState);
-        switch (robot.desiredIntakeMotorState) {
-            case OFF:
-                robot.intakeMotor.setPower(0);
-                break;
-            case INTAKE:
-                robot.intakeMotor.setPower(INTAKE_MOTOR_SPEED);
-                break;
-            case OUTTAKE:
-                robot.intakeMotor.setPower(OUTTAKE_MOTOR_SPEED);
-            case ANALOG:
-                robot.intakeMotor.setPower(gamepads.gamepad2.right_stick_y*Math.abs(gamepads.gamepad2.right_stick_y));
-        }
-        robot.telemetry.addData("SET INTAKE MOTOR POWER", robot.intakeMotor.getPower());
-    }
-
-    /**
-     * Turns off intake motor.
-     * @param robot
-     */
-    public void turnOffIntakeMotor(Robot robot) {
-        robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
-        updateIntakeMotor(null, robot);
-    }
-
-    /**
-     * Turns intake motor to intake mode.
-     * @param robot
-     */
-    public void turnIntakeIntakeMotor(Robot robot) {
-        robot.desiredIntakeMotorState = Robot.IntakeMotorState.INTAKE;
-        updateIntakeMotor(null, robot);
-    }
-    public void turnOuttakeIntakeMotor(Robot robot) {
-        robot.desiredIntakeMotorState = Robot.IntakeMotorState.OUTTAKE;
-        updateIntakeMotor(null, robot);
-    }
+//    /**
+//     * Updates intake motor.
+//     * @param robot
+//     */
+//    public void updateIntakeMotor(GamepadWrapper gamepads, Robot robot) {
+//        robot.telemetry.addData("UPDATE INTAKE MOTOR STATE", robot.desiredIntakeMotorState);
+//        switch (robot.desiredIntakeMotorState) {
+//            case OFF:
+//                robot.intakeMotor.setPower(0);
+//                break;
+//            case INTAKE:
+//                robot.intakeMotor.setPower(INTAKE_MOTOR_SPEED);
+//                break;
+//            case OUTTAKE:
+//                robot.intakeMotor.setPower(OUTTAKE_MOTOR_SPEED);
+//            case ANALOG:
+//                robot.intakeMotor.setPower(gamepads.gamepad2.right_stick_y*Math.abs(gamepads.gamepad2.right_stick_y));
+//        }
+//        robot.telemetry.addData("SET INTAKE MOTOR POWER", robot.intakeMotor.getPower());
+//    }
+//
+//    /**
+//     * Turns off intake motor.
+//     * @param robot
+//     */
+//    public void turnOffIntakeMotor(Robot robot) {
+//        robot.desiredIntakeMotorState = Robot.IntakeMotorState.OFF;
+//        updateIntakeMotor(null, robot);
+//    }
+//
+//    /**
+//     * Turns intake motor to intake mode.
+//     * @param robot
+//     */
+//    public void turnIntakeIntakeMotor(Robot robot) {
+//        robot.desiredIntakeMotorState = Robot.IntakeMotorState.INTAKE;
+//        updateIntakeMotor(null, robot);
+//    }
+//    public void turnOuttakeIntakeMotor(Robot robot) {
+//        robot.desiredIntakeMotorState = Robot.IntakeMotorState.OUTTAKE;
+//        updateIntakeMotor(null, robot);
+//    }
 
     public void updateClaw(Robot robot) {
         robot.telemetry.addData("robot desired claw state",robot.desiredClawState);
@@ -293,14 +207,28 @@ public class MechanismDriving {
         robot.telemetry.addData("robot set claw rotator position", robot.clawRotator.getPosition());
     }
 
-    public void dropPixel(Robot robot) {
-        turnOuttakeIntakeMotor(robot);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        turnOffIntakeMotor(robot);
+    public void setClawClosed(Robot robot) {
+        robot.desiredClawState = Robot.ClawState.CLOSED;
+        updateClaw(robot);
+    }
+
+    public void setClawOpen1(Robot robot) {
+        robot.desiredClawState = Robot.ClawState.OPEN1;
+        updateClaw(robot);
+    }    
+    public void setClawOpen2(Robot robot) {
+        robot.desiredClawState = Robot.ClawState.OPEN2;
+        updateClaw(robot);
+    }
+    
+    public void setClawRotatorDown(Robot robot) {
+        robot.desiredClawRotatorState = Robot.ClawRotatorState.DOWN;
+        updateClaw(robot);
+    }
+
+    public void setClawRotatorParallel(Robot robot) {
+        robot.desiredClawRotatorState = Robot.ClawRotatorState.PARALLEL;
+        updateClaw(robot);
     }
 
     public void waitMilliseconds(long ms) {

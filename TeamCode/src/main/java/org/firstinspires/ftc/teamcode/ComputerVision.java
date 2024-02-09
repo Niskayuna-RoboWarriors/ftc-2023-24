@@ -232,7 +232,7 @@ public class ComputerVision extends LinearOpMode
 //        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
 
-    public long getPixelOffset() {
+    public void getPixelOffset(RobotManager robotManager) {
         telemetry.addData("start getPixelPosition", 1);
         telemetry.update();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -274,6 +274,7 @@ public class ComputerVision extends LinearOpMode
 
         while (!isStopRequested()) {
             long[] results = autoPixel.getOffset();
+            robotManager.pixelOffset.set((int) results[0]);
             telemetry.addData("pixel offset,", results[0]);
             telemetry.addData("count,", results[1]);
             telemetry.addData("sum,", results[2]);
@@ -287,6 +288,5 @@ public class ComputerVision extends LinearOpMode
         }
         telemetry.addLine("ends finally");
         telemetry.update();
-        return 0;
     }
 }

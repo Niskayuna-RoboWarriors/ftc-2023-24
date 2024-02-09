@@ -55,7 +55,7 @@ public class NavigationTeleOp extends BaseNavigation {
         static public double[] wheel_speeds = {1, 1, 1, 1}; //Front Right, Rear Right, Front Left, Rear Left.
     public double strafePower; //This is for Tele-Op ONLY.
     static public double pixelOffsetPower;
-    static final public double pixelOffsetMaxPower = 0.1;
+    static final public double pixelOffsetMaxPower = 0.2;
 
     static public double strafeBearing;
     static public boolean isStrafeBearing;
@@ -82,11 +82,12 @@ public class NavigationTeleOp extends BaseNavigation {
      */
     public void updatePixelOffset(int offset, Robot robot) {
         //early return if slides are not retracted
-        if (Math.abs(robot.slides.getCurrentPosition()) > MechanismDriving.EPSILON) {
+        if (Math.abs(robot.slides.getCurrentPosition()) > MechanismDriving.EPSILON || robot.autoPixelState == Robot.AutoPixelState.OFF) {
             pixelOffsetPower = 0;
             return;
         }
-        pixelOffsetPower = Math.min(Math.abs(offset), 4)/4.0 * pixelOffsetMaxPower;
+        // pixelOffsetPower = Math.min(Math.abs(offset), 4)/4.0 * pixelOffsetMaxPower;
+        pixelOffsetPower = offset / 960.0 * pixelOffsetMaxPower;
 //        if (offset < 0) pixelOffsetPower = -pixelOffsetPower;
     }
 

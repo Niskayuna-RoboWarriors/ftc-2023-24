@@ -52,22 +52,6 @@ public class RobotManager {
         gamepads.updatePrevious();
         RobotManager temp = this;
         pixelOffset = new AtomicInteger(0);
-        computerVisionThread = new Thread(new Runnable() {
-            private RobotManager robotManager;
-            private AtomicInteger offset;
-            {
-                robotManager = temp;
-                offset = pixelOffset;
-            }
-            @Override
-            public void run() {
-                while (true) {
-                    break;
-                    //offset.set(robotManager.computerVision.getPixelOffset());
-                }
-            }
-        });
-        computerVisionThread.start();
     }
 
     /** Determine new robot desired states based on controller input (checks for button releases)
@@ -80,11 +64,18 @@ public class RobotManager {
                 robot.movementMode = Robot.MovementMode.NORMAL;
             }
         }
-        if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.CHANGE_CLAW_ROTATOR_POSITION)) {
-            if (robot.desiredClawRotatorState == Robot.clawRotatorState.DOWN) {
-                robot.desiredClawRotatorState = Robot.clawRotatorState.PARALLEL;
+        if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.TOGGLE_AUTOPIXEL)) {
+            if (robot.autoPixelState == Robot.AutoPixelState.OFF) {
+                robot.autoPixelState = Robot.AutoPixelState.ON;
             } else {
-                robot.desiredClawRotatorState = Robot.clawRotatorState.DOWN;
+                robot.autoPixelState = Robot.AutoPixelState.OFF;
+            }
+        }
+        if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.CHANGE_CLAW_ROTATOR_POSITION)) {
+            if (robot.desiredClawRotatorState == Robot.ClawRotatorState.DOWN) {
+                robot.desiredClawRotatorState = Robot.ClawRotatorState.PARALLEL;
+            } else {
+                robot.desiredClawRotatorState = Robot.ClawRotatorState.DOWN;
             }
         }
         if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.SET_SLIDES_RETRACTED)) {
@@ -149,20 +140,20 @@ public class RobotManager {
             }
         }
         if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.OPEN_CLAW)) {
-            robot.desiredClawState = Robot.clawState.OPEN2;
+            robot.desiredClawState = Robot.ClawState.OPEN2;
         }
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.DROP_1_FROM_CLAW)) {
             switch (robot.desiredClawState) {
                 case CLOSED:
-                    robot.desiredClawState = Robot.clawState.OPEN1;
+                    robot.desiredClawState = Robot.ClawState.OPEN1;
                     break;
                 case OPEN1:
-                    robot.desiredClawState = Robot.clawState.OPEN2;
+                    robot.desiredClawState = Robot.ClawState.OPEN2;
                     break;
             }
         }
         else if (gamepads.getButtonRelease(GamepadWrapper.DriverAction.CLOSE_CLAW)) {
-            robot.desiredClawState = Robot.clawState.CLOSED;
+            robot.desiredClawState = Robot.ClawState.CLOSED;
         }
 //        else if (Math.abs(gamepads.gamepad2.right_stick_y) > NavigationTeleOp.JOYSTICK_DEAD_ZONE_SIZE) {
 //            robot.desiredIntakeMotorState = Robot.IntakeMotorState.ANALOG;

@@ -22,7 +22,7 @@ public class CenterStageTeleOp extends OpMode {
     private RobotManager robotManager;
     private ElapsedTime elapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     public Thread computerVisionThread;
-    public AtomicInteger pixelOffset;
+    public AtomicInteger pixelOffset = new AtomicInteger(0);
     /**method that gets called when the init button is pressed
      */
     @Override
@@ -36,22 +36,19 @@ public class CenterStageTeleOp extends OpMode {
         telemetry.addData("Initalized", null);
         telemetry.update();
 
-        pixelOffset = new AtomicInteger(0);
-//        computerVisionThread = new Thread(new Runnable() {
-////            private RobotManager robotManager;
-////            private AtomicInteger offset;
-////            {
-////                robotManager = this;
-////                offset = pixelOffset;
-////            }
-//            @Override
-//            public void run() {
-//                while (true) {
-//                    robotManager.pixelOffset.set((int) robotManager.computerVision.getPixelOffset());
-//                }
+        computerVisionThread = new Thread(new Runnable() {
+//            private RobotManager robotManager;
+//            private AtomicInteger offset;
+//            {
+//                robotManager = this;
+//                offset = pixelOffset;
 //            }
-//        });
-//        computerVisionThread.start();
+            @Override
+            public void run() {
+                robotManager.computerVision.getPixelOffset(robotManager);
+            }
+        });
+        computerVisionThread.start();
     }
 
     /**method that gets called when the play button gets pressed

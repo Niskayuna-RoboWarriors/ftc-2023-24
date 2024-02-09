@@ -142,11 +142,13 @@ public class Robot {
     public static enum PlaneSpringState       {UNRELEASED, RELEASED};
     public PlaneSpringState desiredPlaneSpringState = PlaneSpringState.UNRELEASED;
     enum MovementMode                         {NORMAL, FINE, ULTRA_FINE}
-    enum clawRotatorState {DOWN, PARALLEL}
-    public clawRotatorState desiredClawRotatorState = clawRotatorState.DOWN;
+    enum ClawRotatorState {DOWN, PARALLEL}
+    public ClawRotatorState desiredClawRotatorState = ClawRotatorState.DOWN;
+    enum AutoPixelState {ON, OFF}
+    public AutoPixelState autoPixelState = AutoPixelState.OFF;
 
-    public static enum clawState {CLOSED, OPEN1, OPEN2}
-    public clawState desiredClawState  = clawState.CLOSED;
+    public static enum ClawState {CLOSED, OPEN1, OPEN2}
+    public ClawState desiredClawState  = ClawState.CLOSED;
 
     MovementMode movementMode = MovementMode.NORMAL;
     boolean wheelSpeedAdjustment = false;
