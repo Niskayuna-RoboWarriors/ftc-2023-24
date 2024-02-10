@@ -26,7 +26,7 @@ public class MechanismDriving {
     static final double COMPARTMENT_SERVO_TIME = 500;
 
     // Plane spring variables
-    static final double PLANE_SPRING_UNRELEASED_POS = 0.28;
+    static final double PLANE_SPRING_UNRELEASED_POS = 0.29;
     static final double PLANE_SPRING_RELEASED_POS = 0;
     static final double PLANE_SPRING_SERVO_TIME = 500;
 
@@ -201,8 +201,10 @@ public class MechanismDriving {
         switch (robot.desiredClawRotatorState) {
             case DOWN:
                 robot.clawRotator.setPosition(CLAW_ROTATOR_DOWN);
+                break;
             case PARALLEL:
                 robot.clawRotator.setPosition(CLAW_ROTATOR_PARALLEL);
+                break;
         }
         robot.telemetry.addData("robot set claw rotator position", robot.clawRotator.getPosition());
     }

@@ -19,7 +19,7 @@ public class AutoPixel extends OpenCvPipeline {
     long[] results = {0, 0, 0, 0, 0, 0};
 
     private final Scalar[] colors = {  // In BGR order!!
-        new Scalar(0, 255, 0), // Green
+        new Scalar(71,238,143), // Green
         new Scalar(0, 255, 255), // Yellow
         new Scalar(255, 0, 255), // Purple
         new Scalar(255, 255, 255), // White
@@ -27,12 +27,13 @@ public class AutoPixel extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input) {
 
-        Mat areaMat = input.submat(new Rect(topLeft, bottomRight));
+//        Mat areaMat = input.submat(new Rect(topLeft, bottomRight));
+        Mat areaMat = input;
         Scalar colorSum = Core.sumElems(areaMat);
         Scalar colorAverage = new Scalar(
-                colorSum.val[0]/(1920*540),
-                colorSum.val[1]/(1920*540),
-                colorSum.val[2]/(1920*540));
+                colorSum.val[0]/(1920*1080),
+                colorSum.val[1]/(1920*1080),
+                colorSum.val[2]/(1920*1080));
         Mat subAreaMat = new Mat();
 //        Core.subtract(areaMat, colorAverage, subAreaMat);
 //        offset = calculateOffset(areaMat, White, colorAverage);
@@ -50,27 +51,35 @@ public class AutoPixel extends OpenCvPipeline {
         int sum = 0;
 //        int row = 0;
 //        int col = 0;
-        for (int row = 0; row < 540; row += 50) {
-            for (int col = 0; col < 1920; col += 50) {
+        for (int row = 0; row < 1080; row += 40) {
+            for (int col = 0; col < 1920;) {
                 double[] pixel = input.get(row, col);
+                Boolean sample = false;
                 for (Scalar color : colors) {
                     if (Math.abs(
                             Math.pow(pixel[0]-color.val[0], 2) +
                                     Math.pow(pixel[1]-color.val[1], 2) +
-                                    Math.pow(pixel[2]-color.val[2], 2)) < 3500) {
-                        Imgproc.drawMarker(input, new Point(col, row), new Scalar(255, 255, 255));
+                                    Math.pow(pixel[2]-color.val[2], 2)) < 7500) {
+                        Imgproc.drawMarker(input, new Point(col, row), new Scalar(0, 0, 255));
                         sum += col;
                         count += 1;
+                        sample = true;
                         break;
                     }
                 }
+                if (sample) {
+                    col += 20;
+                }
+                else {
+                    col += 50;
+                }
             }
         }
-        double xAverage = 960;
+        double xAverage = 1134;
         if (count > 20) {
             xAverage = (double) sum / count;
         }
-        return new long[]{Math.round(xAverage) - 960, count, sum,
+        return new long[]{Math.round(xAverage) - 1134, count, sum,
                 (long) colorAverage.val[0],
                 (long) colorAverage.val[1],
                 (long) colorAverage.val[2]};

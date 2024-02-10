@@ -56,10 +56,6 @@ public class NavigationTeleOp extends BaseNavigation {
     public double strafePower; //This is for Tele-Op ONLY.
     static public double pixelOffsetPower;
     static final public double pixelOffsetMaxPower = 0.2;
-
-    static public double strafeBearing;
-    static public boolean isStrafeBearing;
-
     /*
      First position in this ArrayList is the first position that robot is planning to go to.
      This condition must be maintained (positions should be deleted as the robot travels)
@@ -129,8 +125,6 @@ public class NavigationTeleOp extends BaseNavigation {
      * @return whether any of the DPAD buttons were pressed
      */
     public boolean moveStraight(GamepadWrapper gamepads, Robot robot) {
-        isStrafeBearing = true;
-        strafeBearing = robot.positionManager.position.getRotation();
         double direction;
         if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_FORWARD) || gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_BACKWARD)) {
             if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_LEFT)) {//moves left at 45° (or Northwest)
@@ -171,11 +165,6 @@ public class NavigationTeleOp extends BaseNavigation {
         double rotationPower = ROTATION_POWER;
         if (Math.abs(turn) < JOYSTICK_DEAD_ZONE_SIZE) {
             turn = 0;
-            if (!isStrafeBearing) {
-                strafeBearing = robot.positionManager.position.getRotation();
-            }
-        } else {
-            isStrafeBearing = false;
         }
         //if (gamepads.getButtonState(GamepadWrapper.DriverAction.REDUCED_CLOCKWISE)) {
         //    rotationPower = REDUCED_ROTATION_POWER;
@@ -253,21 +242,6 @@ public class NavigationTeleOp extends BaseNavigation {
                 movementModeScaleFactor = 0.25;
                 break;
         }
-
-        //using imu orientation when not turning to produce correctional turning towards strafebearing
-        double rotationCorrection = 0.0;
-        if (isStrafeBearing) {
-            double currentRotation = robot.positionManager.position.getRotation();
-            double difference = strafeBearing - currentRotation;
-            //turn left or right depending on large rotation difference is
-            if (Math.abs(difference) > Math.PI) {
-                rotationCorrection = Math.abs(difference) - Math.PI;
-            } else {
-                rotationCorrection = -Math.abs(difference);
-            }
-        }
-
-        turn += rotationCorrection * 0.1;
 
         double frontRightPower = (rawPowers[1] * power - turn) * wheel_speeds[0] * movementModeScaleFactor + pixelOffsetPower;
         double rearRightPower = (rawPowers[0] * power - turn) * wheel_speeds[1] * movementModeScaleFactor - pixelOffsetPower;

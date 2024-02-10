@@ -53,7 +53,7 @@ public class ComputerVision extends LinearOpMode
     double cy = 540;
 
     // UNITS ARE METERS
-    double tagsize = 0.103;
+    double tagsize = 0.067;
 
     //insert ID of sleeve
     int left = 1;
@@ -278,9 +278,9 @@ public class ComputerVision extends LinearOpMode
             telemetry.addData("pixel offset,", results[0]);
             telemetry.addData("count,", results[1]);
             telemetry.addData("sum,", results[2]);
-            telemetry.addData("B,", results[3]);
+            telemetry.addData("R,", results[3]);
             telemetry.addData("G,", results[4]);
-            telemetry.addData("R,", results[5]);
+            telemetry.addData("B,", results[5]);
             telemetry.addData("iterations,", i);
 //            telemetry.addData("pixel offset,", autoPixel.getOffset());
             telemetry.update();

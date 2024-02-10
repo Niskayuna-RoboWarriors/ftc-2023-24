@@ -36,19 +36,21 @@ public class CenterStageTeleOp extends OpMode {
         telemetry.addData("Initalized", null);
         telemetry.update();
 
-        computerVisionThread = new Thread(new Runnable() {
-//            private RobotManager robotManager;
-//            private AtomicInteger offset;
-//            {
-//                robotManager = this;
-//                offset = pixelOffset;
+//        computerVisionThread = new Thread(new Runnable() {
+////            private RobotManager robotManager;
+////            private AtomicInteger offset;
+////            {
+////                robotManager = this;
+////                offset = pixelOffset;
+////            }
+//            @Override
+//            public void run() {
+//                robotManager.computerVision.getPixelOffset(robotManager);
+//
 //            }
-            @Override
-            public void run() {
-                robotManager.computerVision.getPixelOffset(robotManager);
-            }
-        });
-        computerVisionThread.start();
+//        });
+//        computerVisionThread.start();
+
     }
 
     /**method that gets called when the play button gets pressed
@@ -73,11 +75,14 @@ public class CenterStageTeleOp extends OpMode {
         telemetry.addData("after maneuver", robotManager.elapsedTime.time()-start_time);
         telemetry.addData("approximate loops per second", 1000.0/(robotManager.elapsedTime.time()-start_time));
         telemetry.update();
+
     }
 
     /**method that is called when the stop button is pressed
      */
     @Override
-    public void stop() {}
+    public void stop() {
+        computerVisionThread.interrupt();
+    }
 
 }
