@@ -26,7 +26,7 @@ public class MechanismDriving {
     static final double COMPARTMENT_SERVO_TIME = 500;
 
     // Plane spring variables
-    static final double PLANE_SPRING_UNRELEASED_POS = 0.29;
+    static final double PLANE_SPRING_UNRELEASED_POS = 0.4489;
     static final double PLANE_SPRING_RELEASED_POS = 0;
     static final double PLANE_SPRING_SERVO_TIME = 500;
 
