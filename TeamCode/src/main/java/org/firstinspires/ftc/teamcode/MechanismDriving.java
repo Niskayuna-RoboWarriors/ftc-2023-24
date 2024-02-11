@@ -37,8 +37,8 @@ public class MechanismDriving {
     static final double CLAW_CLOSED = 0.534;
     static final double CLAW_OPEN_1 = 0.6;
     static final double CLAW_OPEN_2 = 0.95;
-    static final double CLAW_ROTATOR_DOWN = 0.373;
-    static final double CLAW_ROTATOR_PARALLEL = 0.155;
+    static final double CLAW_ROTATOR_DOWN = 0.270;
+    static final double CLAW_ROTATOR_PARALLEL = 0.135;
     
 
     /** Sets slide motor powers to move in direction of desired position, if necessary.

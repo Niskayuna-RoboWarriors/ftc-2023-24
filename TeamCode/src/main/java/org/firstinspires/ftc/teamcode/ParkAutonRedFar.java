@@ -19,14 +19,14 @@ public class ParkAutonRedFar extends LinearOpMode{
 //        } catch (InterruptedException e){
 //            throw new RuntimeException(e);
 //        }
-        waitMilliseconds(720);
-        NavigationTeleOp.setDriveMotorPowers(0,0.7,0,robotManager.robot,false);
+        waitMilliseconds(980);
+        NavigationTeleOp.setDriveMotorPowers(0,0.3,0,robotManager.robot,false);
 //        try {
 //            Thread.sleep(4000);
 //        } catch (InterruptedException e) {
 //            throw new RuntimeException(e);
 //        }
-        waitMilliseconds(4000);
+        waitMilliseconds(8000);
         NavigationTeleOp.stopMovement(robotManager.robot);
     }
 

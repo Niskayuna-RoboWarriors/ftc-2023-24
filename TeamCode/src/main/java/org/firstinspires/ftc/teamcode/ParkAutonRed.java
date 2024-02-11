@@ -13,20 +13,20 @@ public class ParkAutonRed extends LinearOpMode{
     public void runOpMode() {
         RobotManager robotManager = new RobotManager(hardwareMap, gamepad1, gamepad2, telemetry, elapsedTime);
         waitForStart();
-        NavigationTeleOp.setDriveMotorPowers(-Math.PI/2,0.7,0,robotManager.robot,false);
+        NavigationTeleOp.setDriveMotorPowers(-Math.PI/2,0.3,0,robotManager.robot,false);
 //        try {
 //            Thread.sleep(200);
 //        } catch (InterruptedException e){
 //            throw new RuntimeException(e);
 //        }
-        waitMilliseconds(100);
-        NavigationTeleOp.setDriveMotorPowers(0,0.7,0,robotManager.robot,false);
+        waitMilliseconds(150);
+        NavigationTeleOp.setDriveMotorPowers(0,0.3,0,robotManager.robot,false);
 //        try {
 //            Thread.sleep(4000);
 //        } catch (InterruptedException e) {
 //            throw new RuntimeException(e);
 //        }
-        waitMilliseconds(4000);
+        waitMilliseconds(9000);
         NavigationTeleOp.stopMovement(robotManager.robot);
     }
 

@@ -82,7 +82,8 @@ public class CenterStageTeleOp extends OpMode {
      */
     @Override
     public void stop() {
-        computerVisionThread.interrupt();
+
+//        computerVisionThread.interrupt();
     }
 
 }

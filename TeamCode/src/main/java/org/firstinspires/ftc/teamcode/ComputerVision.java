@@ -87,10 +87,12 @@ public class ComputerVision extends LinearOpMode
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         telemetry.addData("camera created", camera);
         telemetry.update();
-        aprilTagDetectionPipeline = new ComputerVisionLibrariesFunctions(tagsize, fx, fy, cx, cy);
-        camera.setPipeline(aprilTagDetectionPipeline);
-        telemetry.addData("pipeline", aprilTagDetectionPipeline);
-        telemetry.update();
+//        aprilTagDetectionPipeline = new ComputerVisionLibrariesFunctions(tagsize, fx, fy, cx, cy);
+//        camera.setPipeline(aprilTagDetectionPipeline);
+//        telemetry.addData("pipeline", aprilTagDetectionPipeline);
+//        telemetry.update();
+        autoPixel = new AutoPixel();
+        camera.setPipeline(autoPixel);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
@@ -116,65 +118,86 @@ public class ComputerVision extends LinearOpMode
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
+        CenterStageAuton.PixelPosition pixelPosition = CenterStageAuton.PixelPosition.CENTER;
         while (!isStarted() && !isStopRequested())
         {
-            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-
-            if(currentDetections.size() != 0)
-            {
-                boolean tagFound = false;
-
-                for(AprilTagDetection tag : currentDetections)
-                {
-                    //    if(tag.id == ID_TAG_OF_INTEREST)
-                    if(tag.id == left || tag.id == middle || tag.id == right)
-                    {
-                        tagOfInterest = tag;
-                        tagFound = true;
-                        break;
-                    }
-                }
-
-                if(tagFound)
-                {
-                    telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-                    tagToTelemetry(tagOfInterest);
-                }
-                else
-                {
-                    telemetry.addLine("Don't see tag of interest :(");
-
-                    if(tagOfInterest == null)
-                    {
-                        telemetry.addLine("(The tag has never been seen)");
-                    }
-                    else
-                    {
-                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                        tagToTelemetry(tagOfInterest);
-                    }
-                }
-
-            }
-            else
-            {
-                telemetry.addLine("Don't see tag of interest :(");
-
-                if(tagOfInterest == null)
-                {
-                    telemetry.addLine("(The tag has never been seen)");
-                }
-                else
-                {
-                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                    tagToTelemetry(tagOfInterest);
-                }
-
-            }
-
+            long[] results = autoPixel.getOffset();
+            telemetry.addData("pixel offset,", results[0]);
+            telemetry.addData("count,", results[1]);
+            telemetry.addData("sum,", results[2]);
+            telemetry.addData("R,", results[3]);
+            telemetry.addData("G,", results[4]);
+            telemetry.addData("B,", results[5]);
+//            telemetry.addData("pixel offset,", autoPixel.getOffset());
             telemetry.update();
             sleep(20);
+            if (results[0] < 640) {
+                pixelPosition = CenterStageAuton.PixelPosition.LEFT;
+            }
+            else if (results[0] < 1280) {
+                pixelPosition = CenterStageAuton.PixelPosition.CENTER;
+            }
+            else {
+                pixelPosition = CenterStageAuton.PixelPosition.RIGHT;
+            }
+//            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
+//
+//            if(currentDetections.size() != 0)
+//            {
+//                boolean tagFound = false;
+//
+//                for(AprilTagDetection tag : currentDetections)
+//                {
+//                    //    if(tag.id == ID_TAG_OF_INTEREST)
+//                    if(tag.id == left || tag.id == middle || tag.id == right)
+//                    {
+//                        tagOfInterest = tag;
+//                        tagFound = true;
+//                        break;
+//                    }
+//                }
+//
+//                if(tagFound)
+//                {
+//                    telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
+//                    tagToTelemetry(tagOfInterest);
+//                }
+//                else
+//                {
+//                    telemetry.addLine("Don't see tag of interest :(");
+//
+//                    if(tagOfInterest == null)
+//                    {
+//                        telemetry.addLine("(The tag has never been seen)");
+//                    }
+//                    else
+//                    {
+//                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+//                        tagToTelemetry(tagOfInterest);
+//                    }
+//                }
+//
+//            }
+//            else
+//            {
+//                telemetry.addLine("Don't see tag of interest :(");
+//
+//                if(tagOfInterest == null)
+//                {
+//                    telemetry.addLine("(The tag has never been seen)");
+//                }
+//                else
+//                {
+//                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+//                    tagToTelemetry(tagOfInterest);
+//                }
+//
+//            }
+//
+//            telemetry.update();
+//            sleep(20);
         }
+        return pixelPosition;
 
         /*
          * The START command just came in: now work off the latest snapshot acquired
@@ -182,37 +205,37 @@ public class ComputerVision extends LinearOpMode
          */
 
         /* Update the telemetry */
-        if(tagOfInterest != null)
-        {
-            telemetry.addLine("Tag snapshot:\n");
-            tagToTelemetry(tagOfInterest);
-            telemetry.update();
-        }
-        else
-        {
-            telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
-            telemetry.update();
-        }
-
-        /* Actually do something useful */
-        if(tagOfInterest == null || tagOfInterest.id == left)
-        {
-            /*
-             * Insert your autonomous code here, presumably running some default configuration
-             * since the tag was never sighted during INIT
-             */
-            //left code
-            System.out.println("Left");
-            return CenterStageAuton.PixelPosition.LEFT;
-
-        }
-        else if(tagOfInterest.id == middle) {
-            //middle code
-            System.out.println("middle");
-            return CenterStageAuton.PixelPosition.CENTER;
-        }
-        System.out.println("right");
-        return CenterStageAuton.PixelPosition.RIGHT;
+//        if(tagOfInterest != null)
+//        {
+//            telemetry.addLine("Tag snapshot:\n");
+//            tagToTelemetry(tagOfInterest);
+//            telemetry.update();
+//        }
+//        else
+//        {
+//            telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
+//            telemetry.update();
+//        }
+//
+//        /* Actually do something useful */
+//        if(tagOfInterest == null || tagOfInterest.id == left)
+//        {
+//            /*
+//             * Insert your autonomous code here, presumably running some default configuration
+//             * since the tag was never sighted during INIT
+//             */
+//            //left code
+//            System.out.println("Left");
+//            return CenterStageAuton.PixelPosition.LEFT;
+//
+//        }
+//        else if(tagOfInterest.id == middle) {
+//            //middle code
+//            System.out.println("middle");
+//            return CenterStageAuton.PixelPosition.CENTER;
+//        }
+//        System.out.println("right");
+//        return CenterStageAuton.PixelPosition.RIGHT;
         //       else {
 
 

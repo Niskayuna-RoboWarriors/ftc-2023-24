@@ -18,11 +18,13 @@ public class AutoPixel extends OpenCvPipeline {
     long offset = 0;
     long[] results = {0, 0, 0, 0, 0, 0};
 
-    private final Scalar[] colors = {  // In BGR order!!
-        new Scalar(71,238,143), // Green
-        new Scalar(0, 255, 255), // Yellow
-        new Scalar(255, 0, 255), // Purple
-        new Scalar(255, 255, 255), // White
+    private final Scalar[] colors = {  // In RGB order!!
+//        new Scalar(71,238,143), // Green
+//        new Scalar(255, 255, 0), // Yellow
+//        new Scalar(255, 0, 255), // Purple
+//        new Scalar(255, 255, 255), // White
+          new Scalar(255, 0, 0),
+          new Scalar(0, 0, 255),
     };
     @Override
     public Mat processFrame(Mat input) {
@@ -59,7 +61,7 @@ public class AutoPixel extends OpenCvPipeline {
                     if (Math.abs(
                             Math.pow(pixel[0]-color.val[0], 2) +
                                     Math.pow(pixel[1]-color.val[1], 2) +
-                                    Math.pow(pixel[2]-color.val[2], 2)) < 7500) {
+                                    Math.pow(pixel[2]-color.val[2], 2)) < 22500) {
                         Imgproc.drawMarker(input, new Point(col, row), new Scalar(0, 0, 255));
                         sum += col;
                         count += 1;
@@ -75,11 +77,12 @@ public class AutoPixel extends OpenCvPipeline {
                 }
             }
         }
-        double xAverage = 1134;
+        double xAverage = 960;
         if (count > 20) {
             xAverage = (double) sum / count;
         }
-        return new long[]{Math.round(xAverage) - 1134, count, sum,
+//        return new long[]{Math.round(xAverage) - 1134, count, sum,
+        return new long[]{Math.round(xAverage), count, sum,
                 (long) colorAverage.val[0],
                 (long) colorAverage.val[1],
                 (long) colorAverage.val[2]};
