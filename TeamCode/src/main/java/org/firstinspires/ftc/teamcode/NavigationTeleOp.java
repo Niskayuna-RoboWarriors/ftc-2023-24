@@ -8,10 +8,10 @@ import java.util.ArrayList;
 
 /** Keeps track of the robot's desired path and makes it follow it accurately.
  */
-public class NavigationTeleOp extends BaseNavigation{
+public class NavigationTeleOp extends BaseNavigation {
     public enum rotationDirection {CLOCKWISE, COUNTERCLOCKWISE};
 
-
+    public enum Action {NONE, SLIDES_LOW, SLIDES_HIGH}
     //Makes actions of the Robot that can be used anywhere within the folder.
 
 
@@ -44,16 +44,18 @@ public class NavigationTeleOp extends BaseNavigation{
 
     //**TELEOP CONSTANTS**
     static final double MOVEMENT_MAX_POWER = 1; //Sets the maximum power to full power. (Full power is between 0 - 1)
-    static final double ROTATION_POWER = 0.5; //Sets the maximum rotation power 1/2 full power
+    static final double STRAIGHT_MOVEMENT_POWER = 1;
+    static final double ROTATION_POWER = 1; //Sets the maximum rotation power 1/2 full power
     static final double REDUCED_ROTATION_POWER = 0.2; //Lets the minimum rotation power to 1/5th full power
     static final double SLOW_MOVEMENT_SCALE_FACTOR = 0.3; //idk what this means
     static final double MEDIUM_MOVEMENT_SCALE_FACTOR = 0.6; //idk what this means
 
 
     //**INSTANCE ATTRIBUTES**//
-    static public double[] wheel_speeds = {1, 1, 0.5, 1}; //Front Right Rear Right Front Left Rear Left.
+        static public double[] wheel_speeds = {1, 1, 1, 1}; //Front Right, Rear Right, Front Left, Rear Left.
     public double strafePower; //This is for Tele-Op ONLY.
-
+    static public double pixelOffsetPower;
+    static final public double pixelOffsetMaxPower = 0.2;
     /*
      First position in this ArrayList is the first position that robot is planning to go to.
      This condition must be maintained (positions should be deleted as the robot travels)
@@ -66,6 +68,23 @@ public class NavigationTeleOp extends BaseNavigation{
     /**
      */
     public NavigationTeleOp() {
+    }
+
+    /**
+     * only has power if slides are retracted
+     * scales offset to abs(offset) <= 4
+     * @param offset offset from AutoPixel
+     * @param robot robot
+     */
+    public void updatePixelOffset(int offset, Robot robot) {
+        //early return if slides are not retracted
+        if (Math.abs(robot.slides.getCurrentPosition()) > MechanismDriving.EPSILON || robot.autoPixelState == Robot.AutoPixelState.OFF) {
+            pixelOffsetPower = 0;
+            return;
+        }
+        // pixelOffsetPower = Math.min(Math.abs(offset), 4)/4.0 * pixelOffsetMaxPower;
+        pixelOffsetPower = offset / 960.0 * pixelOffsetMaxPower;
+//        if (offset < 0) pixelOffsetPower = -pixelOffsetPower;
     }
 
     /** Updates the strafe power according to movement mode and gamepad 1 left trigger.
@@ -105,28 +124,31 @@ public class NavigationTeleOp extends BaseNavigation{
      * @param robot
      * @return whether any of the DPAD buttons were pressed
      */
-    public void moveStraight(GamepadWrapper gamepads, Robot robot) {
+    public boolean moveStraight(GamepadWrapper gamepads, Robot robot) {
         double direction;
         if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_FORWARD) || gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_BACKWARD)) {
             if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_LEFT)) {//moves left at 45° (or Northwest)
-                direction = Math.PI * 0.75;
+                direction = Math.PI * -0.75;
             } else if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_RIGHT)) { //moves right at 45° (or Northeast)
-                direction = Math.PI * 0.25;
+                direction = Math.PI * -0.25;
             } else {//moving forward
-                direction = Math.PI * 0.5;
-            }
-            if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_BACKWARD)) { //invert the forward to just backwards
                 direction = Math.PI * -0.5;
             }
-            setDriveMotorPowers(direction, strafePower, 0.0, robot, false);
+            if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_BACKWARD)) { //invert the forward to just backwards
+                direction = Math.PI * 0.5;
+            }
+            setDriveMotorPowers(direction, STRAIGHT_MOVEMENT_POWER, 0.0, robot, false);
+            return true;
         } else if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_LEFT)) { //default direction. Set as 0
             direction = Math.PI;
-            setDriveMotorPowers(direction, strafePower, 0.0, robot, false);
+            setDriveMotorPowers(direction, STRAIGHT_MOVEMENT_POWER, 0.0, robot, false);
+            return true;
         } else if (gamepads.getButtonState(GamepadWrapper.DriverAction.MOVE_STRAIGHT_RIGHT)) {
             direction = 0;
-            setDriveMotorPowers(direction, strafePower, 0.0, robot, false);
+            setDriveMotorPowers(direction, STRAIGHT_MOVEMENT_POWER, 0.0, robot, false);
+            return true;
         }
-
+        return false;
     }
 
     /** Changes drivetrain motor inputs based off the controller inputs
@@ -144,14 +166,14 @@ public class NavigationTeleOp extends BaseNavigation{
         if (Math.abs(turn) < JOYSTICK_DEAD_ZONE_SIZE) {
             turn = 0;
         }
-        if (gamepads.getButtonState(GamepadWrapper.DriverAction.REDUCED_CLOCKWISE)) {
-            rotationPower = REDUCED_ROTATION_POWER;
-            turn = -1;
-        }
-        if (gamepads.getButtonState(GamepadWrapper.DriverAction.REDUCED_COUNTER_CLOCKWISE)) {
-            rotationPower = REDUCED_ROTATION_POWER;
-            turn = -1;
-        }
+        //if (gamepads.getButtonState(GamepadWrapper.DriverAction.REDUCED_CLOCKWISE)) {
+        //    rotationPower = REDUCED_ROTATION_POWER;
+        //    turn = -1;
+        //}
+        //if (gamepads.getButtonState(GamepadWrapper.DriverAction.REDUCED_COUNTER_CLOCKWISE)) {
+        //    rotationPower = REDUCED_ROTATION_POWER;
+        //    turn = -1;
+        //}
         double moveDirection = Math.atan2(gamepads.gamepad1.left_stick_y, gamepads.gamepad1.left_stick_x);
         if (Math.abs(moveDirection) < Math.PI / 12) {
             moveDirection = 0;
@@ -210,16 +232,39 @@ public class NavigationTeleOp extends BaseNavigation{
          * then the turn factor is combined with the speed for robot turing
          * finally the motor power is adjusted by a ration that individual to each wheel in case of one wheel having outsized influence on the movement of the robot for some hardware reason.
          */
-        robot.telemetry.addData("front right power", (rawPowers[1] * power - turn) * wheel_speeds[0]);
-        robot.telemetry.addData("rear right power", (rawPowers[0] * power - turn) * wheel_speeds[1]);
-        robot.telemetry.addData("front left power", (rawPowers[0] * power + turn) * wheel_speeds[2]);
-        robot.telemetry.addData("rear left power", (rawPowers[1] * power + turn) * wheel_speeds[3]);
+
+        double movementModeScaleFactor = 1.0;
+        switch(robot.movementMode) {
+            case FINE:
+                movementModeScaleFactor = 0.5;
+                break;
+            case ULTRA_FINE:
+                movementModeScaleFactor = 0.25;
+                break;
+        }
+
+        double frontRightPower = (rawPowers[1] * power - turn) * wheel_speeds[0] * movementModeScaleFactor + pixelOffsetPower;
+        double rearRightPower = (rawPowers[0] * power - turn) * wheel_speeds[1] * movementModeScaleFactor - pixelOffsetPower;
+        double frontLeftPower = (rawPowers[0] * power + turn) * wheel_speeds[2] * movementModeScaleFactor - pixelOffsetPower;
+        double rearLeftPower = (rawPowers[1] * power + turn) * wheel_speeds[3] * movementModeScaleFactor + pixelOffsetPower;
+
+        double maxMax = Math.max(1, Math.max(Math.max(frontLeftPower, frontRightPower), Math.max(rearLeftPower, rearRightPower)));
+
+        frontRightPower /= maxMax;
+        rearRightPower /= maxMax;
+        frontLeftPower /= maxMax;
+        rearLeftPower /= maxMax;
+
+        robot.telemetry.addData("front right power", frontRightPower);
+        robot.telemetry.addData("rear right power", rearRightPower);
+        robot.telemetry.addData("front left power", frontLeftPower);
+        robot.telemetry.addData("rear left power", rearLeftPower);
 
 
-        robot.frontRight.setPower((rawPowers[1] * power - turn) * wheel_speeds[0]); //Turns the front right wheel
-        robot.rearRight.setPower((rawPowers[0] * power - turn) * wheel_speeds[1]); //Turns the back right wheel
-        robot.frontLeft.setPower((rawPowers[0] * power + turn) * wheel_speeds[2]); //Turns the left front wheel
-        robot.rearLeft.setPower((rawPowers[1] * power + turn) * wheel_speeds[3]); //Turns the left back wheel
+        robot.frontRight.setPower(frontRightPower); //Turns the front right wheel
+        robot.rearRight.setPower(rearRightPower); //Turns the back right wheel
+        robot.frontLeft.setPower(frontLeftPower); //Turns the left front wheel
+        robot.rearLeft.setPower(rearLeftPower); //Turns the left back wheel
     }
 
     /**
