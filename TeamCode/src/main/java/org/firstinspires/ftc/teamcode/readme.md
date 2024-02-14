@@ -1,8 +1,16 @@
-## RoboWarriors Progamming Team Members
+## RoboWarriors Progamming Team Members for the 2023 - 2024 Season
 
 Tyler M. (SuperTylerMan)
 
 Lily L. (ll2025) 
+
+James L.
+
+Oscar Y.
+
+Jason L.
+
+Arthur L.
 
 ## TeamCode Module
 
