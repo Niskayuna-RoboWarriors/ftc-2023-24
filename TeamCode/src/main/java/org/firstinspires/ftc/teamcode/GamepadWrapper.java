@@ -53,7 +53,7 @@ public class GamepadWrapper {
     }
 
 
-    private boolean getButtonStateFromGamepads(Gamepad gamepad1, Gamepad gamepad2, DriverAction action) {
+    public boolean getButtonStateFromGamepads(Gamepad gamepad1, Gamepad gamepad2, DriverAction action) {
         switch (action){
             // Gamepad 1 Controls
             case TOGGLE_AUTOPIXEL:
